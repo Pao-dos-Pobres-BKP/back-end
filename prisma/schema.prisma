@@ -7,24 +7,135 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role
-  cpf       String   @unique
-  phone     String
-  address   String
-  city      String
-  state     String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("users")
+model address {
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  state         String          @db.Char(2)
+  city          String
+  neighborhood  String?
+  street        String
+  number        Int?
+  complement    String?
+  donor_address donor_address[]
 }
 
-enum Role {
-  ADMIN
-  BASIC
+model admin {
+  user_id      String       @id @db.Uuid
+  root         Boolean      @default(false)
+  user_account user_account @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_admin_user")
+  campaign     campaign[]
+  event_item   event_item[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model campaign {
+  id            String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  description   String
+  target_amount Decimal         @db.Decimal(12, 2)
+  start_date    DateTime?       @db.Date
+  end_date      DateTime?       @db.Date
+  image_url     String?
+  status        campaign_status @default(pending)
+  admin_id      String          @db.Uuid
+  requester_id  String?         @db.Uuid
+  admin         admin           @relation(fields: [admin_id], references: [user_id], onUpdate: NoAction, map: "fk_campaign_admin")
+  donor         donor?          @relation(fields: [requester_id], references: [user_id], onUpdate: NoAction, map: "fk_campaign_requester")
+  donation      donation[]
+
+  @@index([admin_id], map: "idx_campaign_admin_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model donation {
+  id            String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  donation_type String
+  amount        Decimal   @db.Decimal(12, 2)
+  periodicity   String?
+  impact_area   String?
+  donor_id      String    @db.Uuid
+  campaign_id   String?   @db.Uuid
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  campaign      campaign? @relation(fields: [campaign_id], references: [id], onUpdate: NoAction, map: "fk_donation_campaign")
+  donor         donor     @relation(fields: [donor_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_donation_donor")
+  payment       payment[]
+
+  @@index([campaign_id], map: "idx_donation_campaign_id")
+  @@index([donor_id], map: "idx_donation_donor_id")
+}
+
+model donor {
+  user_id       String          @id @db.Uuid
+  tax_id        String          @unique @db.Char(11)
+  full_name     String
+  birth_date    DateTime?       @db.Date
+  gender        String?
+  phone         String?
+  campaign      campaign[]
+  donation      donation[]
+  user_account  user_account    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_donor_user")
+  donor_address donor_address[]
+}
+
+model donor_address {
+  donor_id   String  @db.Uuid
+  address_id String  @db.Uuid
+  is_primary Boolean @default(false)
+  addr_type  String?
+  address    address @relation(fields: [address_id], references: [id], onUpdate: NoAction, map: "fk_donor_address_address")
+  donor      donor   @relation(fields: [donor_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_donor_address_donor")
+
+  @@id([donor_id, address_id])
+  @@index([address_id], map: "idx_donor_address_address_id")
+}
+
+model event_item {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  url         String?
+  created_at  DateTime? @db.Date
+  start_date  DateTime? @db.Date
+  end_date    DateTime? @db.Date
+  description String?
+  admin_id    String    @db.Uuid
+  admin       admin     @relation(fields: [admin_id], references: [user_id], onUpdate: NoAction, map: "fk_event_admin")
+}
+
+model payment {
+  id          String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  method      payment_method
+  status      payment_status @default(pending)
+  amount      Decimal?       @db.Decimal(12, 2)
+  paid_at     DateTime?      @db.Timestamptz(6)
+  donation_id String         @db.Uuid
+  donation    donation       @relation(fields: [donation_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_payment_donation")
+
+  @@index([donation_id], map: "idx_payment_donation_id")
+}
+
+model user_account {
+  id            String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email         String @unique
+  password_hash String
+  admin         admin?
+  donor         donor?
+}
+
+enum campaign_status {
+  pending
+  active
+  paused
+  finished
+  canceled
+}
+
+enum payment_method {
+  pix
+  boleto
+}
+
+enum payment_status {
+  pending
+  authorized
+  paid
+  failed
+  refunded
+  canceled
 }
