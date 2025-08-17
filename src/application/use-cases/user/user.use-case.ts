@@ -1,13 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { User } from "@domain/entities/user";
-import { CreateUserDTO } from "@application/dtos/user/create";
-import { UpdateUserDTO } from "@application/dtos/user/update";
-import {
-  PaginatedEntity,
-  PaginationParams
-} from "@domain/constants/pagination";
 
 @Injectable()
 export class UserUseCase {
@@ -16,6 +9,7 @@ export class UserUseCase {
     private readonly exceptionAdapter: ExceptionsAdapter
   ) {}
 
+  /*
   async createUser(user: CreateUserDTO): Promise<User> {
     const findUser = await this.userRepository.findByEmail(user.email);
 
@@ -26,7 +20,17 @@ export class UserUseCase {
     }
   }
 
-  /*
+import { User } from "@domain/entities/user";
+import { CreateUserDTO } from "@application/dtos/user/create";
+import { UpdateUserDTO } from "@application/dtos/user/update";
+import {
+  PaginatedEntity,
+  PaginationParams
+} from "@domain/constants/pagination";
+
+
+
+
     async findUserById(id: string): Promise<User> {
         const user = await this.userRepository.findById(id);
         if (!user) {
