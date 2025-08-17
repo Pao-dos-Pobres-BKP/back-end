@@ -12,5 +12,16 @@ export const userMock: Prisma.UserCreateManyInput[] = [
     address: "Rua das Flores, 123",
     city: "São Paulo",
     state: "SP"
+  },
+  {
+    email: "donor@example.com",
+    password: "Senha@123",
+    name: "Donor",
+    role: UserRole.DONOR,
+    cpf: "12345678901",
+    phone: "11988888888",
+    address: "Avenida das Palmeiras, 456",
+    city: "Rio de Janeiro",
+    state: "RJ"
   }
 ];
