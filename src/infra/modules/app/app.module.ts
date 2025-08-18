@@ -1,7 +1,7 @@
 import { EnvConfig } from "@infra/config/env";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { UserModule } from "../user/user.module";
+import { DonorModule } from "../donor/donor.module";
 import { CryptographyModule } from "../cryptography/cryptography.module";
 
 @Module({
@@ -10,7 +10,7 @@ import { CryptographyModule } from "../cryptography/cryptography.module";
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
     }),
-    UserModule,
+    DonorModule,
     CryptographyModule
   ]
 })

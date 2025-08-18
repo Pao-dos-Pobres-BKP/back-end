@@ -1,5 +1,5 @@
 import { UserRole } from "@domain/entities/role";
-import { User } from "@domain/entities/user";
+import { User } from "@domain/entities/donor";
 import { faker } from "@faker-js/faker";
 
 export const createMockUser = (override: Partial<User> = {}): User => ({

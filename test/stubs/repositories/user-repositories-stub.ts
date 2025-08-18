@@ -1,6 +1,6 @@
 import { PaginatedEntity } from "@domain/constants/pagination";
-import { User } from "@domain/entities/user";
-import { UserRepository } from "@domain/repositories/user";
+import { User } from "@domain/entities/donor";
+import { UserRepository } from "@domain/repositories/donor";
 
 export class UserRepositoryStub implements UserRepository {
   create(): Promise<User> {

@@ -2,8 +2,8 @@ import {
   PaginationParams,
   PaginatedEntity
 } from "@domain/constants/pagination";
-import { User } from "@domain/entities/user";
-import { UserRepository } from "@domain/repositories/user";
+import { User } from "@domain/entities/donor";
+import { UserRepository } from "@domain/repositories/donor";
 import { PrismaService } from "@infra/config/prisma";
 import { PrismaUserMapper as UserMapper } from "@infra/mappers/prisma/user-mapper";
 import { Injectable } from "@nestjs/common";

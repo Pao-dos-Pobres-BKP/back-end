@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { UserRepository } from "@domain/repositories/user";
+import { UserRepository } from "@domain/repositories/donor";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { User } from "@domain/entities/user";
-import { CreateUserDTO } from "@application/dtos/user/create";
+import { User } from "@domain/entities/donor";
+import { CreateUserDTO } from "@application/dtos/donor/create";
 import { CryptographyAdapter } from "@domain/adapters/cryptography";
-import { UpdateUserDTO } from "@application/dtos/user/update";
+import { UpdateUserDTO } from "@application/dtos/donor/update";
 import {
   PaginatedEntity,
   PaginationParams

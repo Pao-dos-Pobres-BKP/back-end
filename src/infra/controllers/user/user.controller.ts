@@ -1,5 +1,5 @@
-import { CreateUserDTO } from "@application/dtos/user/create";
-import { UpdateUserDTO } from "@application/dtos/user/update";
+import { CreateUserDTO } from "@application/dtos/donor/create";
+import { UpdateUserDTO } from "@application/dtos/donor/update";
 import { UserUseCase } from "@application/use-cases/user/user.use-case";
 import {
   Body,
@@ -11,7 +11,7 @@ import {
   Post
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { User } from "@domain/entities/user";
+import { User } from "@domain/entities/donor";
 import { Query } from "@nestjs/common";
 import { PaginationParams } from "@domain/constants/pagination";
 import { PaginatedEntity } from "@domain/constants/pagination";
