@@ -8,7 +8,7 @@ export enum Gender {
 }
 export interface DonorInterface {
   fullname: string;
-  birthDath: Date;
+  birthDate: Date;
   phone?: string;
   gender: Gender;
   email: string;
@@ -17,17 +17,22 @@ export interface DonorInterface {
 }
 export class Donor extends BaseEntity {
   fullname: string;
-  birthDath: Date;
+  birthDate: Date;
   phone?: string;
   gender: Gender;
   email: string;
   password: string;
   role: UserRole;
 
-  constructor(donor: DonorInterface, id?: string, updatedAt?: Date) {
-    super(id, updatedAt);
+  constructor(
+    donor: DonorInterface,
+    id?: string,
+    updatedAt?: Date,
+    createdAt?: Date
+  ) {
+    super(id, createdAt, updatedAt);
     this.fullname = donor.fullname;
-    this.birthDath = donor.birthDath;
+    this.birthDate = donor.birthDate;
     this.phone = donor.phone;
     this.gender = donor.gender;
     this.email = donor.email;
@@ -42,10 +47,10 @@ export class Donor extends BaseEntity {
     this.fullname = fullname;
   }
   public getBirthDath(): Date {
-    return this.birthDath;
+    return this.birthDate;
   }
   public setBirthDath(birthDath: Date): void {
-    this.birthDath = birthDath;
+    this.birthDate = birthDath;
   }
   public getPhone(): string | undefined {
     return this.phone;

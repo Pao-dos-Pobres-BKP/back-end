@@ -2,24 +2,22 @@ import {
   PaginationParams,
   PaginatedEntity
 } from "@domain/constants/pagination";
-import { User } from "@domain/entities/donor";
-import { UserRepository } from "@domain/repositories/donor";
 import { PrismaService } from "@infra/config/prisma";
-import { PrismaUserMapper as UserMapper } from "@infra/mappers/prisma/user-mapper";
 import { Injectable } from "@nestjs/common";
+import { User as PrismaUser } from "@prisma/client";
 
 @Injectable()
-export class PrismaUserRepository implements UserRepository {
+export class PrismaUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(user: User): Promise<User> {
-    const data = UserMapper.toPrisma(user);
+    const data = toPrisma(user);
 
     const newUser = await this.prisma.user.create({
       data
     });
 
-    return UserMapper.toDomain(newUser);
+    return toDomain(newUser);
   }
 
   async findById(id: string): Promise<User | null> {
@@ -27,14 +25,14 @@ export class PrismaUserRepository implements UserRepository {
       where: { id }
     });
 
-    return user ? UserMapper.toDomain(user) : null;
+    return user ? toDomain(user) : null;
   }
 
   async findUserByEmail(email: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: { email }
     });
-    return user ? UserMapper.toDomain(user) : null;
+    return user ? toDomain(user) : null;
   }
 
   async findAllUsers({
@@ -56,7 +54,7 @@ export class PrismaUserRepository implements UserRepository {
     });
 
     return {
-      data: users.map(UserMapper.toDomain),
+      data: users.map(toDomain),
       page,
       lastPage: Math.ceil(total / pageSize),
       total
@@ -64,7 +62,7 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async update(id: string, user: User): Promise<User> {
-    const data = UserMapper.toPrisma(user);
+    const data = toPrisma(user);
 
     const userUpdated = await this.prisma.user.update({
       where: {
@@ -73,7 +71,7 @@ export class PrismaUserRepository implements UserRepository {
       data
     });
 
-    return UserMapper.toDomain(userUpdated);
+    return toDomain(userUpdated);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -85,4 +83,26 @@ export class PrismaUserRepository implements UserRepository {
 
     return !!userDeleted;
   }
+}
+
+export interface User {
+  id: string;
+  email: string;
+  password: string;
+}
+
+function toDomain(user: PrismaUser): User {
+  return {
+    id: user.id,
+    email: user.email,
+    password: user.password
+  };
+}
+
+function toPrisma(user: User): PrismaUser {
+  return {
+    id: user.id,
+    email: user.email,
+    password: user.password
+  };
 }

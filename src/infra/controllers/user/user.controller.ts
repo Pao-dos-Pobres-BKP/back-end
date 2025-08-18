@@ -1,6 +1,6 @@
-import { CreateUserDTO } from "@application/dtos/donor/create";
-import { UpdateUserDTO } from "@application/dtos/donor/update";
-import { UserUseCase } from "@application/use-cases/user/user.use-case";
+import { CreateDonorDTO } from "@application/dtos/donor/create";
+import { UpdateDonorDTO } from "@application/dtos/donor/update";
+import { DonorUseCase } from "@application/use-cases/donor/donor.use-case";
 import {
   Body,
   Controller,
@@ -11,7 +11,7 @@ import {
   Post
 } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { User } from "@domain/entities/donor";
+import { Donor } from "@domain/entities/donor";
 import { Query } from "@nestjs/common";
 import { PaginationParams } from "@domain/constants/pagination";
 import { PaginatedEntity } from "@domain/constants/pagination";
@@ -19,7 +19,7 @@ import { PaginatedEntity } from "@domain/constants/pagination";
 @Controller("user")
 @ApiTags("User")
 export class UserController {
-  constructor(private readonly userUseCase: UserUseCase) {}
+  constructor(private readonly userUseCase: DonorUseCase) {}
 
   @ApiOperation({
     summary: "Create user",
@@ -38,7 +38,7 @@ export class UserController {
     description: "Internal Server Error"
   })
   @Post()
-  async create(@Body() body: CreateUserDTO): Promise<User> {
+  async create(@Body() body: CreateDonorDTO): Promise<Donor> {
     const createUser = await this.userUseCase.createUser(body);
 
     return createUser;
@@ -51,7 +51,7 @@ export class UserController {
   })
   async findAllPaginated(
     @Query() pagination: PaginationParams
-  ): Promise<PaginatedEntity<User>> {
+  ): Promise<PaginatedEntity<Donor>> {
     const { page, pageSize } = pagination;
     return await this.userUseCase.findAllPaginated({
       page,
@@ -80,7 +80,7 @@ export class UserController {
     description: "Internal Server Error"
   })
   @Get(":id")
-  async findById(@Param("id") id: string): Promise<User> {
+  async findById(@Param("id") id: string): Promise<Donor> {
     return await this.userUseCase.findUserById(id);
   }
 
@@ -107,8 +107,8 @@ export class UserController {
   @Patch(":id")
   async update(
     @Param("id") id: string,
-    @Body() body: UpdateUserDTO
-  ): Promise<User | void> {
+    @Body() body: UpdateDonorDTO
+  ): Promise<Donor | void> {
     return await this.userUseCase.updateUser(id, body);
   }
 

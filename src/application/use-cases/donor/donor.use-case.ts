@@ -1,25 +1,25 @@
 import { Injectable } from "@nestjs/common";
-import { UserRepository } from "@domain/repositories/donor";
+import { DonorRepository } from "@domain/repositories/donor";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { User } from "@domain/entities/donor";
-import { CreateUserDTO } from "@application/dtos/donor/create";
+import { Donor } from "@domain/entities/donor";
+import { CreateDonorDTO } from "@application/dtos/donor/create";
 import { CryptographyAdapter } from "@domain/adapters/cryptography";
-import { UpdateUserDTO } from "@application/dtos/donor/update";
+import { UpdateDonorDTO } from "@application/dtos/donor/update";
 import {
   PaginatedEntity,
   PaginationParams
 } from "@domain/constants/pagination";
 
 @Injectable()
-export class UserUseCase {
+export class DonorUseCase {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly donorRepository: DonorRepository,
     private readonly exceptionAdapter: ExceptionsAdapter,
     private readonly hashAdapter: CryptographyAdapter
   ) {}
 
-  async createUser(user: CreateUserDTO): Promise<User> {
-    const findUser = await this.userRepository.findUserByEmail(user.email);
+  async createUser(donor: CreateDonorDTO): Promise<Donor> {
+    const findUser = await this.donorRepository.findDonorByEmail(donor.email);
 
     if (findUser) {
       throw this.exceptionAdapter.badRequest({
@@ -27,16 +27,16 @@ export class UserUseCase {
       });
     }
 
-    const hashedPassword = await this.hashAdapter.generateHash(user.password);
-    const newUser = new User({
-      email: user.email,
+    const hashedPassword = await this.hashAdapter.generateHash(donor.password);
+    const newUser = new Donor({
+      email: donor.email,
       password: hashedPassword
     });
-    return await this.userRepository.create(newUser);
+    return await this.donorRepository.create(newUser);
   }
 
-  async findUserById(id: string): Promise<User> {
-    const user = await this.userRepository.findById(id);
+  async findUserById(id: string): Promise<Donor> {
+    const user = await this.donorRepository.findById(id);
     if (!user) {
       throw this.exceptionAdapter.notFound({ message: "User not found" });
     }
@@ -46,8 +46,8 @@ export class UserUseCase {
   async findAllPaginated({
     page,
     pageSize
-  }: PaginationParams): Promise<PaginatedEntity<User>> {
-    return await this.userRepository.findAllUsers({
+  }: PaginationParams): Promise<PaginatedEntity<Donor>> {
+    return await this.donorRepository.findAllDonors({
       page,
       pageSize
     });
@@ -55,14 +55,14 @@ export class UserUseCase {
 
   async updateUser(
     id: string,
-    updateUserDTO: UpdateUserDTO
-  ): Promise<User | void> {
-    const user = await this.userRepository.findById(id);
+    updateUserDTO: UpdateDonorDTO
+  ): Promise<Donor | void> {
+    const user = await this.donorRepository.findById(id);
     if (!user) {
       throw this.exceptionAdapter.notFound({ message: "User not found" });
     }
     if (updateUserDTO.email) {
-      const emailAlreadyUse = await this.userRepository.findUserByEmail(
+      const emailAlreadyUse = await this.donorRepository.findDonorByEmail(
         updateUserDTO.email
       );
 
@@ -83,14 +83,14 @@ export class UserUseCase {
     user.setEmail(updateUserDTO.email || user.getEmail());
     user.setPassword(hashPassword);
 
-    return await this.userRepository.update(id, user);
+    return await this.donorRepository.update(id, user);
   }
 
   async deleteUser(id: string): Promise<boolean> {
-    const user = await this.userRepository.findById(id);
-    if (!user) {
+    const donor = await this.donorRepository.findById(id);
+    if (!donor) {
       throw this.exceptionAdapter.notFound({ message: "User not found" });
     }
-    return await this.userRepository.delete(id);
+    return await this.donorRepository.delete(id);
   }
 }
