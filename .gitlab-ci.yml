@@ -8,11 +8,12 @@ variables:
 build_and_push:
   stage: build_and_push
   image: gcr.io/kaniko-project/executor:debug
+  entrypoint: [""]
   before_script:
     - apk add --no-cache aws-cli
     - mkdir -p /kaniko/.docker
     - export ECR_TOKEN="$(aws ecr get-login-password --region "$AWS_DEFAULT_REGION")"
-    - echo "{\"auths\":{\"$ECR_URL\":{\"username\":\"AWS\",\"password\":\"$ECR_TOKEN\",\"auth\":\"$(printf 'AWS:%s' "$ECR_TOKEN" | base64 -w 0)\"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"$ECR_URL\":{\"username\":\"AWS\",\"password\":\"$ECR_TOKEN\"}}}" > /kaniko/.docker/config.json
   script:
     - /kaniko/executor \
       --context "${CI_PROJECT_DIR}" \
