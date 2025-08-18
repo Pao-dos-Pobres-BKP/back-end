@@ -1,3 +1,4 @@
+/*
 import { PrismaClient } from "@prisma/client";
 import { clearDb } from "./clear-db";
 import { userMock } from "prisma/mocks/user";
@@ -28,3 +29,5 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+*/

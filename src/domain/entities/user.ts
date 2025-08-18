@@ -18,10 +18,10 @@ export class User extends BaseEntity {
     this.role = user.role ?? UserRole.BASIC;
   }
 
-  public setEmail(email: string): void {
+  setEmail(email: string): void {
     this.email = email;
   }
-  public getEmail(): string {
+  getEmail(): string {
     return this.email;
   }
   public setPassword(password: string): void {

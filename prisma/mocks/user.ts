@@ -1,5 +1,7 @@
+/*
 import { UserRole } from "@domain/entities/role";
 import { Prisma } from "@prisma/client";
+
 
 export const userMock: Prisma.UserCreateManyInput[] = [
   {
@@ -25,3 +27,4 @@ export const userMock: Prisma.UserCreateManyInput[] = [
     state: "RJ"
   }
 ];
+*/
