@@ -7,8 +7,9 @@ variables:
 
 build_and_push:
   stage: build_and_push
-  image: gcr.io/kaniko-project/executor:debug
-  entrypoint: [""]
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   before_script:
     - apk add --no-cache aws-cli
     - mkdir -p /kaniko/.docker
