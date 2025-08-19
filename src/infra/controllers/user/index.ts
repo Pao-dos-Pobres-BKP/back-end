@@ -2,14 +2,14 @@ import {
   CreateUserDTO,
   CreateUserResponses,
   UserWithoutPassword
-} from "@application/dtos/user/create";
-import { DeleteUserResponses } from "@application/dtos/user/delete";
-import { FindAllUserResponses } from "@application/dtos/user/find-all";
-import { FindByIdUserResponses } from "@application/dtos/user/find-by-id";
+} from "@application/dtos/donor/create";
+import { DeleteUserResponses } from "@application/dtos/donor/delete";
+import { FindAllUserResponses } from "@application/dtos/donor/find-all";
+import { FindByIdUserResponses } from "@application/dtos/donor/find-by-id";
 import {
   UpdateUserResponses,
   UpdateUserDTO
-} from "@application/dtos/user/update";
+} from "@application/dtos/donor/update";
 import { PaginationDTO } from "@application/dtos/utils/pagination";
 import { CreateUserUseCase } from "@application/use-cases/user/create";
 import { DeleteUserUseCase } from "@application/use-cases/user/delete";

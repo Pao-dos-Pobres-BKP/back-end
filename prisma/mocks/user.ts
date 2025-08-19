@@ -1,4 +1,4 @@
-import { UserRole } from "@domain/entities/role";
+import { UserRole } from "@domain/entities/user-role-enum";
 import { Prisma } from "@prisma/client";
 
 export const userMock: Prisma.UserCreateManyInput[] = [

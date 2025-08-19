@@ -21,6 +21,12 @@ export function IsCPF(validationOptions?: ValidationOptions) {
   };
 }
 
-export function cleanCPF(cpfValue: string): string {
-  return cpfValue.replace(/[.-]/g, "");
+export function formatCPF(cpfValue: string): string {
+  const cleanCPF = cpfValue.replace(/\D/g, "");
+
+  if (cleanCPF.length === 11 && !cpfValue.includes(".")) {
+    return cleanCPF.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  }
+
+  return cpfValue;
 }
