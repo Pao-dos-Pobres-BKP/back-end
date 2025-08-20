@@ -1,8 +1,11 @@
-import { BaseEntity } from "./base";
 import { UserRole } from "./user-role-enum";
 
-export class User extends BaseEntity {
+export class User {
+  id: string;
   email: string;
   password: string;
   role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
 }
