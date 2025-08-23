@@ -1,5 +1,5 @@
 import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
-import { UpdateDonorUseCase } from ".";
+import { UpdateDonorUseCase } from "./update-donor";
 import { HashServiceStub } from "@test/stubs/adapters/hash";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
@@ -24,7 +24,7 @@ describe("UpdateDonorUseCase", () => {
     );
   });
 
-  it("should throw an error if not found a donor with that id", async () => {
+  it("should throw an error when not found a donor with that id", async () => {
     jest.spyOn(exceptionService, "notFound");
     jest.spyOn(donorRepository, "findByIdWithUser").mockResolvedValue(null);
     jest.spyOn(donorRepository, "update");
@@ -40,7 +40,7 @@ describe("UpdateDonorUseCase", () => {
     expect(donorRepository.update).not.toHaveBeenCalled();
   });
 
-  it("should throw an error if found a donor with that email", async () => {
+  it("should throw an error when found a donor with that email", async () => {
     const donorWithUserMock = createMockDonorWithUser();
     const donorMock = createMockDonor();
 
@@ -66,7 +66,7 @@ describe("UpdateDonorUseCase", () => {
     expect(donorRepository.update).not.toHaveBeenCalled();
   });
 
-  it("should throw an error if found a donor with that cpf", async () => {
+  it("should throw an error when found a donor with that cpf", async () => {
     const donorWithUserMock = createMockDonorWithUser();
     const donorMock = createMockDonor();
 
@@ -93,7 +93,7 @@ describe("UpdateDonorUseCase", () => {
     expect(donorRepository.update).not.toHaveBeenCalled();
   });
 
-  it("should throw an error if birthdate is before than today", async () => {
+  it("should throw an error when birthdate is before than today", async () => {
     const donorWithUserMock = createMockDonorWithUser();
 
     jest.spyOn(exceptionService, "badRequest");

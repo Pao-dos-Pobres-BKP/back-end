@@ -1,5 +1,5 @@
 import { DonorRepository } from "@domain/repositories/donor";
-import { FindAllDonorsUseCase } from ".";
+import { FindAllDonorsUseCase } from "./find-all-donors";
 import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
 
 describe("FindAllDonorsUseCase", () => {

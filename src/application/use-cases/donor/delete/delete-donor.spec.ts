@@ -3,7 +3,7 @@ import { DonorRepository } from "@domain/repositories/donor";
 import { createMockDonor } from "@test/builders/donor";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
-import { DeleteDonorUseCase } from ".";
+import { DeleteDonorUseCase } from "./delete-donor";
 
 describe("DeleteDonorUseCase", () => {
   let sut: DeleteDonorUseCase;
@@ -16,7 +16,7 @@ describe("DeleteDonorUseCase", () => {
     sut = new DeleteDonorUseCase(donorRepository, exceptionService);
   });
 
-  it("should throw an error if not found a donor with that id", async () => {
+  it("should throw an error when not found a donor with that id", async () => {
     jest.spyOn(exceptionService, "notFound");
     jest.spyOn(donorRepository, "findById").mockResolvedValue(null);
     jest.spyOn(donorRepository, "delete");

@@ -1,6 +1,6 @@
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonorRepository } from "@domain/repositories/donor";
-import { FindDonorByIdUseCase } from ".";
+import { FindDonorByIdUseCase } from "./find-donor-by-id";
 import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { createMockDonorWithUser } from "@test/builders/donor";
@@ -16,7 +16,7 @@ describe("FindDonorByIdUseCase", () => {
     sut = new FindDonorByIdUseCase(donorRepository, exceptionService);
   });
 
-  it("should throw an error if not found a donor with that id", async () => {
+  it("should throw an error when not found a donor with that id", async () => {
     jest.spyOn(exceptionService, "notFound");
     jest.spyOn(donorRepository, "findByIdWithUser").mockResolvedValue(null);
 

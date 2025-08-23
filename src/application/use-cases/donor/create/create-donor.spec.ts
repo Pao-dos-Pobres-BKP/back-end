@@ -4,7 +4,7 @@ import { DonorRepository } from "@domain/repositories/donor";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { HashServiceStub } from "@test/stubs/adapters/hash";
 import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
-import { CreateDonorUseCase } from ".";
+import { CreateDonorUseCase } from "./create-donor";
 import { createMockDonor } from "@test/builders/donor";
 import { Gender } from "@domain/entities/gender-enum";
 import { UserRole } from "@domain/entities/user-role-enum";
@@ -26,7 +26,7 @@ describe("CreateDonorUseCase", () => {
     );
   });
 
-  it("should throw email already exists error if find email", async () => {
+  it("should throw email already exists error when find user with this email", async () => {
     const mockDonor = createMockDonor();
 
     const email = "donor-email-duplicate";
@@ -51,7 +51,7 @@ describe("CreateDonorUseCase", () => {
     });
   });
 
-  it("should throw cpf already exists error if find email", async () => {
+  it("should throw cpf already exists error when find user with this cpf", async () => {
     const mockDonor = createMockDonor();
 
     jest.spyOn(exceptionService, "conflict");
@@ -75,7 +75,7 @@ describe("CreateDonorUseCase", () => {
     });
   });
 
-  it("should throw birth date must before than today error if birth date is before or equal than today", async () => {
+  it("should throw birth date must before than today error when birth date is before or equal than today", async () => {
     jest.spyOn(exceptionService, "badRequest");
     jest.spyOn(donorRepository, "findByEmail").mockResolvedValue(null);
     jest.spyOn(donorRepository, "findByCPF").mockResolvedValue(null);
