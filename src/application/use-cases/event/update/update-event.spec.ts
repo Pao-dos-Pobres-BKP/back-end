@@ -3,11 +3,7 @@ import { UpdateEventUseCase } from "./update-event";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { EventRepository } from "@domain/repositories/event";
-
-import {
-  createMockEvent,
-  createMockEventWithDetails
-} from "@test/builders/event";
+import { createMockEventWithDetails } from "@test/builders/event";
 
 describe("UpdateEventUseCase", () => {
   let sut: UpdateEventUseCase;
