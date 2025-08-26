@@ -2,7 +2,6 @@ import { UserRole } from "@domain/entities/user-role-enum";
 
 export interface TokenPayload {
   id: string;
-  email: string;
   role: UserRole;
 }
 

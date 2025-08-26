@@ -36,7 +36,6 @@ export class LoginUseCase {
 
     const generateToken = await this.tokenService.generateToken({
       id: user.id,
-      email: user.email,
       role: user.role
     });
 
