@@ -16,6 +16,10 @@ class EnvironmentVariables {
   @IsNumber()
   @IsNotEmpty()
   PORT: number;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
 }
 
 export class EnvConfig {
