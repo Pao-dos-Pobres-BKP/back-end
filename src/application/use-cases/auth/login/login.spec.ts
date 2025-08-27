@@ -85,7 +85,6 @@ describe("LoginUseCase", () => {
 
     expect(tokenService.generateToken).toHaveBeenCalledWith({
       id: userMock.id,
-      email: userMock.email,
       role: userMock.role
     });
     expect(result).toEqual({
