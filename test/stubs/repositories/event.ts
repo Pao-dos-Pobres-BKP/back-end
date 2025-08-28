@@ -22,9 +22,6 @@ export class EventRepositoryStub implements EventRepository {
   findById(): Promise<Event | null> {
     return;
   }
-  findByIdWithDetails(): Promise<EventDetails | null> {
-    return;
-  }
   delete(): Promise<void> {
     return;
   }

@@ -40,7 +40,8 @@ describe("FindEventByIdUseCase", () => {
       title: mockEvent.title,
       description: mockEvent.description,
       location: mockEvent.location,
-      date: mockEvent.date,
+      dateStart: mockEvent.dateStart,
+      dateEnd: mockEvent.dateEnd,
       createdAt: mockEvent.createdAt,
       updatedAt: mockEvent.updatedAt
     });

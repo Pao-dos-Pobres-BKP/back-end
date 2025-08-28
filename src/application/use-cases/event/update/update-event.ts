@@ -11,9 +11,9 @@ export class UpdateEventUseCase {
   ) {}
 
   async execute(id: string, params: UpdateEventDTO): Promise<void> {
-    const { title, date, location, description } = params;
+    const { title, dateStart, dateEnd, location, description } = params;
 
-    const event = await this.eventRepository.findByIdWithDetails(id);
+    const event = await this.eventRepository.findById(id);
 
     if (!event) {
       return this.exceptionService.notFound({
@@ -30,7 +30,7 @@ export class UpdateEventUseCase {
       }
     }
 
-    if (date && date < new Date()) {
+    if (dateStart && dateStart < new Date()) {
       return this.exceptionService.badRequest({
         message: "Event date must be today or in the future"
       });
@@ -38,7 +38,8 @@ export class UpdateEventUseCase {
 
     await this.eventRepository.update(id, {
       title,
-      date,
+      dateStart,
+      dateEnd,
       location,
       description
     });

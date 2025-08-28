@@ -14,12 +14,13 @@ export class CreateEventUseCase {
     title,
     description,
     location,
-    date,
+    dateStart,
+    dateEnd,
     url
   }: CreateEventDTO): Promise<void> {
     const existingEvent = await this.eventRepository.findByTitleAndDate(
       title,
-      date
+      dateStart
     );
 
     if (existingEvent) {
@@ -28,7 +29,7 @@ export class CreateEventUseCase {
       });
     }
 
-    if (date <= new Date()) {
+    if (dateStart <= new Date()) {
       return this.exceptionService.badRequest({
         message: "Event date must be in the future"
       });
@@ -38,7 +39,8 @@ export class CreateEventUseCase {
       title,
       description,
       location,
-      date,
+      dateStart,
+      dateEnd,
       url
     });
   }

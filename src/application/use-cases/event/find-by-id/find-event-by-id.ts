@@ -24,7 +24,8 @@ export class FindEventByIdUseCase {
       title: event.title,
       description: event.description,
       location: event.location,
-      date: event.date,
+      dateStart: event.dateStart,
+      dateEnd: event.dateEnd,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt
     };

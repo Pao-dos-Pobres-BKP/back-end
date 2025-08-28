@@ -129,6 +129,20 @@ model News {
   @@map("news")
 }
 
+model Events {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  dateStart   DateTime  @db.Date
+  dateEnd     DateTime  @db.Date
+  location    String
+  url         String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("events")
+}
+
 enum UserRole {
   ADMIN
   DONOR

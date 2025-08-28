@@ -8,7 +8,8 @@ import { Event } from "@domain/entities/event";
 export interface CreateEventParams {
   title: string;
   description: string;
-  date: Date;
+  dateStart: Date;
+  dateEnd: Date;
   location: string;
   url: string;
 }
@@ -16,7 +17,8 @@ export interface CreateEventParams {
 export interface UpdateEventParams {
   title?: string;
   description?: string;
-  date?: Date;
+  dateStart?: Date;
+  dateEnd?: Date;
   location?: string;
   url?: string;
 }
@@ -25,7 +27,8 @@ export interface EventDetailsResponse {
   id: string;
   title: string;
   description: string;
-  date: Date;
+  dateStart: Date;
+  dateEnd: Date;
   location: string;
   url: string;
 }
@@ -33,10 +36,12 @@ export interface EventDetailsResponse {
 export abstract class EventRepository {
   abstract findByURL(url: string): Promise<Event | null>;
   abstract findByTitle(title: string): Promise<Event | null>;
-  abstract findByTitleAndDate(title: string, date: Date): Promise<Event | null>;
+  abstract findByTitleAndDate(
+    title: string,
+    dateStart: Date
+  ): Promise<Event | null>;
   abstract create(params: CreateEventParams): Promise<void>;
   abstract findById(id: string): Promise<Event | null>;
-  abstract findByIdWithDetails(id: string): Promise<EventDetails | null>;
   abstract delete(id: string): Promise<void>;
   abstract findAll(
     params: PaginationParams

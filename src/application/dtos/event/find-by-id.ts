@@ -27,9 +27,9 @@ export class EventDetails {
   @ApiProperty({
     description: "Location where the event will take place",
     example: "Rua A, 123 - Centro, São Paulo",
-    required: false
+    required: true
   })
-  location?: string;
+  location: string;
 
   @ApiProperty({
     description: "URL related to the event (optional)",
@@ -39,11 +39,18 @@ export class EventDetails {
   url?: string;
 
   @ApiProperty({
-    description: "Date and time of the event (optional)",
+    description: "Starting date and time of the event",
     example: "2025-12-31T14:00:00.000Z",
-    required: false
+    required: true
   })
-  date?: Date;
+  dateStart: Date;
+
+  @ApiProperty({
+    description: "Ending date and time of the event",
+    example: "2025-12-31T14:00:00.000Z",
+    required: true
+  })
+  dateEnd: Date;
 
   @ApiProperty({
     description: "Date the event was created in the system",

@@ -1,13 +1,14 @@
 import { Event } from "@domain/entities/event";
-import { News as PrismaNews } from "@prisma/client";
+import { Events as PrismaEvents } from "@prisma/client";
 
 export class EventMapper {
-  static toDomain(event: PrismaNews): Event {
+  static toDomain(event: PrismaEvents): Event {
     return {
       id: event.id,
       title: event.title,
       description: event.description,
-      date: event.date,
+      dateStart: event.dateStart,
+      dateEnd: event.dateEnd,
       location: event.location,
       url: event.url,
       createdAt: event.createdAt,

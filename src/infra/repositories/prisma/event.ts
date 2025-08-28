@@ -17,21 +17,7 @@ import { Injectable } from "@nestjs/common";
 export class PrismaEventRepository implements EventRepository {
   constructor(private readonly prisma: PrismaService) {}
   async findById(id: string): Promise<Event | null> {
-    const event = await this.prisma.news.findUnique({
-      where: {
-        id
-      }
-    });
-
-    if (!event) {
-      return null;
-    }
-
-    return EventMapper.toDomain(event);
-  }
-
-  async findByIdWithDetails(id: string): Promise<EventDetails | null> {
-    const event = await this.prisma.news.findUnique({
+    const event = await this.prisma.events.findUnique({
       where: {
         id
       }
@@ -49,15 +35,15 @@ export class PrismaEventRepository implements EventRepository {
     pageSize
   }: PaginationParams): Promise<PaginatedEntity<EventDetails>> {
     const { events, total } = await this.prisma.$transaction(async (tx) => {
-      const events = await tx.news.findMany({
+      const events = await tx.events.findMany({
         skip: (page - 1) * pageSize,
         take: pageSize,
         orderBy: {
-          date: "asc"
+          dateStart: "asc"
         }
       });
 
-      const total = await tx.news.count({});
+      const total = await tx.events.count({});
 
       return { events, total };
     });
@@ -71,7 +57,7 @@ export class PrismaEventRepository implements EventRepository {
   }
 
   async findByURL(url: string): Promise<Event | null> {
-    const event = await this.prisma.news.findFirst({
+    const event = await this.prisma.events.findFirst({
       where: {
         url
       }
@@ -85,7 +71,7 @@ export class PrismaEventRepository implements EventRepository {
   }
 
   async findByTitle(title: string): Promise<Event | null> {
-    const event = await this.prisma.news.findFirst({
+    const event = await this.prisma.events.findFirst({
       where: {
         title
       }
@@ -98,11 +84,14 @@ export class PrismaEventRepository implements EventRepository {
     return EventMapper.toDomain(event);
   }
 
-  async findByTitleAndDate(title: string, date: Date): Promise<Event | null> {
-    const event = await this.prisma.news.findFirst({
+  async findByTitleAndDate(
+    title: string,
+    dateStart: Date
+  ): Promise<Event | null> {
+    const event = await this.prisma.events.findFirst({
       where: {
         title,
-        date
+        dateStart
       }
     });
 
@@ -116,15 +105,17 @@ export class PrismaEventRepository implements EventRepository {
   async create({
     title,
     description,
-    date,
+    dateStart,
+    dateEnd,
     location,
     url
   }: CreateEventParams): Promise<void> {
-    await this.prisma.news.create({
+    await this.prisma.events.create({
       data: {
         title,
         description,
-        date,
+        dateStart,
+        dateEnd,
         location,
         url
       }
@@ -132,14 +123,15 @@ export class PrismaEventRepository implements EventRepository {
   }
 
   async update(id: string, params: UpdateEventParams): Promise<void> {
-    const { title, description, date, location, url } = params;
+    const { title, description, dateStart, dateEnd, location, url } = params;
 
-    await this.prisma.news.update({
+    await this.prisma.events.update({
       where: { id },
       data: {
         title,
         description,
-        date,
+        dateStart,
+        dateEnd,
         location,
         url
       }
@@ -147,7 +139,7 @@ export class PrismaEventRepository implements EventRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.news.delete({
+    await this.prisma.events.delete({
       where: {
         id
       }

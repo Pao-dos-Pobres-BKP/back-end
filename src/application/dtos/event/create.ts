@@ -31,13 +31,13 @@ export class CreateEventDTO {
   description: string;
 
   @ApiProperty({
-    description: "Event location (optional)",
+    description: "Event location",
     example: "Rua das Flores, 123 - Centro, São Paulo/SP",
-    required: false
+    required: true
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  location?: string;
+  location: string;
 
   @ApiProperty({
     description: "Event URL (optional)",
@@ -53,9 +53,18 @@ export class CreateEventDTO {
     example: "2025-12-31"
   })
   @Type(() => Date)
-  @IsOptional()
+  @IsNotEmpty()
   @IsDate({ message: "Date must be a valid ISO date" })
-  date?: Date;
+  dateStart: Date;
+
+  @ApiProperty({
+    description: "Event date (optional, must be a valid ISO date)",
+    example: "2025-12-31"
+  })
+  @Type(() => Date)
+  @IsNotEmpty()
+  @IsDate({ message: "Date must be a valid ISO date" })
+  dateEnd: Date;
 }
 
 export const CreateEventResponses = applyDecorators(

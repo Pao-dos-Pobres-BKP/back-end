@@ -18,7 +18,6 @@ describe("UpdateEventUseCase", () => {
 
   it("should throw an error when not found an event with that id", async () => {
     jest.spyOn(exceptionService, "notFound");
-    jest.spyOn(eventRepository, "findByIdWithDetails").mockResolvedValue(null);
     jest.spyOn(eventRepository, "update");
 
     await sut.execute("example-event-id", {
@@ -35,15 +34,13 @@ describe("UpdateEventUseCase", () => {
   it("should update an event", async () => {
     const eventWithDetailsMock = createMockEventWithDetails();
 
-    jest
-      .spyOn(eventRepository, "findByIdWithDetails")
-      .mockResolvedValue(eventWithDetailsMock);
     jest.spyOn(eventRepository, "update");
 
     const updateData = {
       title: "Updated Event Title",
       description: "Updated Description",
-      date: new Date("2025-01-01"),
+      dateStart: new Date("2025-01-01"),
+      dateEnd: new Date("2025-01-02"),
       location: "Updated Location"
     };
 

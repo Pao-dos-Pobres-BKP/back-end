@@ -28,12 +28,13 @@ describe("CreateEventUseCase", () => {
       title: mockEvent.title,
       description: "Some description",
       location: "Some location",
-      date: mockEvent.date
+      dateStart: mockEvent.dateStart,
+      dateEnd: mockEvent.dateEnd
     });
 
     expect(eventRepository.findByTitleAndDate).toHaveBeenCalledWith(
       mockEvent.title,
-      mockEvent.date
+      mockEvent.dateStart
     );
     expect(exceptionService.conflict).toHaveBeenCalledWith({
       message: "Event with this title and date already exists"
@@ -48,7 +49,8 @@ describe("CreateEventUseCase", () => {
       title: "New Event",
       description: "Some description",
       location: "Some location",
-      date: new Date()
+      dateStart: new Date(),
+      dateEnd: new Date()
     });
 
     expect(exceptionService.badRequest).toHaveBeenCalledWith({
@@ -66,14 +68,16 @@ describe("CreateEventUseCase", () => {
       title: mockEvent.title,
       description: mockEvent.description,
       location: mockEvent.location,
-      date: mockEvent.date
+      dateStart: mockEvent.dateStart,
+      dateEnd: mockEvent.dateEnd
     });
 
     expect(eventRepository.create).toHaveBeenCalledWith({
       title: mockEvent.title,
       description: mockEvent.description,
       location: mockEvent.location,
-      eventDate: mockEvent.date
+      eventStartingDate: mockEvent.dateStart,
+      eventEndingDate: mockEvent.dateEnd
     });
   });
 });
