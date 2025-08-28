@@ -21,7 +21,12 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepare": "husky",
-    "prisma:seed": "ts-node prisma/seed/index.ts"
+    "prisma:seed": "ts-node prisma/seed/index.ts",
+    "migrate:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "node dist/prisma/seed/index.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
