@@ -1,6 +1,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache openssl libc6-compat
+
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
