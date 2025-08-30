@@ -31,7 +31,13 @@ export class CreateEventUseCase {
 
     if (dateStart <= new Date()) {
       return this.exceptionService.badRequest({
-        message: "Event date must be in the future"
+        message: "Event starting date must be in the future"
+      });
+    }
+
+    if (dateEnd <= new Date()) {
+      return this.exceptionService.badRequest({
+        message: "Event ending date must be in the future"
       });
     }
 

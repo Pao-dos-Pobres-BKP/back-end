@@ -21,18 +21,32 @@ export class UpdateEventUseCase {
       });
     }
 
-    if (title && title !== event.title) {
-      const eventWithTitle = await this.eventRepository.findByTitle(title);
+    if (
+      title &&
+      title !== event.title &&
+      dateStart &&
+      dateStart !== event.dateStart
+    ) {
+      const eventWithTitle = await this.eventRepository.findByTitleAndDate(
+        title,
+        dateStart
+      );
       if (eventWithTitle) {
         return this.exceptionService.conflict({
-          message: "Event title already used"
+          message: "Event title for date already used"
         });
       }
     }
 
     if (dateStart && dateStart < new Date()) {
       return this.exceptionService.badRequest({
-        message: "Event date must be today or in the future"
+        message: "Event starting date must be today or in the future"
+      });
+    }
+
+    if (dateEnd && dateEnd < new Date()) {
+      return this.exceptionService.badRequest({
+        message: "Event ending date must be today or in the future"
       });
     }
 

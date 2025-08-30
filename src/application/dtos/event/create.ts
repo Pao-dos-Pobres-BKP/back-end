@@ -40,7 +40,7 @@ export class CreateEventDTO {
   location: string;
 
   @ApiProperty({
-    description: "Event URL (optional)",
+    description: "Event URL",
     example: "https://evento.com.br",
     required: false
   })
@@ -49,7 +49,7 @@ export class CreateEventDTO {
   url?: string;
 
   @ApiProperty({
-    description: "Event date (optional, must be a valid ISO date)",
+    description: "Starting date of th event, must be a valid ISO date",
     example: "2025-12-31"
   })
   @Type(() => Date)
@@ -58,7 +58,7 @@ export class CreateEventDTO {
   dateStart: Date;
 
   @ApiProperty({
-    description: "Event date (optional, must be a valid ISO date)",
+    description: "Ending date of the event, must be a valid ISO date)",
     example: "2025-12-31"
   })
   @Type(() => Date)

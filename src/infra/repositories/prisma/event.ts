@@ -56,20 +56,6 @@ export class PrismaEventRepository implements EventRepository {
     };
   }
 
-  async findByURL(url: string): Promise<Event | null> {
-    const event = await this.prisma.events.findFirst({
-      where: {
-        url
-      }
-    });
-
-    if (!event) {
-      return null;
-    }
-
-    return EventMapper.toDomain(event);
-  }
-
   async findByTitle(title: string): Promise<Event | null> {
     const event = await this.prisma.events.findFirst({
       where: {

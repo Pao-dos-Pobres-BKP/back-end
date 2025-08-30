@@ -34,7 +34,6 @@ export interface EventDetailsResponse {
 }
 
 export abstract class EventRepository {
-  abstract findByURL(url: string): Promise<Event | null>;
   abstract findByTitle(title: string): Promise<Event | null>;
   abstract findByTitleAndDate(
     title: string,

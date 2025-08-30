@@ -133,8 +133,8 @@ model Events {
   id          String    @id @default(cuid())
   title       String
   description String
-  dateStart   DateTime  @db.Date
-  dateEnd     DateTime  @db.Date
+  dateStart   DateTime  @db.Date @map("date_start")
+  dateEnd     DateTime  @db.Date @map("date_end")
   location    String
   url         String?
   createdAt   DateTime  @default(now()) @map("created_at")
