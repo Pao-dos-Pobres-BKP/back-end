@@ -35,9 +35,9 @@ export class CreateEventUseCase {
       });
     }
 
-    if (dateEnd <= new Date()) {
+    if (dateEnd <= dateStart) {
       return this.exceptionService.badRequest({
-        message: "Event ending date must be in the future"
+        message: "Event ending date must be after the starting date"
       });
     }
 
