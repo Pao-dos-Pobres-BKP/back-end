@@ -46,7 +46,7 @@ export class UpdateEventUseCase {
 
     if (dateEnd && dateEnd <= (dateStart ?? event.dateStart)) {
       return this.exceptionService.badRequest({
-        message: "Event ending date must be and after the starting date"
+        message: "Event ending date must be after the starting date"
       });
     }
 
