@@ -21,12 +21,7 @@ export class UpdateEventUseCase {
       });
     }
 
-    if (
-      title &&
-      title !== event.title &&
-      dateStart &&
-      dateStart !== event.dateStart
-    ) {
+    if (title && title !== event.title) {
       const eventWithTitle = await this.eventRepository.findByTitleAndDate(
         title,
         dateStart
