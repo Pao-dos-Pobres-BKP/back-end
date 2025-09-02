@@ -69,7 +69,9 @@ export class NewsController {
   @Get(":id")
   @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
   @ApiOkResponse({ description: "Detalhes da notícia" })
-  get(@Param("id", new NonEmptyStringPipe()) id: string): Promise<NewsDetailsResponse> {
+  get(
+    @Param("id", new NonEmptyStringPipe()) id: string
+  ): Promise<NewsDetailsResponse> {
     return this.findByIdUC.execute(id);
   }
 
