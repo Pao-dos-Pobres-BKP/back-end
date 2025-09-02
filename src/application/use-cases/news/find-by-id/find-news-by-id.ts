@@ -1,15 +1,22 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
-import { FindNewsByIdDto } from "@application/dtos/news/find-by-id";
+import { Injectable } from "@nestjs/common";
+import { NewsRepository } from "@domain/repositories/news";
 import { News } from "@domain/entities/news";
+import { ExceptionsAdapter } from "@domain/adapters/exception";
 
 @Injectable()
 export class FindNewsByIdUseCase {
-  constructor(private readonly repo: PrismaNewsRepository) {}
+  constructor(
+    private readonly repo: NewsRepository,
+    private readonly exceptions: ExceptionsAdapter // <-- injeta a porta
+  ) {}
 
-  async execute({ id }: FindNewsByIdDto): Promise<News> {
+  async execute(id: string): Promise<News> {
     const item = await this.repo.findById(id);
-    if (!item) throw new NotFoundException("News not found");
+
+    if (!item) {
+      this.exceptions.notFound({ message: "News not found" });
+    }
+
     return item;
   }
 }

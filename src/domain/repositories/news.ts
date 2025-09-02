@@ -4,6 +4,7 @@ import {
   PaginatedEntity
 } from "@domain/constants/pagination";
 
+/** types permanecem iguais */
 export type CreateNewsParams = {
   title: string;
   description: string;
@@ -25,12 +26,12 @@ export type NewsDetailsResponse = {
   updatedAt: Date;
 };
 
-export interface NewsRepository {
-  findById(id: string): Promise<News | null>;
-  findAll(
+export abstract class NewsRepository {
+  abstract findById(id: string): Promise<News | null>;
+  abstract findAll(
     params: PaginationParams
   ): Promise<PaginatedEntity<NewsDetailsResponse>>;
-  create(params: CreateNewsParams): Promise<void>;
-  update(id: string, params: UpdateNewsParams): Promise<void>;
-  delete(id: string): Promise<void>;
+  abstract create(params: CreateNewsParams): Promise<void>;
+  abstract update(id: string, params: UpdateNewsParams): Promise<void>;
+  abstract delete(id: string): Promise<void>;
 }

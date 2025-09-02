@@ -1,34 +1,17 @@
-import { FindAllNewsUseCase } from "./find-all-news";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
+import { Injectable } from "@nestjs/common";
+import { FindAllNewsDto } from "@application/dtos/news/find-all";
+import { NewsRepository, NewsDetailsResponse } from "@domain/repositories/news";
+import { PaginatedEntity } from "@domain/constants/pagination";
 
-describe("FindAllNewsUseCase", () => {
-  let repo: jest.Mocked<PrismaNewsRepository>;
-  let useCase: FindAllNewsUseCase;
+@Injectable()
+export class FindAllNewsUseCase {
+  constructor(private readonly repo: NewsRepository) {}
 
-  beforeEach(() => {
-    repo = {
-      create: jest.fn(),
-      delete: jest.fn(),
-      findAll: jest.fn().mockResolvedValue({
-        data: [],
-        page: 1,
-        lastPage: 1,
-        total: 0
-      }),
-      findById: jest.fn(),
-      update: jest.fn()
-    } as unknown as jest.Mocked<PrismaNewsRepository>;
-
-    useCase = new FindAllNewsUseCase(repo);
-  });
-
-  it("lista com paginação default quando não informado", async () => {
-    await useCase.execute({});
-    expect(repo.findAll).toHaveBeenCalledWith({ page: 1, pageSize: 10 });
-  });
-
-  it("lista com paginação customizada", async () => {
-    await useCase.execute({ page: 2, pageSize: 5 });
-    expect(repo.findAll).toHaveBeenCalledWith({ page: 2, pageSize: 5 });
-  });
-});
+  async execute(
+    q: FindAllNewsDto
+  ): Promise<PaginatedEntity<NewsDetailsResponse>> {
+    const { page = 1, pageSize = 10 } = q;
+    const result = await this.repo.findAll({ page, pageSize });
+    return result;
+  }
+}

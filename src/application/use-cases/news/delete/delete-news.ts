@@ -1,12 +1,18 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
-import { DeleteNewsDto } from "@application/dtos/news/delete";
+import { NewsRepository } from "@domain/repositories/news";
+import { ExceptionsAdapter } from "@domain/adapters/exception";
 
 @Injectable()
 export class DeleteNewsUseCase {
-  constructor(private readonly repo: PrismaNewsRepository) {}
+  constructor(
+    private readonly repo: NewsRepository,
+    private readonly exceptions: ExceptionsAdapter
+  ) {}
 
-  async execute({ id }: DeleteNewsDto): Promise<void> {
+  async execute(id: string): Promise<void> {
+    const existing = await this.repo.findById(id);
+    if (!existing) this.exceptions.notFound({ message: "News not found" });
+
     await this.repo.delete(id);
   }
 }

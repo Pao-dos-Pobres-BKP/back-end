@@ -1,8 +1,9 @@
 import { DeleteNewsUseCase } from "./delete-news";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
+import { NewsRepository } from "@domain/repositories/news";
+import { NotFoundException } from "@nestjs/common";
 
 describe("DeleteNewsUseCase", () => {
-  let repo: jest.Mocked<PrismaNewsRepository>;
+  let repo: jest.Mocked<NewsRepository>;
   let useCase: DeleteNewsUseCase;
 
   beforeEach(() => {
@@ -12,13 +13,25 @@ describe("DeleteNewsUseCase", () => {
       findAll: jest.fn(),
       findById: jest.fn(),
       update: jest.fn()
-    } as unknown as jest.Mocked<PrismaNewsRepository>;
-
+    };
     useCase = new DeleteNewsUseCase(repo);
   });
 
-  it("deleta pelo id", async () => {
-    await useCase.execute({ id: "abc" });
-    expect(repo.delete).toHaveBeenCalledWith("abc");
+  it("deve deletar uma notícia existente", async () => {
+    repo.delete.mockResolvedValueOnce();
+
+    await expect(useCase.execute("valid-id")).resolves.toBeUndefined();
+    expect(repo.delete).toHaveBeenCalledWith("valid-id");
+  });
+
+  it("deve lançar erro caso a notícia não seja encontrada", async () => {
+    repo.delete.mockImplementationOnce(() => {
+      throw new NotFoundException("News not found");
+    });
+
+    await expect(useCase.execute("missing-id")).rejects.toThrow(
+      NotFoundException
+    );
+    expect(repo.delete).toHaveBeenCalledWith("missing-id");
   });
 });

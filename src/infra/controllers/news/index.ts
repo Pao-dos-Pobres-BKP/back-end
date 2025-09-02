@@ -3,46 +3,63 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  BadRequestException,
+  PipeTransform
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags
+} from "@nestjs/swagger";
 
 import { CreateNewsDto } from "@application/dtos/news/create";
 import { UpdateNewsDto } from "@application/dtos/news/update";
 import { FindAllNewsDto } from "@application/dtos/news/find-all";
-import { FindNewsByIdDto } from "@application/dtos/news/find-by-id";
-import { DeleteNewsDto } from "@application/dtos/news/delete";
 
 import { CreateNewsUseCase } from "@application/use-cases/news/create/create-news";
-import { DeleteNewsUseCase } from "@application/use-cases/news/delete/delete-news";
 import { FindAllNewsUseCase } from "@application/use-cases/news/find-all/find-all-news";
 import { FindNewsByIdUseCase } from "@application/use-cases/news/find-by-id/find-news-by-id";
 import { UpdateNewsUseCase } from "@application/use-cases/news/update/update-news";
+import { DeleteNewsUseCase } from "@application/use-cases/news/delete/delete-news";
 
-import { News } from "@domain/entities/news";
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { NewsDetailsResponse } from "@domain/repositories/news";
+
+class NonEmptyStringPipe implements PipeTransform<unknown, string> {
+  transform(value: unknown): string {
+    if (typeof value !== "string" || !value.trim()) {
+      throw new BadRequestException("Invalid id");
+    }
+    return value;
+  }
+}
 
 @ApiTags("news")
 @Controller("news")
 export class NewsController {
   constructor(
     private readonly createUC: CreateNewsUseCase,
-    private readonly deleteUC: DeleteNewsUseCase,
     private readonly findAllUC: FindAllNewsUseCase,
     private readonly findByIdUC: FindNewsByIdUseCase,
-    private readonly updateUC: UpdateNewsUseCase
+    private readonly updateUC: UpdateNewsUseCase,
+    private readonly deleteUC: DeleteNewsUseCase
   ) {}
 
   @Post()
+  @ApiCreatedResponse({ description: "Notícia criada com sucesso" })
   create(@Body() dto: CreateNewsDto): Promise<void> {
     return this.createUC.execute(dto);
   }
 
   @Get()
+  @ApiOkResponse({ description: "Lista paginada de notícias" })
   list(
     @Query() q: FindAllNewsDto
   ): Promise<PaginatedEntity<NewsDetailsResponse>> {
@@ -50,20 +67,28 @@ export class NewsController {
   }
 
   @Get(":id")
-  get(@Param() params: FindNewsByIdDto): Promise<News> {
-    return this.findByIdUC.execute(params);
+  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
+  @ApiOkResponse({ description: "Detalhes da notícia" })
+  get(@Param("id", new NonEmptyStringPipe()) id: string): Promise<NewsDetailsResponse> {
+    return this.findByIdUC.execute(id);
   }
 
   @Patch(":id")
+  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
+  @ApiNoContentResponse({ description: "Notícia atualizada com sucesso" })
+  @HttpCode(204)
   update(
-    @Param() { id }: FindNewsByIdDto,
+    @Param("id", new NonEmptyStringPipe()) id: string,
     @Body() dto: UpdateNewsDto
   ): Promise<void> {
     return this.updateUC.execute(id, dto);
   }
 
   @Delete(":id")
-  remove(@Param() params: DeleteNewsDto): Promise<void> {
-    return this.deleteUC.execute(params);
+  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
+  @ApiNoContentResponse({ description: "Notícia removida com sucesso" })
+  @HttpCode(204)
+  remove(@Param("id", new NonEmptyStringPipe()) id: string): Promise<void> {
+    return this.deleteUC.execute(id);
   }
 }

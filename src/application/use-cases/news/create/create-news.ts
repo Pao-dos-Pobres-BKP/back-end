@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
 import { CreateNewsDto } from "@application/dtos/news/create";
+import { NewsRepository } from "@domain/repositories/news";
 
 @Injectable()
 export class CreateNewsUseCase {
-  constructor(private readonly repo: PrismaNewsRepository) {}
+  constructor(private readonly repo: NewsRepository) {}
 
   async execute(dto: CreateNewsDto): Promise<void> {
     await this.repo.create({
