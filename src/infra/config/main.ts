@@ -24,8 +24,8 @@ async function bootstrap(): Promise<void> {
   );
 
   const config = new DocumentBuilder()
-    .setTitle("API")
-    .setDescription("API description")
+    .setTitle("Pão dos Pobres API")
+    .setDescription("API da plataforma de doação do Pão dos Pobres")
     .setVersion("1.0")
     .addSecurity("bearerAuth", {
       type: "http",
