@@ -1,0 +1,36 @@
+import { applyDecorators } from "@nestjs/common";
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiProperty
+} from "@nestjs/swagger";
+
+export class AdminDetails {
+  @ApiProperty({
+    description: "Unique identifier of the admin",
+    example: "123e4567-e89b-12d3-a456-426614174000"
+  })
+  id: string;
+
+  @ApiProperty({
+    description: "Email address of the admin",
+    example: "admin@example.com"
+  })
+  email: string;
+
+  @ApiProperty({
+    description: "Is a root admin",
+    example: true
+  })
+  root: boolean;
+}
+
+export const FindAdminByIdResponses = applyDecorators(
+  ApiOkResponse({
+    description: "Admin founded with this id",
+    type: AdminDetails
+  }),
+  ApiNotFoundResponse({
+    description: "Not found a admin with this id"
+  })
+);
