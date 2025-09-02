@@ -2,7 +2,6 @@ import { CreateDonationDTO } from "@application/dtos/donation/create";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonationRepository } from "@domain/repositories/donation";
 import { Injectable } from "@nestjs/common";
-//import { Donation } from "@domain/entities/donation";
 
 @Injectable()
 export class CreateDonationUseCase {

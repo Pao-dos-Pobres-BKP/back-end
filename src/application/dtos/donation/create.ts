@@ -1,6 +1,6 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiCreatedResponse, ApiProperty } from "@nestjs/swagger";
-//import { Transform, Type } from "class-transformer";
+import { Min } from "class-validator";
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateDonationDTO {
@@ -10,6 +10,7 @@ export class CreateDonationDTO {
   })
   @IsNumber()
   @IsNotEmpty()
+  @Min(0.01)
   amount: number;
 
   @ApiProperty({
