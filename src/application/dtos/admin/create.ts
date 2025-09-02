@@ -2,7 +2,9 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiCreatedResponse,
   ApiProperty,
-  ApiPropertyOptional
+  ApiPropertyOptional,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
 } from "@nestjs/swagger";
 import {
   IsBoolean,
@@ -36,5 +38,11 @@ export class CreateAdminDto {
 export const CreateAdminResponses = applyDecorators(
   ApiCreatedResponse({
     description: "Admin created successfully"
+  }),
+  ApiUnauthorizedResponse({
+    description: "Unauthorized - Invalid or missing token"
+  }),
+  ApiForbiddenResponse({
+    description: "Forbidden - Only admins can create other admins"
   })
 );

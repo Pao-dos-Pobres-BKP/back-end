@@ -2,7 +2,9 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiProperty
+  ApiProperty,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
 } from "@nestjs/swagger";
 
 export class AdminDetails {
@@ -32,5 +34,11 @@ export const FindAdminByIdResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Not found a admin with this id"
+  }),
+  ApiUnauthorizedResponse({
+    description: "Unauthorized - Invalid or missing token"
+  }),
+  ApiForbiddenResponse({
+    description: "Forbidden - Only admins can view admin details"
   })
 );

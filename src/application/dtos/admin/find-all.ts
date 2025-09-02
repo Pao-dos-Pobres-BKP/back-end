@@ -1,4 +1,9 @@
-import { ApiOkResponse, ApiProperty } from "@nestjs/swagger";
+import {
+  ApiOkResponse,
+  ApiProperty,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
+} from "@nestjs/swagger";
 import { PaginationEntityDTO } from "../utils/pagination";
 import { applyDecorators } from "@nestjs/common";
 import { AdminDetails } from "./find-by-id";
@@ -15,5 +20,11 @@ export const FindAllAdminsResponses = applyDecorators(
   ApiOkResponse({
     description: "All admins",
     type: FindAllAdminsResponse
+  }),
+  ApiUnauthorizedResponse({
+    description: "Unauthorized - Invalid or missing token"
+  }),
+  ApiForbiddenResponse({
+    description: "Forbidden - Only admins can view admin list"
   })
 );

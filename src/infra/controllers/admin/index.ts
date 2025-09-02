@@ -34,6 +34,8 @@ import {
   Query
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { RequireToken } from "@infra/commons/decorators/require-token";
+import { UserRole } from "@domain/entities/user-role-enum";
 
 @ApiTags("Admins")
 @Controller("admins")
@@ -47,12 +49,14 @@ export class AdminController {
   ) {}
 
   @Post()
+  @RequireToken([UserRole.ADMIN])
   @CreateAdminResponses
   async createAdmin(@Body() body: CreateAdminDto): Promise<void> {
     return await this.createAdminUseCase.execute(body);
   }
 
   @Get()
+  @RequireToken([UserRole.ADMIN])
   @FindAllAdminsResponses
   async findAllAdmins(
     @Query() query: PaginationDTO
@@ -61,6 +65,7 @@ export class AdminController {
   }
 
   @Get(":id")
+  @RequireToken([UserRole.ADMIN])
   @FindAdminByIdResponses
   async findAdminById(@Param("id") id: string): Promise<AdminDetails | void> {
     return await this.findAdminByIdUseCase.execute(id);
@@ -68,6 +73,7 @@ export class AdminController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(":id")
+  @RequireToken([UserRole.ADMIN])
   @UpdateAdminResponses
   async updateAdmin(
     @Param("id") id: string,
@@ -78,6 +84,7 @@ export class AdminController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
+  @RequireToken([UserRole.ADMIN])
   @DeleteAdminResponses
   async deleteAdmin(@Param("id") id: string): Promise<void> {
     return await this.deleteAdminUseCase.execute(id);

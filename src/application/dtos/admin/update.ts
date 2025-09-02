@@ -2,7 +2,9 @@ import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
   PartialType,
-  ApiPropertyOptional
+  ApiPropertyOptional,
+  ApiUnauthorizedResponse,
+  ApiForbiddenResponse
 } from "@nestjs/swagger";
 import { applyDecorators } from "@nestjs/common";
 import { CreateAdminDto } from "./create";
@@ -24,5 +26,11 @@ export const UpdateAdminResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Admin not found"
+  }),
+  ApiUnauthorizedResponse({
+    description: "Unauthorized - Invalid or missing token"
+  }),
+  ApiForbiddenResponse({
+    description: "Forbidden - Only admins can update other admins"
   })
 );
