@@ -32,11 +32,10 @@ export class UpdateAdminUseCase {
         });
       }
     }
-    let passwordHashed = admin.password;
 
-    if (password) {
-      passwordHashed = await this.hashService.generateHash(password);
-    }
+    const passwordHashed = password
+      ? await this.hashService.generateHash(password)
+      : admin.password;
 
     await this.adminRepository.update(id, {
       email,

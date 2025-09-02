@@ -37,8 +37,8 @@ import { ApiTags } from "@nestjs/swagger";
 import { RequireToken } from "@infra/commons/decorators/require-token";
 import { UserRole } from "@domain/entities/user-role-enum";
 
-@ApiTags("Admins")
-@Controller("admins")
+@ApiTags("Admin")
+@Controller("admin")
 export class AdminController {
   constructor(
     private readonly createAdminUseCase: CreateAdminUseCase,

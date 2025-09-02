@@ -2,37 +2,40 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiCreatedResponse,
   ApiProperty,
-  ApiPropertyOptional,
   ApiUnauthorizedResponse,
   ApiForbiddenResponse
 } from "@nestjs/swagger";
 import {
   IsBoolean,
   IsEmail,
-  IsOptional,
   IsString,
-  MaxLength,
+  IsStrongPassword,
   MinLength
 } from "class-validator";
 
 export class CreateAdminDto {
-  @ApiProperty({ example: "admin@example.com" })
+  @ApiProperty({
+    description: "Administrator email address",
+    example: "admin@example.com"
+  })
   @IsEmail()
-  email!: string;
+  email: string;
 
-  @ApiProperty({ example: "S3nhaF0rte!" })
+  @ApiProperty({
+    description: "Administrator password (minimum 8 characters)",
+    example: "Senha123"
+  })
   @IsString()
   @MinLength(8)
-  @MaxLength(72)
-  password!: string;
+  @IsStrongPassword()
+  password: string;
 
-  @ApiPropertyOptional({
-    example: false,
-    description: "Define se o administrador é root"
+  @ApiProperty({
+    description: "Defines if the administrator is root",
+    example: false
   })
-  @IsOptional()
   @IsBoolean()
-  root?: boolean;
+  root: boolean;
 }
 
 export const CreateAdminResponses = applyDecorators(
