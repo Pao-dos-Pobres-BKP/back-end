@@ -1,7 +1,9 @@
 import { EnvConfig } from "@infra/config/env";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { UserModule } from "../user";
+import { DonorModule } from "../donor";
+import { AuthModule } from "../auth";
+import { EventModule } from "../event";
 
 @Module({
   imports: [
@@ -9,7 +11,9 @@ import { UserModule } from "../user";
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
     }),
-    UserModule
+    DonorModule,
+    AuthModule,
+    EventModule
   ]
 })
 export class AppModule {}
