@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { clearDb } from "./clear-db";
-import { userMock } from "prisma/mocks/user";
+import { userDonorsMock } from "../mocks/user";
+import { eventsMock } from "../mocks/events";
 
 const prisma = new PrismaClient();
 
@@ -9,18 +10,22 @@ async function main(): Promise<void> {
 
   await clearDb();
 
-  console.log("Database cleared");
+  for (const userData of userDonorsMock) {
+    await prisma.user.create({
+      data: userData
+    });
+  }
 
-  await prisma.user.createMany({
-    data: userMock
-  });
-
-  console.log("Seed completed");
+  for (const eventsData of eventsMock) {
+    await prisma.events.create({
+      data: eventsData
+    });
+  }
 }
 
 main()
   .then(() => {
-    console.log("Seed completed");
+    console.log("Seed completed ✅");
   })
   .catch((error) => {
     console.error("Error seeding database:", error);

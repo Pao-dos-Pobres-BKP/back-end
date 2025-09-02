@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
@@ -6,38 +6,23 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+      DATABASE_URL: "postgresql://docker:docker@postgres:5432/pao-dos-pobres-database?schema=public"
       NODE_ENV: production
     ports:
       - "3000:3000"
     depends_on:
       - postgres
-    networks:
-      - app-network
-
-  frontend:
-    image: todo/image/frontend
-    ports:
-      - "80:80"
-    networks:
-      - app-network
 
   postgres:
     image: postgres:16
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: pao-dos-pobres-database
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
 
 volumes:
   postgres_data:
-
-networks:
-  app-network:
-    driver: overlay

@@ -21,21 +21,23 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "prepare": "husky",
-    "prisma:seed": "ts-node prisma/seed/index.ts",
+    "prisma:seed": "tsx prisma/seed/index.ts",
     "migrate:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed"
   },
   "prisma": {
-    "seed": "node dist/prisma/seed/index.js"
+    "seed": "tsx prisma/seed/index.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.0",
     "@prisma/client": "5.16.2",
     "@scalar/nestjs-api-reference": "^0.5.12",
+    "bcryptjs": "^3.0.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cpf-cnpj-validator": "^1.0.3",
@@ -70,6 +72,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.7.3"
   }
 }

@@ -13,6 +13,8 @@ RUN yarn build
 
 FROM node:20-alpine AS runtime
 WORKDIR /usr/src/app
+RUN apk add --no-cache openssl libc6-compat
+COPY package.json ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
