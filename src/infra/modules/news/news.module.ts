@@ -1,4 +1,3 @@
-// src/infra/modules/news/index.ts
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "@infra/modules/database";
 import { ExceptionModule } from "@infra/modules/exception";

@@ -12,27 +12,13 @@ export class UpdateNewsUseCase {
 
   async execute(id: string, dto: UpdateNewsDto): Promise<void> {
     const existing = await this.repo.findById(id);
-    if (!existing) this.exceptions.notFound({ message: "News not found" });
-    const patch: {
-      title?: string;
-      description?: string;
-      date?: Date | null;
-      location?: string | null;
-      url?: string | null;
-    } = {};
-
-    if (dto.title !== undefined) patch.title = dto.title;
-    if (dto.description !== undefined) patch.description = dto.description;
-
-    if (dto.date !== undefined) {
-      patch.date = dto.date ? new Date(dto.date) : null;
+    if (!existing) {
+      this.exceptions.notFound({ message: "News not found" });
     }
-    if (dto.location !== undefined) patch.location = dto.location ?? null;
-    if (dto.url !== undefined) patch.url = dto.url ?? null;
 
-    if (Object.keys(patch).length === 0) {
-      this.exceptions.badRequest({ message: "No fields provided to update" });
-    }
-    await this.repo.update(id, patch);
+    await this.repo.update(id, {
+      ...dto,
+      date: dto.date ? new Date(dto.date) : undefined,
+    });
   }
 }

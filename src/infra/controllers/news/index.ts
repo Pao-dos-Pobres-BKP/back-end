@@ -7,17 +7,9 @@ import {
   Param,
   Patch,
   Post,
-  Query,
-  BadRequestException,
-  PipeTransform
+  Query
 } from "@nestjs/common";
-import {
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags
-} from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 
 import { CreateNewsDto } from "@application/dtos/news/create";
 import { UpdateNewsDto } from "@application/dtos/news/update";
@@ -30,18 +22,9 @@ import { UpdateNewsUseCase } from "@application/use-cases/news/update/update-new
 import { DeleteNewsUseCase } from "@application/use-cases/news/delete/delete-news";
 
 import { PaginatedEntity } from "@domain/constants/pagination";
-import { NewsDetailsResponse } from "@domain/repositories/news";
+import { News } from "@domain/entities/news";
 
-class NonEmptyStringPipe implements PipeTransform<unknown, string> {
-  transform(value: unknown): string {
-    if (typeof value !== "string" || !value.trim()) {
-      throw new BadRequestException("Invalid id");
-    }
-    return value;
-  }
-}
-
-@ApiTags("news")
+@ApiTags("News") // <- com N maiúsculo
 @Controller("news")
 export class NewsController {
   constructor(
@@ -53,44 +36,29 @@ export class NewsController {
   ) {}
 
   @Post()
-  @ApiCreatedResponse({ description: "Notícia criada com sucesso" })
-  create(@Body() dto: CreateNewsDto): Promise<void> {
-    return this.createUC.execute(dto);
+  async create(@Body() dto: CreateNewsDto): Promise<void> {
+    return await this.createUC.execute(dto);
   }
 
   @Get()
-  @ApiOkResponse({ description: "Lista paginada de notícias" })
-  list(
-    @Query() q: FindAllNewsDto
-  ): Promise<PaginatedEntity<NewsDetailsResponse>> {
-    return this.findAllUC.execute(q);
+  async list(@Query() q: FindAllNewsDto): Promise<PaginatedEntity<News>> {
+    return await this.findAllUC.execute(q);
   }
 
   @Get(":id")
-  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
-  @ApiOkResponse({ description: "Detalhes da notícia" })
-  get(
-    @Param("id", new NonEmptyStringPipe()) id: string
-  ): Promise<NewsDetailsResponse> {
-    return this.findByIdUC.execute(id);
+  async get(@Param("id") id: string): Promise<News> {
+    return await this.findByIdUC.execute(id);
   }
 
   @Patch(":id")
-  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
-  @ApiNoContentResponse({ description: "Notícia atualizada com sucesso" })
   @HttpCode(204)
-  update(
-    @Param("id", new NonEmptyStringPipe()) id: string,
-    @Body() dto: UpdateNewsDto
-  ): Promise<void> {
-    return this.updateUC.execute(id, dto);
+  async update(@Param("id") id: string, @Body() dto: UpdateNewsDto): Promise<void> {
+    return await this.updateUC.execute(id, dto);
   }
 
   @Delete(":id")
-  @ApiParam({ name: "id", description: "ID da notícia (cuid)" })
-  @ApiNoContentResponse({ description: "Notícia removida com sucesso" })
   @HttpCode(204)
-  remove(@Param("id", new NonEmptyStringPipe()) id: string): Promise<void> {
-    return this.deleteUC.execute(id);
+  async remove(@Param("id") id: string): Promise<void> {
+    return await this.deleteUC.execute(id);
   }
 }

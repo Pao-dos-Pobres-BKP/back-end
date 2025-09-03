@@ -12,56 +12,49 @@ import { Transform } from "class-transformer";
 
 export class CreateNewsDto {
   @ApiProperty({
-    description: "Título da notícia (mínimo 3 e máximo 140 caracteres)",
-    example: "Campanha de Inverno lançada"
+    description: "News title (minimum 3 and maximum 140 characters)",
+    example: "Winter Campaign Launched"
   })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  @IsString({ message: "title deve ser uma string" })
-  @IsNotEmpty({ message: "title é obrigatório" })
-  @MinLength(3, { message: "title deve ter pelo menos 3 caracteres" })
-  @MaxLength(140, { message: "title deve ter no máximo 140 caracteres" })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(140)
   title: string;
 
   @ApiProperty({
-    description: "Descrição completa da notícia (máx. 2000 caracteres)",
-    example: "Descrição completa da notícia..."
+    description: "Full news description (maximum 2000 characters)",
+    example: "Complete description of the news..."
   })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
-  @IsString({ message: "description deve ser uma string" })
-  @MinLength(3, { message: "description deve conter pelo menos 3 caracteres" })
-  @MaxLength(2000, {
-    message: "description deve ter no máximo 2000 caracteres"
-  })
+  @IsString()
+  @MinLength(3)
+  @MaxLength(2000)
   description: string;
 
   @ApiPropertyOptional({
-    description: "Data da publicação no formato YYYY-MM-DD (date-only)",
+    description: "Publication date in YYYY-MM-DD format (date-only)",
     example: "2025-08-27"
   })
   @IsOptional()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
-    message: "date deve estar no formato YYYY-MM-DD"
-  })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
   date?: string;
 
   @ApiPropertyOptional({
-    description: "Local onde a notícia ocorreu",
+    description: "Location where the news took place",
     example: "Porto Alegre/RS"
   })
   @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsOptional()
-  @IsString({ message: "location deve ser uma string" })
-  @MaxLength(140, { message: "location deve ter no máximo 140 caracteres" })
+  @IsString()
+  @MaxLength(140)
   location?: string;
 
   @ApiPropertyOptional({
-    description: "URL externa relacionada à notícia",
-    example: "https://exemplo.com/noticia"
+    description: "External URL related to the news",
+    example: "https://example.com/news"
   })
   @IsOptional()
-  @IsUrl(
-    { require_protocol: true, require_tld: true },
-    { message: "url deve ser uma URL válida (inclua http/https)" }
-  )
+  @IsUrl({ require_protocol: true, require_tld: true })
   url?: string;
 }

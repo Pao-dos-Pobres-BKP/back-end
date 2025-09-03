@@ -4,6 +4,7 @@ import { NotFoundException } from "@nestjs/common";
 
 describe("DeleteNewsUseCase", () => {
   let repo: jest.Mocked<NewsRepository>;
+  let exceptions: { notFound: jest.Mock };
   let useCase: DeleteNewsUseCase;
 
   beforeEach(() => {
@@ -12,26 +13,28 @@ describe("DeleteNewsUseCase", () => {
       delete: jest.fn(),
       findAll: jest.fn(),
       findById: jest.fn(),
-      update: jest.fn()
+      update: jest.fn(),
+    } as unknown as jest.Mocked<NewsRepository>;
+
+    exceptions = {
+      notFound: jest.fn((msg: string) => new NotFoundException(msg)),
     };
-    useCase = new DeleteNewsUseCase(repo);
+
+    useCase = new DeleteNewsUseCase(repo, exceptions as any);
   });
 
-  it("deve deletar uma notícia existente", async () => {
+  it("should delete an existing news", async () => {
+    repo.findById.mockResolvedValueOnce({ id: "valid-id" } as any);
     repo.delete.mockResolvedValueOnce();
 
     await expect(useCase.execute("valid-id")).resolves.toBeUndefined();
     expect(repo.delete).toHaveBeenCalledWith("valid-id");
   });
 
-  it("deve lançar erro caso a notícia não seja encontrada", async () => {
-    repo.delete.mockImplementationOnce(() => {
-      throw new NotFoundException("News not found");
-    });
+  it("should throw NotFoundException if the news does not exist", async () => {
+    repo.findById.mockResolvedValueOnce(null);
 
-    await expect(useCase.execute("missing-id")).rejects.toThrow(
-      NotFoundException
-    );
-    expect(repo.delete).toHaveBeenCalledWith("missing-id");
+    await expect(useCase.execute("invalid-id")).rejects.toThrow(NotFoundException);
+    expect(exceptions.notFound).toHaveBeenCalledWith("News not found");
   });
 });
