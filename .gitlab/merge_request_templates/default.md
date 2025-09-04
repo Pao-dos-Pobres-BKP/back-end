@@ -9,7 +9,7 @@
 - [ ] Test (testes)
 
 
-## 📸 Evidencias
+## 📸 Evidências
 <!-- Adicione screenshots do resumo caso de teste passando e das chamadas HTTP -->
 
 ## ✅ Checklist
