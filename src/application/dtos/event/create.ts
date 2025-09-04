@@ -49,21 +49,21 @@ export class CreateEventDTO {
   url?: string;
 
   @ApiProperty({
-    description: "Starting date of th event, must be a valid ISO date",
-    example: "2025-12-31"
+    description: "Starting date of th event",
+    example: "2025-09-04T02:06:31.250Z"
   })
   @Type(() => Date)
   @IsNotEmpty()
-  @IsDate({ message: "Date must be a valid ISO date" })
+  @IsDate()
   dateStart: Date;
 
   @ApiProperty({
-    description: "Ending date of the event, must be a valid ISO date)",
-    example: "2025-12-31"
+    description: "Ending date of the event)",
+    example: "2025-09-04T02:06:31.250Z"
   })
   @Type(() => Date)
   @IsNotEmpty()
-  @IsDate({ message: "Date must be a valid ISO date" })
+  @IsDate()
   dateEnd: Date;
 }
 

@@ -41,7 +41,7 @@ describe("CreateEventUseCase", () => {
     });
   });
 
-  it("should throw bad request error when event date is in the past or today", async () => {
+  it("should throw bad request error when event start date is in the past or today", async () => {
     jest.spyOn(exceptionService, "badRequest");
     jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
 
@@ -54,30 +54,47 @@ describe("CreateEventUseCase", () => {
     });
 
     expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Event date must be in the future"
+      message: "Event starting date must be in the future"
+    });
+  });
+
+  it("should throw bad request error when event end date is in the before than start date", async () => {
+    jest.spyOn(exceptionService, "badRequest");
+    jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
+
+    await sut.execute({
+      title: "New Event",
+      description: "Some description",
+      location: "Some location",
+      dateStart: new Date("2100-01-02"),
+      dateEnd: new Date("2100-01-01")
+    });
+
+    expect(exceptionService.badRequest).toHaveBeenCalledWith({
+      message: "Event ending date must be after the starting date"
     });
   });
 
   it("should create an event successfully", async () => {
-    const mockEvent = createMockEvent();
-
     jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
     jest.spyOn(eventRepository, "create").mockResolvedValue(undefined);
 
-    await sut.execute({
-      title: mockEvent.title,
-      description: mockEvent.description,
-      location: mockEvent.location,
-      dateStart: mockEvent.dateStart,
-      dateEnd: mockEvent.dateEnd
-    });
+    const input = {
+      title: "New event title",
+      description: "Event description",
+      location: "Rua example, 123",
+      dateStart: new Date("2100-01-01"),
+      dateEnd: new Date("2100-01-02")
+    };
+
+    await sut.execute(input);
 
     expect(eventRepository.create).toHaveBeenCalledWith({
-      title: mockEvent.title,
-      description: mockEvent.description,
-      location: mockEvent.location,
-      eventStartingDate: mockEvent.dateStart,
-      eventEndingDate: mockEvent.dateEnd
+      title: input.title,
+      description: input.description,
+      location: input.location,
+      dateStart: input.dateStart,
+      dateEnd: input.dateEnd
     });
   });
 });
