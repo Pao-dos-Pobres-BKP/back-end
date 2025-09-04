@@ -3,7 +3,7 @@ import { UpdateEventUseCase } from "./update-event";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { EventRepository } from "@domain/repositories/event";
-import { createMockEventWithDetails } from "@test/builders/event";
+import { createMockEvent } from "@test/builders/event";
 
 describe("UpdateEventUseCase", () => {
   let sut: UpdateEventUseCase;
@@ -19,10 +19,13 @@ describe("UpdateEventUseCase", () => {
   it("should throw an error when not found an event with that id", async () => {
     jest.spyOn(exceptionService, "notFound");
     jest.spyOn(eventRepository, "update");
+    jest.spyOn(eventRepository, "findById").mockResolvedValue(null);
 
     await sut.execute("example-event-id", {
       title: "Updated Event"
     });
+
+    expect(eventRepository.findById).toHaveBeenCalledWith("example-event-id");
 
     expect(exceptionService.notFound).toHaveBeenCalledWith({
       message: "Event not found"
@@ -32,22 +35,23 @@ describe("UpdateEventUseCase", () => {
   });
 
   it("should update an event", async () => {
-    const eventWithDetailsMock = createMockEventWithDetails();
+    const eventMock = createMockEvent();
 
     jest.spyOn(eventRepository, "update");
+    jest.spyOn(eventRepository, "findById").mockResolvedValue(eventMock);
 
     const updateData = {
       title: "Updated Event Title",
       description: "Updated Description",
-      dateStart: new Date("2025-01-01"),
-      dateEnd: new Date("2025-01-02"),
+      dateStart: new Date("2100-01-02"),
+      dateEnd: new Date("2100-01-03"),
       location: "Updated Location"
     };
 
-    await sut.execute(eventWithDetailsMock.id, updateData);
+    await sut.execute(eventMock.id, updateData);
 
     expect(eventRepository.update).toHaveBeenCalledWith(
-      eventWithDetailsMock.id,
+      eventMock.id,
       updateData
     );
   });

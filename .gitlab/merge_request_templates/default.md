@@ -1,4 +1,4 @@
-## �� Descrição das mudanças
+## 📝 Descrição das mudanças
 <!-- Descreva brevemente o que este MR resolve ou implementa -->
 
 ## 🎯 Tipo de Mudança
@@ -21,5 +21,5 @@
 - [ ] Código foi testado localmente
 
 
-## 📝 Notas adicionais
+## 📌 Notas adicionais
 <!-- Qualquer informação adicional que os revisores 

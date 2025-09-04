@@ -93,7 +93,8 @@ describe("CreateAdminUseCase", () => {
 
     await sut.execute({
       email,
-      password
+      password,
+      root: undefined
     });
 
     expect(adminRepository.create).toHaveBeenCalledWith({
