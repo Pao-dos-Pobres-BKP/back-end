@@ -130,15 +130,15 @@ model News {
 }
 
 model Events {
-  id          String    @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String
-  dateStart   DateTime  @db.Date @map("date_start")
-  dateEnd     DateTime  @db.Date @map("date_end")
+  dateStart   DateTime @map("date_start")
+  dateEnd     DateTime @map("date_end")
   location    String
   url         String?
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("events")
 }
