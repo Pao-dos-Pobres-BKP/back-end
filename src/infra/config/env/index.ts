@@ -1,7 +1,6 @@
 import { plainToInstance } from "class-transformer";
 import {
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
   validateSync
@@ -13,7 +12,6 @@ class EnvironmentVariables {
   DATABASE_URL: string;
 
   @IsOptional()
-  @IsNumber()
   @IsNotEmpty()
   PORT: number;
 
