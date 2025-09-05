@@ -18,18 +18,10 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@application/*": [
-        "./src/application/*"
-      ],
-      "@domain/*": [
-        "./src/domain/*"
-      ],
-      "@infra/*": [
-        "./src/infra/*"
-      ],
-      "@test/*": [
-        "./test/*"
-      ]
+      "@application/*": ["./src/application/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@infra/*": ["./src/infra/*"],
+      "@test/*": ["./test/*"]
     }
   }
 }
