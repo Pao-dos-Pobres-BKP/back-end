@@ -24,7 +24,7 @@ import { DeleteNewsUseCase } from "@application/use-cases/news/delete/delete-new
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { News } from "@domain/entities/news";
 
-@ApiTags("News") // <- com N maiúsculo
+@ApiTags("News")
 @Controller("news")
 export class NewsController {
   constructor(

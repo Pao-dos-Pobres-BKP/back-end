@@ -1,38 +1,40 @@
 import { CreateNewsUseCase } from "./create-news";
-import { NewsRepository } from "@domain/repositories/news";
 import { CreateNewsDto } from "@application/dtos/news/create";
+import { NewsRepositoryStub } from "@test/stubs/repositories/news";
 
 describe("CreateNewsUseCase", () => {
-  let repo: jest.Mocked<NewsRepository>;
-  let useCase: CreateNewsUseCase;
+  let sut: CreateNewsUseCase;
+  let newsRepository: NewsRepositoryStub;
 
   beforeEach(() => {
-    repo = {
-      create: jest.fn(),
-      findById: jest.fn(),
-      findAll: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn()
-    } as unknown as jest.Mocked<NewsRepository>;
+    newsRepository = new NewsRepositoryStub();
+    sut = new CreateNewsUseCase(newsRepository);
 
-    useCase = new CreateNewsUseCase(repo);
+    jest.spyOn(newsRepository, "create").mockResolvedValue();
+    jest.spyOn(newsRepository, "findById").mockResolvedValue(null);
+    jest.spyOn(newsRepository, "findAll").mockResolvedValue({
+      data: [],
+      page: 1,
+      lastPage: 1,
+      total: 0
+    });
+
+    jest.spyOn(newsRepository, "update").mockResolvedValue();
+    jest.spyOn(newsRepository, "delete").mockResolvedValue();
   });
 
   it("should create a news item with all fields", async () => {
     const dto: CreateNewsDto = {
       title: "Winter Campaign Launched",
       description: "Complete description of the news...",
-      date: "2025-08-27",
+      date: new Date("2025-08-27"),
       location: "Porto Alegre/RS",
       url: "https://example.com/news"
     };
 
-    await useCase.execute(dto);
+    await sut.execute(dto);
 
-    expect(repo.create).toHaveBeenCalledWith({
-      ...dto,
-      date: new Date("2025-08-27")
-    });
+    expect(newsRepository.create).toHaveBeenCalledWith(dto);
   });
 
   it("should create a news item with optional fields as null when not provided", async () => {
@@ -41,9 +43,9 @@ describe("CreateNewsUseCase", () => {
       description: "Description only"
     };
 
-    await useCase.execute(dto);
+    await sut.execute(dto);
 
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(newsRepository.create).toHaveBeenCalledWith({
       title: dto.title,
       description: dto.description,
       date: null,
@@ -61,9 +63,9 @@ describe("CreateNewsUseCase", () => {
       url: undefined
     };
 
-    await useCase.execute(dto);
+    await sut.execute(dto);
 
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(newsRepository.create).toHaveBeenCalledWith({
       title: dto.title,
       description: dto.description,
       date: null,
@@ -78,9 +80,11 @@ describe("CreateNewsUseCase", () => {
       description: "Some description"
     };
 
-    repo.create.mockRejectedValueOnce(new Error("DB error"));
+    jest
+      .spyOn(newsRepository, "create")
+      .mockRejectedValueOnce(new Error("DB error"));
 
-    await expect(useCase.execute(dto)).rejects.toThrow("DB error");
+    await expect(sut.execute(dto)).rejects.toThrow("DB error");
   });
 
   it("should trim strings before saving", async () => {
@@ -90,9 +94,9 @@ describe("CreateNewsUseCase", () => {
       location: "   Porto Alegre   "
     };
 
-    await useCase.execute(dto);
+    await sut.execute(dto);
 
-    expect(repo.create).toHaveBeenCalledWith({
+    expect(newsRepository.create).toHaveBeenCalledWith({
       title: "   Title with spaces   ",
       description: "   Description with spaces   ",
       date: null,

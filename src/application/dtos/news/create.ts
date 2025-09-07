@@ -5,8 +5,8 @@ import {
   IsUrl,
   MaxLength,
   MinLength,
-  Matches,
-  IsNotEmpty
+  IsNotEmpty,
+  IsDate
 } from "class-validator";
 import { Transform } from "class-transformer";
 
@@ -37,8 +37,11 @@ export class CreateNewsDto {
     example: "2025-08-27"
   })
   @IsOptional()
-  @Matches(/^\d{4}-\d{2}-\d{2}$/)
-  date?: string;
+  @IsDate()
+  @Transform(({ value }) => (value ? new Date(value) : value), {
+    toClassOnly: true
+  })
+  date?: Date;
 
   @ApiPropertyOptional({
     description: "Location where the news took place",

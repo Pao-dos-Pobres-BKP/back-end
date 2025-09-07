@@ -1,23 +1,21 @@
 import { FindNewsByIdUseCase } from "./find-news-by-id";
-import { makeNewsRepositoryStub } from "@test/stubs/repositories/news";
+import { NewsRepositoryStub } from "@test/stubs/repositories/news";
+import { NewsRepository } from "@domain/repositories/news";
 import { NotFoundException } from "@nestjs/common";
 import { News } from "@domain/entities/news";
-import { ExceptionsAdapter, ExceptionParams } from "@domain/adapters/exception";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 
 describe("FindNewsByIdUseCase", () => {
-  let repo: ReturnType<typeof makeNewsRepositoryStub>;
+  let repo: NewsRepository;
+  let exceptions: ExceptionsServiceStub;
   let useCase: FindNewsByIdUseCase;
 
   beforeEach(() => {
-    repo = makeNewsRepositoryStub();
+    repo = new NewsRepositoryStub();
+    exceptions = new ExceptionsServiceStub();
+    useCase = new FindNewsByIdUseCase(repo, exceptions);
 
-    const exceptions: Partial<ExceptionsAdapter> = {
-      notFound: (params?: ExceptionParams) => {
-        throw new NotFoundException(params?.message);
-      }
-    };
-
-    useCase = new FindNewsByIdUseCase(repo, exceptions as ExceptionsAdapter);
+    jest.spyOn(repo, "findById");
   });
 
   it("should return news when a valid id is provided", async () => {
@@ -32,7 +30,7 @@ describe("FindNewsByIdUseCase", () => {
       updatedAt: new Date()
     };
 
-    repo.findById.mockResolvedValueOnce(mockNews);
+    (repo.findById as jest.Mock).mockResolvedValueOnce(mockNews);
 
     const result = await useCase.execute("1");
 
@@ -41,10 +39,13 @@ describe("FindNewsByIdUseCase", () => {
   });
 
   it("should throw NotFoundException if the news does not exist", async () => {
-    repo.findById.mockResolvedValueOnce(null);
+    (repo.findById as jest.Mock).mockResolvedValueOnce(null);
 
     await expect(useCase.execute("invalid-id")).rejects.toThrow(
       NotFoundException
     );
+    expect(exceptions.notFound).toHaveBeenCalledWith({
+      message: "News not found"
+    });
   });
 });

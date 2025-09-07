@@ -1,16 +1,19 @@
 import { FindAllNewsUseCase } from "./find-all-news";
-import { makeNewsRepositoryStub } from "@test/stubs/repositories/news";
+import { NewsRepository } from "@domain/repositories/news";
+import { NewsRepositoryStub } from "@test/stubs/repositories/news";
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { News } from "@domain/entities/news";
 import { FindAllNewsDto } from "@application/dtos/news/find-all";
 
 describe("FindAllNewsUseCase", () => {
-  let repo: ReturnType<typeof makeNewsRepositoryStub>;
+  let repo: NewsRepository;
   let useCase: FindAllNewsUseCase;
 
   beforeEach(() => {
-    repo = makeNewsRepositoryStub();
+    repo = new NewsRepositoryStub();
     useCase = new FindAllNewsUseCase(repo);
+
+    jest.spyOn(repo, "findAll");
   });
 
   it("should return paginated news list", async () => {
@@ -32,7 +35,7 @@ describe("FindAllNewsUseCase", () => {
       total: 1
     };
 
-    repo.findAll.mockResolvedValueOnce(mockResult);
+    (repo.findAll as jest.Mock).mockResolvedValueOnce(mockResult);
 
     const result = await useCase.execute({ page: 1, pageSize: 10 });
 
@@ -48,7 +51,7 @@ describe("FindAllNewsUseCase", () => {
       total: 0
     };
 
-    repo.findAll.mockResolvedValueOnce(mockResult);
+    (repo.findAll as jest.Mock).mockResolvedValueOnce(mockResult);
 
     const result = await useCase.execute({} as unknown as FindAllNewsDto);
 

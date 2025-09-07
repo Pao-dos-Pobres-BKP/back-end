@@ -1,20 +1,25 @@
-import {
-  NewsRepository,
-  CreateNewsParams,
-  UpdateNewsParams
-} from "@domain/repositories/news";
+import { NewsRepository } from "@domain/repositories/news";
 import { News } from "@domain/entities/news";
-import {
-  PaginationParams,
-  PaginatedEntity
-} from "@domain/constants/pagination";
+import { PaginatedEntity } from "@domain/constants/pagination";
 
-export const makeNewsRepositoryStub = (): jest.Mocked<NewsRepository> => {
-  return {
-    findById: jest.fn<Promise<News | null>, [string]>(),
-    findAll: jest.fn<Promise<PaginatedEntity<News>>, [PaginationParams]>(), // 🔥 trocado para News
-    create: jest.fn<Promise<void>, [CreateNewsParams]>(),
-    update: jest.fn<Promise<void>, [string, UpdateNewsParams]>(),
-    delete: jest.fn<Promise<void>, [string]>()
-  } as unknown as jest.Mocked<NewsRepository>;
-};
+export class NewsRepositoryStub implements NewsRepository {
+  async findById(): Promise<News | null> {
+    return;
+  }
+
+  async findAll(): Promise<PaginatedEntity<News>> {
+    return;
+  }
+
+  async create(): Promise<void> {
+    return;
+  }
+
+  async update(): Promise<void> {
+    return;
+  }
+
+  async delete(): Promise<void> {
+    return;
+  }
+}
