@@ -18,7 +18,7 @@ export class UpdateNewsUseCase {
 
     await this.repo.update(id, {
       ...dto,
-      date: dto.date ? new Date(dto.date) : undefined,
+      date: dto.date ? new Date(dto.date) : undefined
     });
   }
 }

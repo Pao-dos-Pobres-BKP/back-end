@@ -2,6 +2,7 @@ import { FindAllNewsUseCase } from "./find-all-news";
 import { makeNewsRepositoryStub } from "@test/stubs/repositories/news";
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { News } from "@domain/entities/news";
+import { FindAllNewsDto } from "@application/dtos/news/find-all";
 
 describe("FindAllNewsUseCase", () => {
   let repo: ReturnType<typeof makeNewsRepositoryStub>;
@@ -23,12 +24,12 @@ describe("FindAllNewsUseCase", () => {
           location: "Test Location",
           url: "https://example.com",
           createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+          updatedAt: new Date()
+        }
       ],
       page: 1,
       lastPage: 1,
-      total: 1,
+      total: 1
     };
 
     repo.findAll.mockResolvedValueOnce(mockResult);
@@ -44,12 +45,12 @@ describe("FindAllNewsUseCase", () => {
       data: [],
       page: 1,
       lastPage: 0,
-      total: 0,
+      total: 0
     };
 
     repo.findAll.mockResolvedValueOnce(mockResult);
 
-    const result = await useCase.execute({} as any);
+    const result = await useCase.execute({} as unknown as FindAllNewsDto);
 
     expect(repo.findAll).toHaveBeenCalledWith({ page: 1, pageSize: 10 });
     expect(result).toEqual(mockResult);

@@ -52,7 +52,10 @@ export class NewsController {
 
   @Patch(":id")
   @HttpCode(204)
-  async update(@Param("id") id: string, @Body() dto: UpdateNewsDto): Promise<void> {
+  async update(
+    @Param("id") id: string,
+    @Body() dto: UpdateNewsDto
+  ): Promise<void> {
     return await this.updateUC.execute(id, dto);
   }
 

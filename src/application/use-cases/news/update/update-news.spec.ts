@@ -2,6 +2,7 @@ import { UpdateNewsUseCase } from "./update-news";
 import { makeNewsRepositoryStub } from "@test/stubs/repositories/news";
 import { UpdateNewsDto } from "@application/dtos/news/update";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
+import { News } from "@domain/entities/news";
 
 describe("UpdateNewsUseCase", () => {
   let repo: ReturnType<typeof makeNewsRepositoryStub>;
@@ -14,7 +15,11 @@ describe("UpdateNewsUseCase", () => {
     exceptions = {
       notFound: jest.fn(),
       badRequest: jest.fn(),
-    } as unknown as jest.Mocked<ExceptionsAdapter>;
+      conflict: jest.fn(),
+      internalServerError: jest.fn(),
+      forbidden: jest.fn(),
+      unauthorized: jest.fn()
+    } as jest.Mocked<ExceptionsAdapter>;
 
     useCase = new UpdateNewsUseCase(repo, exceptions);
   });
@@ -25,10 +30,12 @@ describe("UpdateNewsUseCase", () => {
       description: "Updated description",
       date: "2025-09-05",
       location: "New Location",
-      url: "https://updated.com",
+      url: "https://updated.com"
     };
 
-    repo.findById.mockResolvedValueOnce({ id: "news-id-123" } as any);
+    repo.findById.mockResolvedValueOnce({
+      id: "news-id-123"
+    } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
@@ -37,19 +44,21 @@ describe("UpdateNewsUseCase", () => {
       description: dto.description,
       date: new Date(dto.date),
       location: dto.location,
-      url: dto.url,
+      url: dto.url
     });
   });
 
   it("should call exceptions.badRequest when no fields provided", async () => {
     const dto: UpdateNewsDto = {};
 
-    repo.findById.mockResolvedValueOnce({ id: "news-id-123" } as any);
+    repo.findById.mockResolvedValueOnce({
+      id: "news-id-123"
+    } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
     expect(exceptions.badRequest).toHaveBeenCalledWith({
-      message: "No fields provided to update",
+      message: "No fields provided to update"
     });
     expect(repo.update).not.toHaveBeenCalled();
   });
@@ -62,7 +71,7 @@ describe("UpdateNewsUseCase", () => {
     await useCase.execute("non-existing-id", dto);
 
     expect(exceptions.notFound).toHaveBeenCalledWith({
-      message: "News not found",
+      message: "News not found"
     });
     expect(repo.update).not.toHaveBeenCalled();
   });
