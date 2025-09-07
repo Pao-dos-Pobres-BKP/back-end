@@ -22,4 +22,4 @@
 
 
 ## 📌 Notas adicionais
-<!-- Qualquer informação adicional que os revisores 
+<!-- Qualquer informação adicional para os revisores -->
