@@ -7,7 +7,7 @@ import { ExceptionsAdapter } from "@domain/adapters/exception";
 export class FindNewsByIdUseCase {
   constructor(
     private readonly repo: NewsRepository,
-    private readonly exceptions: ExceptionsAdapter // <-- injeta a porta
+    private readonly exceptions: ExceptionsAdapter 
   ) {}
 
   async execute(id: string): Promise<News> {
