@@ -1,5 +1,3 @@
-import { UserRole } from "../../src/domain/entities/user-role-enum";
-import { Gender } from "../../src/domain/entities/gender-enum";
 import { faker } from "@faker-js/faker";
 import { Prisma } from "@prisma/client";
 
@@ -20,13 +18,13 @@ export const userDonorsMock: Prisma.UserCreateInput[] = Array.from({
   length: 10
 }).map((_, index) => ({
   email: faker.internet.email(),
-  password: "Senha@123",
-  role: UserRole.DONOR,
+  password: "$2b$10$Hnw5mA3mriUvAt44BdBjIOcxNHt6jEaHN6lRAZPdLnns2nBVtLsqq", // Senha@123,
+  role: "DONOR",
   donor: {
     create: {
       fullName: faker.person.fullName(),
       birthDate: faker.date.birthdate(),
-      gender: faker.helpers.arrayElement(Object.values(Gender)),
+      gender: "MALE",
       phone: faker.phone.number(),
       cpf: validCPFs[index]
     }
@@ -35,8 +33,8 @@ export const userDonorsMock: Prisma.UserCreateInput[] = Array.from({
 
 userDonorsMock.push({
   email: "admin@example.com",
-  password: "Senha@123",
-  role: UserRole.ADMIN,
+  password: "$2b$10$Hnw5mA3mriUvAt44BdBjIOcxNHt6jEaHN6lRAZPdLnns2nBVtLsqq", // Senha@123,
+  role: "ADMIN",
   admin: {
     create: {
       root: true

@@ -1,8 +1,10 @@
 import { EnvConfig } from "@infra/config/env";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { DonorModule } from "@infra/modules/donor";
-import { NewsModule } from "@infra/modules/news/index";
+import { DonorModule } from "../donor";
+import { AuthModule } from "../auth";
+import { EventModule } from "../event";
+import { AdminModule } from "../admin";
 
 @Module({
   imports: [
@@ -11,7 +13,9 @@ import { NewsModule } from "@infra/modules/news/index";
       load: [() => EnvConfig.validate(process.env)]
     }),
     DonorModule,
-    NewsModule
+    AuthModule,
+    EventModule,
+    AdminModule
   ]
 })
 export class AppModule {}

@@ -1,18 +1,34 @@
-import { Module } from "@nestjs/common";
-import { PrismaService } from "@infra/config/prisma";
-
+import { AdminRepository } from "@domain/repositories/admin";
 import { DonorRepository } from "@domain/repositories/donor";
+import { EventRepository } from "@domain/repositories/event";
+import { UserRepository } from "@domain/repositories/user";
+import { PrismaService } from "@infra/config/prisma";
+import { PrismaAdminRepository } from "@infra/repositories/prisma/admin";
 import { PrismaDonorRepository } from "@infra/repositories/prisma/donor";
-
-import { NewsRepository } from "@domain/repositories/news";
-import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
+import { PrismaEventRepository } from "@infra/repositories/prisma/event";
+import { PrismaUserRepository } from "@infra/repositories/prisma/user";
+import { Module } from "@nestjs/common";
 
 @Module({
   providers: [
     PrismaService,
-    { provide: DonorRepository, useClass: PrismaDonorRepository },
-    { provide: NewsRepository, useClass: PrismaNewsRepository }
+    {
+      useClass: PrismaAdminRepository,
+      provide: AdminRepository
+    },
+    {
+      useClass: PrismaDonorRepository,
+      provide: DonorRepository
+    },
+    {
+      useClass: PrismaUserRepository,
+      provide: UserRepository
+    },
+    {
+      useClass: PrismaEventRepository,
+      provide: EventRepository
+    }
   ],
-  exports: [DonorRepository, NewsRepository]
+  exports: [AdminRepository, DonorRepository, UserRepository, EventRepository]
 })
 export class DatabaseModule {}
