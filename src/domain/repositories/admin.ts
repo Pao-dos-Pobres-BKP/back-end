@@ -7,6 +7,7 @@ import { Admin, User } from "@prisma/client";
 
 export interface CreateAdminParams {
   email: string;
+  fullName: string;
   password: string;
   role: UserRole;
   root: boolean;

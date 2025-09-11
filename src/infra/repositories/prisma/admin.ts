@@ -33,6 +33,7 @@ export class PrismaAdminRepository implements AdminRepository {
 
     return {
       id: admin.id,
+      fullName: admin.user.fullName,
       email: admin.user.email,
       password: admin.user.password,
       role: admin.user.role,
@@ -133,12 +134,14 @@ export class PrismaAdminRepository implements AdminRepository {
 
   async create({
     email,
+    fullName,
     password,
     role,
     root
   }: CreateAdminParams): Promise<void> {
     await this.prisma.user.create({
       data: {
+        fullName,
         email,
         password,
         role,
