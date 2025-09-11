@@ -15,6 +15,12 @@ export class AdminDetails {
   id: string;
 
   @ApiProperty({
+    description: "Full name of the admin",
+    example: "John Doe"
+  })
+  fullName: string;
+
+  @ApiProperty({
     description: "Email address of the admin",
     example: "admin@example.com"
   })

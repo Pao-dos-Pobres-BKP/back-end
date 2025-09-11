@@ -58,7 +58,8 @@ export class PrismaAdminRepository implements AdminRepository {
         include: {
           user: {
             select: {
-              email: true
+              email: true,
+              fullName: true
             }
           }
         },
@@ -80,6 +81,7 @@ export class PrismaAdminRepository implements AdminRepository {
     return {
       data: admins.map((admin) => ({
         id: admin.id,
+        fullName: admin.user.fullName,
         email: admin.user.email,
         root: admin.root
       })),

@@ -15,12 +15,14 @@ export interface CreateAdminParams {
 
 export interface UpdateAdminParams {
   email?: string;
+  fullName?: string;
   password?: string;
   root?: boolean;
 }
 
 export interface AdminDetailsResponse {
   id: string;
+  fullName: string;
   email: string;
   root: boolean;
 }
