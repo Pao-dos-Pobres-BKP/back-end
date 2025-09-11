@@ -4,6 +4,7 @@ import { faker } from "@faker-js/faker";
 
 export const createMockUser = (override: Partial<User> = {}): User => ({
   id: faker.string.uuid(),
+  fullName: faker.person.fullName(),
   email: faker.internet.email(),
   password: faker.lorem.word({ length: 10 }),
   role: faker.helpers.arrayElement(Object.values(UserRole)),

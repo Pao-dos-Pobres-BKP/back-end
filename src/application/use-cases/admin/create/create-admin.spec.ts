@@ -35,6 +35,7 @@ describe("CreateAdminUseCase", () => {
 
     await sut.execute({
       email,
+      fullName: "Test Admin",
       password: "StrongPass@123",
       root: false
     });
@@ -63,6 +64,7 @@ describe("CreateAdminUseCase", () => {
 
     await sut.execute({
       email,
+      fullName: "Test Admin 2",
       password,
       root
     });
@@ -71,6 +73,7 @@ describe("CreateAdminUseCase", () => {
 
     expect(adminRepository.create).toHaveBeenCalledWith({
       email,
+      fullName: "Test Admin 2",
       password: hashedPasswordMock,
       role: UserRole.ADMIN,
       root
@@ -93,12 +96,14 @@ describe("CreateAdminUseCase", () => {
 
     await sut.execute({
       email,
+      fullName: "Test Admin 3",
       password,
       root: undefined
     });
 
     expect(adminRepository.create).toHaveBeenCalledWith({
       email,
+      fullName: "Test Admin 3",
       password: hashedPasswordMock,
       role: UserRole.ADMIN,
       root: undefined // será tratado pelo Prisma com default false
