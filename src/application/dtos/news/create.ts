@@ -8,28 +8,25 @@ import {
   IsNotEmpty,
   IsDate
 } from "class-validator";
-import { Transform } from "class-transformer";
 
 export class CreateNewsDto {
   @ApiProperty({
-    description: "News title (minimum 3 and maximum 140 characters)",
+    description: "News title (minimum 3 and maximum 128 characters)",
     example: "Winter Campaign Launched"
   })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsString()
   @IsNotEmpty()
   @MinLength(3)
-  @MaxLength(140)
+  @MaxLength(128)
   title: string;
 
   @ApiProperty({
-    description: "Full news description (maximum 2000 characters)",
+    description: "Full news description (maximum 2048 characters)",
     example: "Complete description of the news..."
   })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsString()
   @MinLength(3)
-  @MaxLength(2000)
+  @MaxLength(2048)
   description: string;
 
   @ApiPropertyOptional({
@@ -38,16 +35,12 @@ export class CreateNewsDto {
   })
   @IsOptional()
   @IsDate()
-  @Transform(({ value }) => (value ? new Date(value) : value), {
-    toClassOnly: true
-  })
   date?: Date;
 
   @ApiPropertyOptional({
     description: "Location where the news took place",
     example: "Porto Alegre/RS"
   })
-  @Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
   @IsOptional()
   @IsString()
   @MaxLength(140)
