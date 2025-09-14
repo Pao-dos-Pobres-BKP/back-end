@@ -43,7 +43,7 @@ export class CreateNewsDto {
   })
   @IsOptional()
   @IsString()
-  @MaxLength(140)
+  @MaxLength(120)
   location?: string;
 
   @ApiPropertyOptional({
