@@ -9,7 +9,7 @@ export class DeleteDonationUseCase {
     private readonly exceptionService: ExceptionsAdapter
   ) {}
 
-  async execute(donationId: string, donorId: string): Promise<void> {
+  async execute(donationId: string, donorId?: string): Promise<void> {
     const donation = await this.donationRepository.findById(donationId);
 
     if (!donation) {
@@ -24,14 +24,22 @@ export class DeleteDonationUseCase {
       return;
     }
 
-    if (!donation.periodicity) {
-      this.exceptionService.badRequest({
+    if (donation.periodicity) {
+      const recurringDonations = await this.donationRepository.findAllByDonor(
+        donorId,
+        { page: 1, pageSize: 1000 }
+      );
+      const toDelete = recurringDonations.data.filter(
+        (d) => d.periodicity === donation.periodicity
+      );
+
+      await Promise.all(
+        toDelete.map((d) => this.donationRepository.delete(d.id))
+      );
+    } else {
+      return this.exceptionService.badRequest({
         message: "Donation is not recurring"
       });
-      return;
     }
-
-    // Mark as canceled (soft delete)
-    await this.donationRepository.update(donationId, { status: "canceled" });
   }
 }

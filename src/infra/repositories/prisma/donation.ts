@@ -51,7 +51,6 @@ export class PrismaDonationRepository implements DonationRepository {
       data: {
         amount: params.amount,
         periodicity: params.periodicity,
-        impactArea: params.impactArea,
         campaignId: params.campaignId,
         donorId: params.donorId
       }

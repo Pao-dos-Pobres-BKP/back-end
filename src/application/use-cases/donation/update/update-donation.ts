@@ -12,8 +12,8 @@ export class UpdateDonationUseCase {
 
   async execute(
     id: string,
-    donorId: string,
-    params: UpdateDonationDTO
+    params: UpdateDonationDTO,
+    donorId?: string
   ): Promise<void> {
     const donation = await this.donationRepository.findById(id);
 

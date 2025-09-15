@@ -50,7 +50,7 @@ export class DonationController {
   @CreateDonationResponses
   async createDonation(
     @Body() body: CreateDonationDTO,
-    @Query("donorId") donorId: string
+    @Query("donorId") donorId?: string
   ): Promise<void> {
     return await this.createDonationUseCase.execute(body, donorId);
   }
@@ -58,7 +58,7 @@ export class DonationController {
   @Get()
   @FindAllDonationsResponses
   async findAllDonations(
-    @Query() query: PaginationDTO & { donorId: string }
+    @Query() query: PaginationDTO & { donorId?: string }
   ): Promise<FindAllDonationsResponse> {
     return await this.findAllDonationsUseCase.execute(query);
   }
@@ -67,7 +67,7 @@ export class DonationController {
   @FindDonationByIdResponses
   async findDonationById(
     @Param("id") id: string,
-    @Query("donorId") donorId: string
+    @Query("donorId") donorId?: string
   ): Promise<DonationDetails | void> {
     return await this.findDonationByIdUseCase.execute(id, donorId);
   }
@@ -77,10 +77,10 @@ export class DonationController {
   @UpdateDonationResponses
   async updateDonation(
     @Param("id") id: string,
-    @Query("donorId") donorId: string,
-    @Body() body: UpdateDonationDTO
+    @Body() body: UpdateDonationDTO,
+    @Query("donorId") donorId?: string
   ): Promise<void> {
-    return await this.updateDonationUseCase.execute(id, donorId, body);
+    return await this.updateDonationUseCase.execute(id, body, donorId);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -88,7 +88,7 @@ export class DonationController {
   @DeleteDonationResponses
   async deleteDonation(
     @Param("id") id: string,
-    @Query("donorId") donorId: string
+    @Query("donorId") donorId?: string
   ): Promise<void> {
     return await this.deleteDonationUseCase.execute(id, donorId);
   }

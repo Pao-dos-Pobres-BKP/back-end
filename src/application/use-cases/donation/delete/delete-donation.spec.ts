@@ -1,6 +1,9 @@
 import { DeleteDonationUseCase } from "./delete-donation";
 import { DonationRepository } from "@domain/repositories/donation";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
+import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
+import { Periodicity } from "@domain/entities/periodicity-enum";
 
 describe("DeleteDonationUseCase", () => {
   let useCase: DeleteDonationUseCase;
@@ -14,7 +17,7 @@ describe("DeleteDonationUseCase", () => {
       findAllByDonor: jest.fn(),
       create: jest.fn(),
       delete: jest.fn()
-    } as DonationRepository;
+    } as DonationRepositoryStub;
 
     exceptionService = {
       notFound: jest.fn(),
@@ -23,23 +26,34 @@ describe("DeleteDonationUseCase", () => {
       conflict: jest.fn(),
       internalServerError: jest.fn(),
       unauthorized: jest.fn()
-    } as ExceptionsAdapter;
+    } as ExceptionsServiceStub;
 
     useCase = new DeleteDonationUseCase(donationRepository, exceptionService);
   });
 
-  it("should mark donation as canceled if it is recurring and belongs to donor", async () => {
+  it("should delete donation if it is recurring and belongs to donor", async () => {
     (donationRepository.findById as jest.Mock).mockResolvedValue({
       id: "donation-id",
       donorId: "donor-id",
-      periodicity: "monthly"
+      periodicity: Periodicity.MONTHLY
+    });
+
+    (donationRepository.findAllByDonor as jest.Mock).mockResolvedValue({
+      data: [
+        {
+          id: "donation-id",
+          donorId: "donor-id",
+          periodicity: Periodicity.MONTHLY
+        }
+      ],
+      total: 1,
+      page: 1,
+      pageSize: 1000
     });
 
     await useCase.execute("donation-id", "donor-id");
 
-    expect(donationRepository.update).toHaveBeenCalledWith("donation-id", {
-      status: "canceled"
-    });
+    expect(donationRepository.delete).toHaveBeenCalledWith("donation-id");
   });
 
   it("should return not found if donation does not exist", async () => {
@@ -57,7 +71,7 @@ describe("DeleteDonationUseCase", () => {
     (donationRepository.findById as jest.Mock).mockResolvedValue({
       id: "donation-id",
       donorId: "other-donor-id",
-      periodicity: "monthly"
+      periodicity: Periodicity.MONTHLY
     });
 
     await useCase.execute("donation-id", "donor-id");

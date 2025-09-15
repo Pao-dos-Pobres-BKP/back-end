@@ -29,4 +29,9 @@ describe("FindAllDonationsUseCase", () => {
       pageSize
     });
   });
+  it("should throw if donorId is not provided", async () => {
+    await expect(sut.execute({ page: 1, pageSize: 10 })).rejects.toThrow(
+      "Only authenticated donors can view donations."
+    );
+  });
 });

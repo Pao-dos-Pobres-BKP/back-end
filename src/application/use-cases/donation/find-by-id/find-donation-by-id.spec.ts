@@ -1,6 +1,8 @@
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonationRepository } from "@domain/repositories/donation";
 import { FindDonationByIdUseCase } from "./find-donation-by-id";
+import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 
 describe("FindDonationByIdUseCase", () => {
   let sut: FindDonationByIdUseCase;
@@ -14,7 +16,7 @@ describe("FindDonationByIdUseCase", () => {
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn()
-    } as DonationRepository;
+    } as DonationRepositoryStub;
 
     exceptionService = {
       notFound: jest.fn(),
@@ -23,7 +25,7 @@ describe("FindDonationByIdUseCase", () => {
       conflict: jest.fn(),
       internalServerError: jest.fn(),
       unauthorized: jest.fn()
-    } as ExceptionsAdapter;
+    } as ExceptionsServiceStub;
 
     sut = new FindDonationByIdUseCase(donationRepository, exceptionService);
   });
@@ -51,16 +53,27 @@ describe("FindDonationByIdUseCase", () => {
     });
   });
 
+  it("should throw forbidden error when donorId is not provided", async () => {
+    (donationRepository.findById as jest.Mock).mockResolvedValue({
+      id: "donation-id",
+      donorId: "donor-id"
+    });
+
+    await sut.execute("donation-id", undefined);
+
+    expect(exceptionService.forbidden).toHaveBeenCalledWith({
+      message: "You can only view your own donations"
+    });
+  });
+
   it("should return donation details when found and belongs to donor", async () => {
     const mockDonation = {
       id: "donation-id",
       amount: 100,
       periodicity: "monthly",
-      impactArea: "Education",
       campaignId: "campaign-123",
       donorId: "donor-id",
-      createdAt: new Date("2023-01-01"),
-      updatedAt: new Date("2023-01-02")
+      createdAt: new Date("2023-01-01")
     };
 
     (donationRepository.findById as jest.Mock).mockResolvedValue(mockDonation);
@@ -71,11 +84,9 @@ describe("FindDonationByIdUseCase", () => {
       id: mockDonation.id,
       amount: mockDonation.amount,
       periodicity: mockDonation.periodicity,
-      impactArea: mockDonation.impactArea,
       campaignId: mockDonation.campaignId,
       donorId: mockDonation.donorId,
-      createdAt: mockDonation.createdAt,
-      updatedAt: mockDonation.updatedAt
+      createdAt: mockDonation.createdAt
     });
     expect(exceptionService.notFound).not.toHaveBeenCalled();
     expect(exceptionService.forbidden).not.toHaveBeenCalled();

@@ -1,10 +1,10 @@
+import { Periodicity } from "@prisma/client";
+
 export class Donation {
   id: string;
   amount: number;
-  periodicity?: string;
-  impactArea?: string;
+  periodicity?: Periodicity;
   campaignId?: string;
-  donorId: string;
+  donorId?: string;
   createdAt: Date;
-  status?: string;
 }

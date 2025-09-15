@@ -3,30 +3,38 @@ import {
   PaginationParams
 } from "@domain/constants/pagination";
 import { Donation } from "@domain/entities/donation";
+import {
+  Periodicity,
+  PaymentStatus,
+  Prisma,
+  PaymentMethod
+} from "@prisma/client";
 
 export interface CreateDonationParams {
   amount: number;
-  periodicity?: string;
-  impactArea?: string;
+  periodicity?: Periodicity;
   campaignId?: string;
   donorId: string;
+  payments?: {
+    amount: Prisma.Decimal;
+    status: PaymentStatus;
+    paidAt: Date;
+    paymentMethod: PaymentMethod;
+  }[];
 }
 
 export interface UpdateDonationParams {
   amount?: number;
-  periodicity?: string;
-  impactArea?: string;
+  periodicity?: Periodicity;
   campaignId?: string;
-  status?: string;
 }
 
 export interface DonationDetailsResponse {
   id: string;
   amount: number;
-  periodicity?: string;
-  impactArea?: string;
+  periodicity?: Periodicity;
   campaignId?: string;
-  donorId: string;
+  donorId?: string;
   createdAt: Date;
 }
 

@@ -1,3 +1,4 @@
+import { Periodicity } from "@domain/entities/periodicity-enum";
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
@@ -20,16 +21,9 @@ export class DonationDetails {
 
   @ApiProperty({
     description: "Donation periodicity (e.g., monthly)",
-    example: "monthly"
+    example: Periodicity.MONTHLY
   })
-  periodicity?: string;
-
-  @ApiProperty({
-    description: "Impact area (optional)",
-    example: "Education",
-    required: false
-  })
-  impactArea?: string;
+  periodicity?: Periodicity;
 
   @ApiProperty({
     description: "Campaign ID (optional)",
@@ -41,19 +35,13 @@ export class DonationDetails {
     description: "Unique identifier of the donor",
     example: "123e4567-e89b-12d3-a456-426614174000"
   })
-  donorId: string;
+  donorId?: string;
 
   @ApiProperty({
     description: "Donation creation date",
     example: "2023-01-01T00:00:00Z"
   })
   createdAt: Date;
-
-  @ApiProperty({
-    description: "Donation status",
-    example: "completed"
-  })
-  status?: string;
 }
 
 export const FindDonationByIdResponses = applyDecorators(

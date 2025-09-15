@@ -29,10 +29,8 @@ export class FindDonationByIdUseCase {
       id: donation.id,
       amount: donation.amount,
       periodicity: donation.periodicity,
-      impactArea: donation.impactArea,
       campaignId: donation.campaignId,
       donorId: donation.donorId,
-      status: donation.status,
       createdAt: donation.createdAt
     };
   }

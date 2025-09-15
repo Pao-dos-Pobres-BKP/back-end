@@ -11,7 +11,10 @@ export class FindAllDonationsUseCase {
     donorId,
     page,
     pageSize
-  }: PaginationDTO & { donorId: string }): Promise<FindAllDonationsResponse> {
+  }: PaginationDTO & { donorId?: string }): Promise<FindAllDonationsResponse> {
+    if (!donorId) {
+      throw new Error("Only authenticated donors can view donations.");
+    }
     return await this.donationRepository.findAllByDonor(donorId, {
       page,
       pageSize

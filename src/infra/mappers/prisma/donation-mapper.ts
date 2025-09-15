@@ -7,7 +7,6 @@ export class DonationMapper {
       id: donation.id,
       amount: Number(donation.amount),
       periodicity: donation.periodicity,
-      impactArea: donation.impactArea,
       campaignId: donation.campaignId,
       donorId: donation.donorId,
       createdAt: donation.createdAt

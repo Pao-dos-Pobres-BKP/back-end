@@ -1,6 +1,8 @@
 import { UpdateDonationUseCase } from "./update-donation";
 import { DonationRepository } from "@domain/repositories/donation";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
+import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 
 describe("UpdateDonationUseCase", () => {
   let sut: UpdateDonationUseCase;
@@ -14,7 +16,7 @@ describe("UpdateDonationUseCase", () => {
       create: jest.fn(),
       update: jest.fn(),
       delete: jest.fn()
-    } as DonationRepository;
+    } as DonationRepositoryStub;
 
     exceptionService = {
       notFound: jest.fn(),
@@ -23,7 +25,7 @@ describe("UpdateDonationUseCase", () => {
       conflict: jest.fn(),
       internalServerError: jest.fn(),
       unauthorized: jest.fn()
-    } as ExceptionsAdapter;
+    } as ExceptionsServiceStub;
 
     sut = new UpdateDonationUseCase(donationRepository, exceptionService);
   });
@@ -31,7 +33,7 @@ describe("UpdateDonationUseCase", () => {
   it("should throw an error when donation is not found", async () => {
     (donationRepository.findById as jest.Mock).mockResolvedValue(null);
 
-    await sut.execute("donation-id", "donor-id", { amount: 100 });
+    await sut.execute("donation-id", { amount: 100 }, "donor-id");
 
     expect(exceptionService.notFound).toHaveBeenCalledWith({
       message: "Donation not found"
@@ -45,7 +47,7 @@ describe("UpdateDonationUseCase", () => {
       donorId: "other-donor-id"
     });
 
-    await sut.execute("donation-id", "donor-id", { amount: 100 });
+    await sut.execute("donation-id", { amount: 100 }, "donor-id");
 
     expect(exceptionService.forbidden).toHaveBeenCalledWith({
       message: "You can only update your own donations"
@@ -59,7 +61,7 @@ describe("UpdateDonationUseCase", () => {
       donorId: "donor-id"
     });
 
-    await sut.execute("donation-id", "donor-id", { amount: 0 });
+    await sut.execute("donation-id", { amount: 0 }, "donor-id");
 
     expect(exceptionService.badRequest).toHaveBeenCalledWith({
       message: "Donation amount must be greater than zero"
@@ -73,14 +75,18 @@ describe("UpdateDonationUseCase", () => {
       donorId: "donor-id"
     });
 
-    await sut.execute("donation-id", "donor-id", {
-      amount: 150,
-      periodicity: "monthly"
-    });
+    await sut.execute(
+      "donation-id",
+      {
+        amount: 150,
+        periodicity: "MONTHLY"
+      },
+      "donor-id"
+    );
 
     expect(donationRepository.update).toHaveBeenCalledWith("donation-id", {
       amount: 150,
-      periodicity: "monthly"
+      periodicity: "MONTHLY"
     });
     expect(exceptionService.notFound).not.toHaveBeenCalled();
     expect(exceptionService.forbidden).not.toHaveBeenCalled();
