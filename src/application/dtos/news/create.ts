@@ -8,6 +8,7 @@ import {
   IsNotEmpty,
   IsDate
 } from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateNewsDto {
   @ApiProperty({
@@ -34,6 +35,7 @@ export class CreateNewsDto {
     example: "2025-08-27"
   })
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   date?: Date;
 
