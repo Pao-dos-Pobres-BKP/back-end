@@ -5,6 +5,7 @@ import { DonorModule } from "../donor";
 import { AuthModule } from "../auth";
 import { EventModule } from "../event";
 import { AdminModule } from "../admin";
+import { NewsModule } from "../news";
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { AdminModule } from "../admin";
     DonorModule,
     AuthModule,
     EventModule,
-    AdminModule
+    AdminModule,
+    NewsModule
   ]
 })
 export class AppModule {}
