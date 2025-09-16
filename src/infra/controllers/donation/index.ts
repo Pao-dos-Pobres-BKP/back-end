@@ -33,7 +33,7 @@ import {
   Post,
   Query
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiQuery } from "@nestjs/swagger";
 
 @ApiTags("Donations")
 @Controller("donations")
@@ -48,14 +48,12 @@ export class DonationController {
 
   @Post()
   @CreateDonationResponses
-  async createDonation(
-    @Body() body: CreateDonationDTO,
-    @Query("donorId") donorId?: string
-  ): Promise<void> {
-    return await this.createDonationUseCase.execute(body, donorId);
+  async createDonation(@Body() body: CreateDonationDTO): Promise<void> {
+    return await this.createDonationUseCase.execute(body, body.donorId);
   }
 
   @Get()
+  @ApiQuery({ name: "donorId", required: true, type: String })
   @FindAllDonationsResponses
   async findAllDonations(
     @Query() query: PaginationDTO & { donorId?: string }

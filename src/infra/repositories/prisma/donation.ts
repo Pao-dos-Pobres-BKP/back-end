@@ -29,19 +29,21 @@ export class PrismaDonationRepository implements DonationRepository {
     donorId: string,
     { page, pageSize }: PaginationParams
   ): Promise<PaginatedEntity<DonationDetailsResponse>> {
+    const safePage = page ? Number(page) : 1;
+    const safePageSize = pageSize ? Number(pageSize) : 10;
     const [donations, total] = await Promise.all([
       this.prisma.donation.findMany({
         where: { donorId },
-        skip: (page - 1) * pageSize,
-        take: pageSize
+        skip: (safePage - 1) * safePageSize,
+        take: safePageSize
       }),
       this.prisma.donation.count({ where: { donorId } })
     ]);
 
     return {
       data: donations.map(DonationMapper.toDomain),
-      page,
-      lastPage: Math.ceil(total / pageSize),
+      page: safePage,
+      lastPage: Math.ceil(total / safePageSize),
       total
     };
   }
@@ -52,7 +54,7 @@ export class PrismaDonationRepository implements DonationRepository {
         amount: params.amount,
         periodicity: params.periodicity,
         campaignId: params.campaignId,
-        donorId: params.donorId
+        ...(params.donorId && { donorId: params.donorId })
       }
     });
   }

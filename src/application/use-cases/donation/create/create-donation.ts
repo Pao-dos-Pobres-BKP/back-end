@@ -27,11 +27,14 @@ export class CreateDonationUseCase {
       });
     }
 
-    const donor = await this.donorRepository.findById(donorId);
-    if (!donor) {
-      return this.exceptionService.notFound({
-        message: "Donor not found"
-      });
+    let donor = null;
+    if (donorId) {
+      donor = await this.donorRepository.findById(donorId);
+      if (!donor) {
+        return this.exceptionService.notFound({
+          message: "Donor not found"
+        });
+      }
     }
 
     const now = new Date();

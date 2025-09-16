@@ -48,6 +48,15 @@ export class CreateDonationDTO {
   @IsEnum(PaymentMethod)
   @IsOptional()
   paymentMethod: PaymentMethod;
+
+  @ApiProperty({
+    description: "Donor ID (opcional)",
+    example: "doador123",
+    required: false
+  })
+  @IsString()
+  @IsOptional()
+  donorId?: string;
 }
 
 export const CreateDonationResponses = applyDecorators(
