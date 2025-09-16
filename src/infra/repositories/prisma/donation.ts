@@ -60,9 +60,22 @@ export class PrismaDonationRepository implements DonationRepository {
   }
 
   async update(id: string, params: UpdateDonationParams): Promise<void> {
+  const { campaignId, donorId, ...rest } = params;
     await this.prisma.donation.update({
       where: { id },
-      data: { ...params }
+      data: {
+        ...rest,
+        ...(campaignId !== undefined && {
+          campaign: campaignId
+            ? { connect: { id: campaignId } }
+            : { disconnect: true }
+        }),
+        ...(donorId !== undefined && {
+          donor: donorId
+            ? { connect: { id: donorId } }
+            : { disconnect: true }
+        })
+      }
     });
   }
 

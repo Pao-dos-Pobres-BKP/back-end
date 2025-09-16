@@ -27,6 +27,7 @@ export interface UpdateDonationParams {
   amount?: number;
   periodicity?: Periodicity;
   campaignId?: string;
+  donorId?: string;
 }
 
 export interface DonationDetailsResponse {
