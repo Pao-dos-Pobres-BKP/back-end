@@ -12,26 +12,6 @@
 - **ESLint + Prettier**: Padronização de código
 - **Validação**: Class-validator para validação de dados
 
-## 📁 Estrutura do Projeto
-
-src/
-├── application/ # Camada de aplicação
-│ ├── dtos/ # Data Transfer Objects
-│ ├── use-cases/ # Casos de uso da aplicação
-│ └── utils/ # Utilitários da aplicação
-├── domain/ # Camada de domínio
-│ ├── adapters/ # Interfaces e adaptadores
-│ ├── entities/ # Entidades do domínio
-│ └── repositories/ # Interfaces dos repositórios
-└── infra/ # Camada de infraestrutura
-├── commons/ # Componentes comuns
-├── config/ # Configurações da aplicação
-├── controllers/ # Controladores HTTP
-├── integrations/ # Integrações externas
-├── mappers/ # Mapeadores de dados
-├── modules/ # Módulos NestJS
-└── repositories/ # Implementações dos repositórios
-
 ## 🛠️ Tecnologias
 
 - **Backend**: NestJS 11
