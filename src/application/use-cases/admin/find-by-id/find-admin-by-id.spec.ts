@@ -39,6 +39,7 @@ describe("FindAdminByIdUseCase", () => {
 
     expect(result).toEqual({
       id: mockAdminWithUser.id,
+      fullName: mockAdminWithUser.fullName,
       email: mockAdminWithUser.email,
       root: mockAdminWithUser.root
     });
