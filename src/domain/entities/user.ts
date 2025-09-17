@@ -2,6 +2,7 @@ import { UserRole } from "./user-role-enum";
 
 export class User {
   id: string;
+  fullName: string;
   email: string;
   password: string;
   role: UserRole;

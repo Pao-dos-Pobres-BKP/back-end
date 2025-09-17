@@ -4,6 +4,10 @@ import { ConfigModule } from "@nestjs/config";
 
 import { DonorModule } from "../donor";
 import { DonationModule } from "../donation";
+import { AuthModule } from "../auth";
+import { EventModule } from "../event";
+import { AdminModule } from "../admin";
+import { NewsModule } from "../news";
 
 @Module({
   imports: [
@@ -12,7 +16,11 @@ import { DonationModule } from "../donation";
       load: [() => EnvConfig.validate(process.env)]
     }),
   DonorModule,
-  DonationModule
+  DonationModule,
+    AuthModule,
+    EventModule,
+    AdminModule,
+    NewsModule
   ]
 })
 export class AppModule {}

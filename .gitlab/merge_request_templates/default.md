@@ -1,0 +1,29 @@
+## 🔗 Task no ClickUp
+<!-- Informe aqui o ID da task relacionada no ClickUp -->
+ID da Task:
+
+## 📝 Descrição das mudanças
+<!-- Descreva brevemente o que este MR resolve ou implementa -->
+
+## 🎯 Tipo de Mudança
+- [ ] Bug fix (correção de bug)
+- [ ] New feature (nova funcionalidade)
+- [ ] Documentation (documentação)
+- [ ] Refactoring (refatoração)
+- [ ] Test (testes)
+
+
+## 📸 Evidências
+<!-- Adicione screenshots do resumo caso de teste passando e das chamadas HTTP -->
+
+## ✅ Checklist
+- [ ] Código segue os padrões do projeto
+- [ ] Testes foram escritos/atualizados
+- [ ] Documentação foi atualizada
+- [ ] Self-review foi feito
+- [ ] Testes unitários estão passando
+- [ ] Código foi testado localmente
+
+
+## 📌 Notas adicionais
+<!-- Qualquer informação adicional para os revisores -->

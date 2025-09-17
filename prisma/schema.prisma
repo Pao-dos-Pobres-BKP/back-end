@@ -12,6 +12,7 @@ model User {
   email     String    @unique
   password  String
   role      UserRole
+  fullName  String    @map("full_name")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
@@ -19,12 +20,25 @@ model User {
   donor Donor?
   admin Admin?
 
+  passwordResetToken PasswordResetToken?
+
   @@map("users")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String
+  userId    String   @unique @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("password_reset_tokens")
 }
 
 model Donor {
   id        String   @id @default(cuid())
-  fullName  String   @map("full_name")
   birthDate DateTime @map("birth_date") @db.Date
   gender    Gender
   phone     String
@@ -126,6 +140,20 @@ model News {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("news")
+}
+
+model Events {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  dateStart   DateTime @map("date_start")
+  dateEnd     DateTime @map("date_end")
+  location    String
+  url         String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("events")
 }
 
 enum UserRole {
