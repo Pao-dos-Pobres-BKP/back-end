@@ -5,6 +5,7 @@ export class UserMapper {
   static toDomain(user: PrismaUser): User {
     return {
       id: user.id,
+      fullName: user.fullName,
       email: user.email,
       password: user.password,
       role: user.role,

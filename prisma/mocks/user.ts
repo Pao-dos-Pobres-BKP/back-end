@@ -20,9 +20,9 @@ export const userDonorsMock: Prisma.UserCreateInput[] = Array.from({
   email: faker.internet.email(),
   password: "$2b$10$Hnw5mA3mriUvAt44BdBjIOcxNHt6jEaHN6lRAZPdLnns2nBVtLsqq", // Senha@123,
   role: "DONOR",
+  fullName: faker.person.fullName(),
   donor: {
     create: {
-      fullName: faker.person.fullName(),
       birthDate: faker.date.birthdate(),
       gender: "MALE",
       phone: faker.phone.number(),
@@ -33,6 +33,7 @@ export const userDonorsMock: Prisma.UserCreateInput[] = Array.from({
 
 userDonorsMock.push({
   email: "admin@example.com",
+  fullName: "Admin User",
   password: "$2b$10$Hnw5mA3mriUvAt44BdBjIOcxNHt6jEaHN6lRAZPdLnns2nBVtLsqq", // Senha@123,
   role: "ADMIN",
   admin: {
