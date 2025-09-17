@@ -7,8 +7,9 @@ import {
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3IntegrationHelper } from "@infra/integrations/s3";
-import { NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
+@Injectable()
 export class FindFileByIdUseCase {
   constructor(
     private readonly s3: S3Client,

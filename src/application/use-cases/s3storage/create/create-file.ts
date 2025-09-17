@@ -4,7 +4,9 @@ import {
   CreateFileResponse
 } from "@application/dtos/s3storage/create";
 import { S3IntegrationHelper } from "@infra/integrations/s3";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export class CreateFileUseCase {
   constructor(
     private readonly s3: S3Client,
