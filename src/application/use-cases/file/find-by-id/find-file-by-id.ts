@@ -1,4 +1,4 @@
-import { FindFileByIdResponse } from "@application/dtos/s3storage/file-by-id";
+import { FindFileByIdResponse } from "@application/dtos/file/file-by-id";
 import {
   GetObjectCommand,
   HeadObjectCommand,

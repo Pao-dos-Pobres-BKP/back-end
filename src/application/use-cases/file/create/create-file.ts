@@ -2,7 +2,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import {
   CreateFileDTO,
   CreateFileResponse
-} from "@application/dtos/s3storage/create";
+} from "@application/dtos/file/create";
 import { S3IntegrationHelper } from "@infra/integrations/s3";
 import { Injectable } from "@nestjs/common";
 
