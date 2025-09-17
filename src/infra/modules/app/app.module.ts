@@ -7,6 +7,8 @@ import { EventModule } from "../event";
 import { AdminModule } from "../admin";
 import { NewsModule } from "../news";
 import { CampaignModule } from "../campaign";
+import { MailModule } from "../mail";
+import { FileModule } from "../file";
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { CampaignModule } from "../campaign";
     EventModule,
     AdminModule,
     NewsModule,
-    CampaignModule
+    CampaignModule,
+    FileModule,
+    MailModule
   ]
 })
 export class AppModule {}

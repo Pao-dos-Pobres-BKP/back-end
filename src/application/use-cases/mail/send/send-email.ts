@@ -1,22 +1,18 @@
-import { ConfigService } from "@nestjs/config";
 import {
   SESv2Client,
   SendEmailCommand,
   SendEmailRequest,
   EmailContent
 } from "@aws-sdk/client-sesv2";
-import { SendEmailDTO } from "@application/dtos/sesmailservice/send";
+import { SendEmailDTO } from "@application/dtos/mail/send";
 
 export class SendEmailUseCase {
   private readonly from: string;
   private readonly defaultReplyTo?: string;
 
-  constructor(
-    private readonly ses: SESv2Client,
-    private readonly cfg: ConfigService
-  ) {
-    this.from = this.cfg.get<string>("MAIL_FROM")!;
-    this.defaultReplyTo = this.cfg.get<string>("MAIL_REPLY_TO") || undefined;
+  constructor(private readonly ses: SESv2Client) {
+    // this.from = this.cfg.get<string>("MAIL_FROM")!;
+    // this.defaultReplyTo = this.cfg.get<string>("MAIL_REPLY_TO") || undefined;
   }
 
   // Example usage:
