@@ -1,7 +1,6 @@
 stages: [
     # test,
-    build,
-    push_to_ecr,
+    build_and_push,
     mirror_to_github,
     deploy_to_ec2
   ]
@@ -16,20 +15,12 @@ variables:
 #   image: node:20
 #   script:
 #     - yarn install
+#     - npx prisma generate
 #     - yarn build
 #     - yarn test
 
-build:
-  stage: build
-  image: docker:26
-  script:
-    - docker build -t "$IMAGE:$CI_COMMIT_SHORT_SHA" -t "$IMAGE:latest" -f Dockerfile .
-  only:
-    - main
-    - master
-
-push_to_ecr:
-  stage: push_to_ecr
+build_and_push:
+  stage: build_and_push
   image: docker:26
   before_script:
     - apk add --no-cache aws-cli
@@ -38,9 +29,8 @@ push_to_ecr:
     - docker builder prune -af || true
     - docker image prune -af || true
   script:
+    - docker build -t "$IMAGE:$CI_COMMIT_SHORT_SHA" -t "$IMAGE:latest" -f Dockerfile .
     - docker push "$IMAGE:$CI_COMMIT_SHORT_SHA"
-  needs:
-    - build
   only:
     - main
     - master
