@@ -1,9 +1,18 @@
-stages: [build_and_push, mirror_to_github, deploy_to_ec2]
+stages: [local_test_build, build_and_push, mirror_to_github, deploy_to_ec2]
 
 variables:
   DOCKER_BUILDKIT: "1"
   ECR_URL: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
   IMAGE: "$ECR_URL/$ECR_REPO"
+
+local_test_build:
+  stage: local_test_build
+  image: node:20
+  script:
+    - yarn install
+    - npx prisma generate
+    - yarn build
+    - yarn test
 
 build_and_push:
   stage: build_and_push
