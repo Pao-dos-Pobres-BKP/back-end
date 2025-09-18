@@ -1,12 +1,35 @@
-stages: [build_and_push, mirror_to_github, deploy_to_ec2]
+stages: [
+    # test,
+    build,
+    push_to_ecr,
+    mirror_to_github,
+    deploy_to_ec2
+  ]
 
 variables:
   DOCKER_BUILDKIT: "1"
   ECR_URL: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com"
   IMAGE: "$ECR_URL/$ECR_REPO"
 
-build_and_push:
-  stage: build_and_push
+# test:
+#   stage: test
+#   image: node:20
+#   script:
+#     - yarn install
+#     - yarn build
+#     - yarn test
+
+build:
+  stage: build
+  image: docker:26
+  script:
+    - docker build -t "$IMAGE:$CI_COMMIT_SHORT_SHA" -t "$IMAGE:latest" -f Dockerfile .
+  only:
+    - main
+    - master
+
+push_to_ecr:
+  stage: push_to_ecr
   image: docker:26
   before_script:
     - apk add --no-cache aws-cli
@@ -15,8 +38,9 @@ build_and_push:
     - docker builder prune -af || true
     - docker image prune -af || true
   script:
-    - docker build -t "$IMAGE:$CI_COMMIT_SHORT_SHA" -t "$IMAGE:latest" -f Dockerfile .
     - docker push "$IMAGE:$CI_COMMIT_SHORT_SHA"
+  needs:
+    - build
   only:
     - main
     - master
@@ -42,7 +66,7 @@ mirror_to_github:
 deploy_to_ec2:
   stage: deploy_to_ec2
   image: alpine:3.20
-  needs: ["build_and_push"]
+  needs: ["push_to_ecr"]
   before_script:
     - apk add --no-cache openssh-client
     - mkdir -p ~/.ssh
