@@ -11,9 +11,17 @@ export class UpdateNewsUseCase {
   ) {}
 
   async execute(id: string, dto: UpdateNewsDto): Promise<void> {
+    if (!dto || Object.keys(dto).length === 0) {
+      return this.exceptions.badRequest({
+        message: "No fields provided to update"
+      });
+    }
+
     const existing = await this.repo.findById(id);
     if (!existing) {
-      this.exceptions.notFound({ message: "News not found" });
+      return this.exceptions.notFound({
+        message: "News not found"
+      });
     }
 
     await this.repo.update(id, {

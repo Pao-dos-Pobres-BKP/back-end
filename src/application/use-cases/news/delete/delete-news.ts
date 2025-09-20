@@ -11,7 +11,11 @@ export class DeleteNewsUseCase {
 
   async execute(id: string): Promise<void> {
     const existing = await this.repo.findById(id);
-    if (!existing) this.exceptions.notFound({ message: "News not found" });
+
+    if (!existing) {
+      this.exceptions.notFound({ message: "News not found" });
+      return;
+    }
 
     await this.repo.delete(id);
   }
