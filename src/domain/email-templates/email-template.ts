@@ -46,7 +46,7 @@ return `
             </head>
             <body>
                     <div class="header">
-                            <img class="logo" src="https://www.paodospobres.org.br/site/wp-content/uploads/2017/06/LOGO-AZUL-P%C3%83O-DOS-POBRES-e1607087614238.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
+                            <img class="logo" src="assets/logo.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
                             <h2 class="email-header">Feliz Dia de Santo Antônio, ${name}!</h2>
                     </div>
                  <div class="message-container">
@@ -125,7 +125,7 @@ return `
             </head>
             <body>
                     <div class="header">
-                            <img class="logo" src="https://www.paodospobres.org.br/site/wp-content/uploads/2017/06/LOGO-AZUL-P%C3%83O-DOS-POBRES-e1607087614238.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
+                            <img class="logo" src="assets/logo.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
                             <h2 class="email-header">Feliz Ano Novo, ${name}!</h2>
                     </div>
                  <div class="message-container">
@@ -204,7 +204,7 @@ return `
             </head>
             <body>
                     <div class="header">
-                            <img class="logo" src="https://www.paodospobres.org.br/site/wp-content/uploads/2017/06/LOGO-AZUL-P%C3%83O-DOS-POBRES-e1607087614238.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
+                            <img class="logo" src="assets/logo.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
                             <h2 class="email-header">Feliz Natal, ${name}!</h2>
                     </div>
                  <div class="message-container">
@@ -283,7 +283,7 @@ return `
             </head>
             <body>
                     <div class="header">
-                            <img class="logo" src="https://www.paodospobres.org.br/site/wp-content/uploads/2017/06/LOGO-AZUL-P%C3%83O-DOS-POBRES-e1607087614238.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
+                            <img class="logo" src="assets/logo.png" alt="Company Logo" style="max-width: 150px; margin-bottom: 20px;">
                             <h2 class="email-header">Feliz Aniversário, ${name}!</h2>
                     </div>
                  <div class="message-container">
