@@ -45,7 +45,6 @@ export class FileController {
   async createFile(
     @UploadedFile() file: Express.Multer.File
   ): Promise<CreateFileResponse> {
-    // Map uploaded file to CreateFileDTO
     const dto: CreateFileDTO = {
       buffer: file.buffer,
       mimetype: file.mimetype,

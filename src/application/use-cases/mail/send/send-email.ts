@@ -6,15 +6,19 @@ import {
 } from "@aws-sdk/client-sesv2";
 import { SendEmailDTO } from "@application/dtos/mail/send";
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class SendEmailUseCase {
   private readonly from: string;
   private readonly defaultReplyTo?: string;
 
-  constructor(private readonly ses: SESv2Client) {
-    this.from = "luiz.moraes@edu.pucrs.br";
-    this.defaultReplyTo = "luiz.moraes@edu.pucrs.br";
+  constructor(
+    private readonly ses: SESv2Client,
+    private readonly cfg: ConfigService
+  ) {
+    this.from = this.cfg.get<string>("MAIL_FROM");
+    this.defaultReplyTo = this.cfg.get<string>("MAIL_REPLY_TO");
   }
 
   // Example usage:
