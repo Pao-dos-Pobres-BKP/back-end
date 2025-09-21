@@ -13,7 +13,7 @@ import { MailController } from "@infra/controllers/mail";
       provide: SESv2Client,
       useFactory: (cfg: ConfigService) =>
         new SESv2Client({
-          region: cfg.get<string>("AWS_REGION")!
+          region: cfg.get<string>("AWS_REGION") || "us-east-2"
         }),
       inject: [ConfigService]
     },
