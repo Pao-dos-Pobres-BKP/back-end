@@ -7,8 +7,17 @@ import { FindFileByIdResponse } from "@application/dtos/file/file-by-id";
 import { CreateFileUseCase } from "@application/use-cases/file/create/create-file";
 import { DeleteFileUseCase } from "@application/use-cases/file/delete/delete-file";
 import { FindFileByIdUseCase } from "@application/use-cases/file/find-by-id/find-file-by-id";
-import { Controller, Delete, Get, Param, Post, Query } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors
+} from "@nestjs/common";
+import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("Files")
 @Controller("files")
@@ -20,8 +29,29 @@ export class FileController {
   ) {}
 
   @Post()
-  async createFile(@Query() query: CreateFileDTO): Promise<CreateFileResponse> {
-    return await this.createFileUseCase.execute(query);
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary"
+        }
+      }
+    }
+  })
+  async createFile(
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<CreateFileResponse> {
+    // Map uploaded file to CreateFileDTO
+    const dto: CreateFileDTO = {
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      originalname: file.originalname
+    };
+    return await this.createFileUseCase.execute(dto);
   }
 
   @Get(":id")

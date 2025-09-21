@@ -20,14 +20,6 @@ export class CreateFileUseCase {
         Bucket: this.s3Helper.bucket(),
         Key,
         Body: file.buffer,
-        ContentType: file.mimetype
-      })
-    );
-    await this.s3.send(
-      new PutObjectCommand({
-        Bucket: this.s3Helper.bucket(),
-        Key,
-        Body: file.buffer,
         ContentType: file.mimetype || "application/octet-stream"
       })
     );

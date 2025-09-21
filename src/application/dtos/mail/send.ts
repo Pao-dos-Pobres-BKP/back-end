@@ -1,34 +1,85 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import {
+  IsString,
+  IsEmail,
+  ArrayNotEmpty,
+  IsOptional,
+  Length,
+  IsArray,
+  ValidateNested
+} from "class-validator";
+import { Transform } from "class-transformer";
+
+export class EmailTagDTO {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
+  value: string;
+}
 
 export class SendEmailDTO {
   @ApiProperty({ type: [String], description: "Recipient(s) of the email" })
-  to: string | string[];
+  @Transform(({ value }) => (Array.isArray(value) ? value : [value]))
+  @IsEmail({}, { each: true })
+  @ArrayNotEmpty()
+  to: string[];
 
   @ApiPropertyOptional({ type: [String], description: "CC recipient(s)" })
-  cc?: string | string[];
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined ? undefined : Array.isArray(value) ? value : [value]
+  )
+  @IsEmail({}, { each: true })
+  cc?: string[] | undefined;
 
   @ApiPropertyOptional({ type: [String], description: "BCC recipient(s)" })
-  bcc?: string | string[];
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined ? undefined : Array.isArray(value) ? value : [value]
+  )
+  @IsEmail({}, { each: true })
+  bcc?: string[] | undefined;
 
   @ApiProperty({ description: "Subject of the email" })
+  @IsString()
+  @Length(1, 998)
   subject: string;
 
   @ApiPropertyOptional({ description: "HTML content of the email" })
+  @IsOptional()
+  @IsString()
   html?: string;
 
   @ApiPropertyOptional({ description: "Text content of the email" })
+  @IsOptional()
+  @IsString()
   text?: string;
 
   @ApiPropertyOptional({ type: [String], description: "Reply-to address(es)" })
-  replyTo?: string | string[];
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === undefined ? undefined : Array.isArray(value) ? value : [value]
+  )
+  @IsEmail({}, { each: true })
+  replyTo?: string[] | undefined;
 
   @ApiPropertyOptional({
     type: [Object],
     description: "Tags for analytics/config sets",
     example: [{ name: "tagName", value: "tagValue" }]
   })
-  tags?: { name: string; value: string }[];
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => EmailTagDTO)
+  tags?: EmailTagDTO[] | undefined;
 
   @ApiPropertyOptional({ description: "Configuration set name" })
+  @IsOptional()
+  @IsString()
   configurationSetName?: string;
 }
