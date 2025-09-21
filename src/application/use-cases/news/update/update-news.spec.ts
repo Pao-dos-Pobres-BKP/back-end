@@ -2,23 +2,23 @@ import { UpdateNewsUseCase } from "./update-news";
 import { NewsRepositoryStub } from "@test/stubs/repositories/news";
 import { NewsRepository } from "@domain/repositories/news";
 import { UpdateNewsDto } from "@application/dtos/news/update";
-import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { News } from "@domain/entities/news";
 
 describe("UpdateNewsUseCase", () => {
   let repo: NewsRepository;
-  let exceptions: ExceptionsAdapter;
+  let exceptions: ExceptionsServiceStub;
   let useCase: UpdateNewsUseCase;
 
   beforeEach(() => {
     repo = new NewsRepositoryStub();
     exceptions = new ExceptionsServiceStub();
-
     useCase = new UpdateNewsUseCase(repo, exceptions);
 
     jest.spyOn(repo, "findById");
     jest.spyOn(repo, "update");
+    jest.spyOn(exceptions, "badRequest");
+    jest.spyOn(exceptions, "notFound");
   });
 
   it("should call repository update with correct parameters", async () => {
@@ -30,9 +30,7 @@ describe("UpdateNewsUseCase", () => {
       url: "https://updated.com"
     };
 
-    (repo.findById as jest.Mock).mockResolvedValueOnce({
-      id: "news-id-123"
-    } as unknown as News);
+    (repo.findById as jest.Mock).mockResolvedValueOnce({ id: "news-id-123" } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
@@ -47,10 +45,7 @@ describe("UpdateNewsUseCase", () => {
 
   it("should call exceptions.badRequest when no fields provided", async () => {
     const dto: UpdateNewsDto = {};
-
-    (repo.findById as jest.Mock).mockResolvedValueOnce({
-      id: "news-id-123"
-    } as unknown as News);
+    (repo.findById as jest.Mock).mockResolvedValueOnce({ id: "news-id-123" } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
@@ -62,7 +57,6 @@ describe("UpdateNewsUseCase", () => {
 
   it("should call exceptions.notFound when news does not exist", async () => {
     const dto: UpdateNewsDto = { title: "Anything" };
-
     (repo.findById as jest.Mock).mockResolvedValueOnce(null);
 
     await useCase.execute("non-existing-id", dto);
