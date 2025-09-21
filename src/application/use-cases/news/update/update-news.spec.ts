@@ -30,7 +30,9 @@ describe("UpdateNewsUseCase", () => {
       url: "https://updated.com"
     };
 
-    (repo.findById as jest.Mock).mockResolvedValueOnce({ id: "news-id-123" } as unknown as News);
+    (repo.findById as jest.Mock).mockResolvedValueOnce({
+      id: "news-id-123"
+    } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
@@ -45,7 +47,9 @@ describe("UpdateNewsUseCase", () => {
 
   it("should call exceptions.badRequest when no fields provided", async () => {
     const dto: UpdateNewsDto = {};
-    (repo.findById as jest.Mock).mockResolvedValueOnce({ id: "news-id-123" } as unknown as News);
+    (repo.findById as jest.Mock).mockResolvedValueOnce({
+      id: "news-id-123"
+    } as unknown as News);
 
     await useCase.execute("news-id-123", dto);
 
