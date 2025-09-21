@@ -1,7 +1,6 @@
 import { FindNewsByIdUseCase } from "./find-news-by-id";
 import { NewsRepositoryStub } from "@test/stubs/repositories/news";
 import { NewsRepository } from "@domain/repositories/news";
-import { NotFoundException } from "@nestjs/common";
 import { News } from "@domain/entities/news";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 
@@ -16,6 +15,7 @@ describe("FindNewsByIdUseCase", () => {
     useCase = new FindNewsByIdUseCase(repo, exceptions);
 
     jest.spyOn(repo, "findById");
+    jest.spyOn(exceptions, "notFound");
   });
 
   it("should return news when a valid id is provided", async () => {
@@ -38,12 +38,11 @@ describe("FindNewsByIdUseCase", () => {
     expect(result).toEqual(mockNews);
   });
 
-  it("should throw NotFoundException if the news does not exist", async () => {
+  it("should call exceptions.notFound when news does not exist", async () => {
     (repo.findById as jest.Mock).mockResolvedValueOnce(null);
 
-    await expect(useCase.execute("invalid-id")).rejects.toThrow(
-      NotFoundException
-    );
+    await useCase.execute("invalid-id");
+
     expect(exceptions.notFound).toHaveBeenCalledWith({
       message: "News not found"
     });
