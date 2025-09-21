@@ -5,6 +5,8 @@ import { DonorModule } from "../donor";
 import { AuthModule } from "../auth";
 import { EventModule } from "../event";
 import { AdminModule } from "../admin";
+import { MailModule } from "../mail";
+import { FileModule } from "../file";
 import { NewsModule } from "../news";
 
 @Module({
@@ -17,6 +19,8 @@ import { NewsModule } from "../news";
     AuthModule,
     EventModule,
     AdminModule,
+    FileModule,
+    MailModule,
     NewsModule
   ]
 })
