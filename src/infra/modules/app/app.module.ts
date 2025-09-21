@@ -7,6 +7,8 @@ import { DonationModule } from "../donation";
 import { AuthModule } from "../auth";
 import { EventModule } from "../event";
 import { AdminModule } from "../admin";
+import { MailModule } from "../mail";
+import { FileModule } from "../file";
 import { NewsModule } from "../news";
 
 @Module({
@@ -15,11 +17,13 @@ import { NewsModule } from "../news";
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
     }),
-  DonorModule,
-  DonationModule,
+    DonorModule,
+    DonationModule,
     AuthModule,
     EventModule,
     AdminModule,
+    FileModule,
+    MailModule,
     NewsModule
   ]
 })
