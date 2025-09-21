@@ -6,6 +6,7 @@ import { AuthModule } from "../auth";
 import { EventModule } from "../event";
 import { AdminModule } from "../admin";
 import { NewsModule } from "../news";
+import { MetricsModule } from "../metrics";
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { NewsModule } from "../news";
     AuthModule,
     EventModule,
     AdminModule,
-    NewsModule
+    NewsModule,
+    MetricsModule
   ]
 })
 export class AppModule {}
