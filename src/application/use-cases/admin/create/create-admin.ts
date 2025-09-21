@@ -13,7 +13,12 @@ export class CreateAdminUseCase {
     private readonly exceptionService: ExceptionsAdapter
   ) {}
 
-  async execute({ email, password, root }: CreateAdminDto): Promise<void> {
+  async execute({
+    email,
+    fullName,
+    password,
+    root
+  }: CreateAdminDto): Promise<void> {
     const emailAlreadyUsed = await this.adminRepository.findByEmail(email);
 
     if (emailAlreadyUsed) {
@@ -25,6 +30,7 @@ export class CreateAdminUseCase {
     const hashedPassword = await this.hashService.generateHash(password);
 
     await this.adminRepository.create({
+      fullName,
       email,
       password: hashedPassword,
       role: UserRole.ADMIN,

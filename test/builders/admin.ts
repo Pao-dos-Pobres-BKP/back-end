@@ -13,6 +13,7 @@ export const createMockAdminWithUser = (
   override: Partial<AdminWithUser> = {}
 ): AdminWithUser => ({
   id: faker.string.uuid(),
+  fullName: faker.person.fullName(),
   email: faker.internet.email(),
   password: faker.lorem.word({ length: 10 }),
   role: UserRole.ADMIN,

@@ -7,6 +7,7 @@ import { EventModule } from "../event";
 import { AdminModule } from "../admin";
 import { MailModule } from "../mail";
 import { FileModule } from "../file";
+import { NewsModule } from "../news";
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { FileModule } from "../file";
     EventModule,
     AdminModule,
     FileModule,
-    MailModule
+    MailModule,
+    NewsModule
   ]
 })
 export class AppModule {}
