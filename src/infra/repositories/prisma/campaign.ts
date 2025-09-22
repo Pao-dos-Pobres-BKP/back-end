@@ -121,53 +121,6 @@ export class PrismaCampaignRepository implements CampaignRepository {
     };
   }
 
-  async findAll(
-    params: PaginationParams
-  ): Promise<PaginatedEntity<CampaignDetailsResponse>> {
-    const { page, pageSize } = params;
-    const offset = (page - 1) * pageSize;
-
-    const [campaigns, total] = await Promise.all([
-      this.prisma.campaign.findMany({
-        skip: offset,
-        take: pageSize,
-        include: {
-          user: true
-        },
-        orderBy: {
-          startDate: "desc"
-        }
-      }),
-      this.prisma.campaign.count()
-    ]);
-
-    const campaignDetails = campaigns.map((campaign) => ({
-      id: campaign.id,
-      title: campaign.title,
-      description: campaign.description,
-      targetAmount: campaign.targetAmount.toNumber(),
-      currentAmount: campaign.currentAmount.toNumber(),
-      achievementPercentage:
-        campaign.targetAmount.toNumber() > 0
-          ? (campaign.currentAmount.toNumber() /
-              campaign.targetAmount.toNumber()) *
-            100
-          : 0,
-      startDate: campaign.startDate,
-      endDate: campaign.endDate,
-      imageUrl: campaign.imageUrl,
-      status: campaign.status,
-      createdBy: campaign.user.fullName
-    }));
-
-    return {
-      data: campaignDetails,
-      page,
-      lastPage: Math.ceil(total / pageSize),
-      total
-    };
-  }
-
   async update(id: string, params: UpdateCampaignParams): Promise<void> {
     await this.prisma.campaign.update({
       where: { id },

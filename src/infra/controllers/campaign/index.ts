@@ -18,10 +18,8 @@ import {
   UpdateCampaignStatusDto,
   UpdateCampaignStatusResponses
 } from "@application/dtos/campaign/update";
-import { PaginationDTO } from "@application/dtos/utils/pagination";
 import { CreateCampaignUseCase } from "@application/use-cases/campaign/create/create-campaign";
 import { DeleteCampaignUseCase } from "@application/use-cases/campaign/delete/delete-campaign";
-import { FindAllCampaignsUseCase } from "@application/use-cases/campaign/find-all/find-all-campaigns";
 import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
 import { SearchCampaignsUseCase } from "@application/use-cases/campaign/search/search-campaigns";
 import {
@@ -53,7 +51,6 @@ export class CampaignController {
     private readonly updateCampaignStatusUseCase: UpdateCampaignStatusUseCase,
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
     private readonly findCampaignByIdUseCase: FindCampaignByIdUseCase,
-    private readonly findAllCampaignsUseCase: FindAllCampaignsUseCase,
     private readonly searchCampaignsUseCase: SearchCampaignsUseCase
   ) {}
 
@@ -65,14 +62,6 @@ export class CampaignController {
   }
 
   @Get()
-  @FindAllCampaignsResponses
-  async findAllCampaigns(
-    @Query() query: PaginationDTO
-  ): Promise<FindAllCampaignsResponse> {
-    return await this.findAllCampaignsUseCase.execute(query);
-  }
-
-  @Get("search")
   @FindAllCampaignsResponses
   async searchCampaigns(
     @Query() query: FindAllCampaignsDTO

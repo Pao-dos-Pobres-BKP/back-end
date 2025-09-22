@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../database";
 import { CampaignController } from "@infra/controllers/campaign";
 import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
-import { FindAllCampaignsUseCase } from "@application/use-cases/campaign/find-all/find-all-campaigns";
 import { SearchCampaignsUseCase } from "@application/use-cases/campaign/search/search-campaigns";
 import {
   UpdateCampaignStatusUseCase,
@@ -25,7 +24,6 @@ import { RoleGuard } from "@infra/commons/guards/role";
     UpdateCampaignStatusUseCase,
     DeleteCampaignUseCase,
     FindCampaignByIdUseCase,
-    FindAllCampaignsUseCase,
     SearchCampaignsUseCase,
     AuthTokenGuard,
     RoleGuard

@@ -49,9 +49,6 @@ export abstract class CampaignRepository {
     status?: CampaignStatus,
     params?: PaginationParams
   ): Promise<PaginatedEntity<CampaignDetailsResponse>>;
-  abstract findAll(
-    params: PaginationParams
-  ): Promise<PaginatedEntity<CampaignDetailsResponse>>;
   abstract update(id: string, params: UpdateCampaignParams): Promise<void>;
   abstract delete(id: string): Promise<void>;
 }

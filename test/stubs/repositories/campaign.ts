@@ -20,10 +20,6 @@ export class CampaignRepositoryStub implements CampaignRepository {
     return;
   }
 
-  async findAll(): Promise<PaginatedEntity<CampaignDetailsResponse>> {
-    return;
-  }
-
   async update(): Promise<void> {
     return;
   }
