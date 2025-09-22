@@ -7,6 +7,7 @@ import { MetricsRepository as IMetricsRepository } from "@domain/repositories/me
 import { MetricsRepository } from "@infra/repositories/prisma/metrics";
 import { AuthTokenGuard } from "@infra/commons/guards/token";
 import { RoleGuard } from "@infra/commons/guards/role";
+import { PrismaService } from "@infra/config/prisma";
 
 @Module({
   imports: [DatabaseModule, ExceptionModule],
@@ -18,7 +19,8 @@ import { RoleGuard } from "@infra/commons/guards/role";
       useClass: MetricsRepository
     },
     AuthTokenGuard,
-    RoleGuard
+    RoleGuard,
+    PrismaService
   ]
 })
 export class MetricsModule {}
