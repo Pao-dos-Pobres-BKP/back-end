@@ -36,6 +36,7 @@ export class PrismaAdminRepository implements AdminRepository {
       fullName: admin.user.fullName,
       email: admin.user.email,
       password: admin.user.password,
+      imageUrl: admin.user.imageUrl,
       role: admin.user.role,
       root: admin.root,
       createdAt: admin.user.createdAt,

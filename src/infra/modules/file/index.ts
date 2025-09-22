@@ -29,6 +29,7 @@ import { FileController } from "@infra/controllers/file";
     CreateFileUseCase,
     DeleteFileUseCase,
     FindFileByIdUseCase
-  ]
+  ],
+  exports: [CreateFileUseCase, DeleteFileUseCase]
 })
 export class FileModule {}

@@ -12,6 +12,7 @@ model User {
   email     String    @unique
   password  String
   role      UserRole
+  imageUrl  String?   @map("image_url")
   fullName  String    @map("full_name")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
