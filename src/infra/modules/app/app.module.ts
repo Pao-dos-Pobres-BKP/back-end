@@ -10,6 +10,7 @@ import { AdminModule } from "../admin";
 import { MailModule } from "../mail";
 import { FileModule } from "../file";
 import { NewsModule } from "../news";
+import { CampaignModule } from "../campaign";
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { NewsModule } from "../news";
     AdminModule,
     FileModule,
     MailModule,
-    NewsModule
+    NewsModule,
+    CampaignModule
   ]
 })
 export class AppModule {}
