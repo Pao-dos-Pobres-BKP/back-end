@@ -1,0 +1,108 @@
+import {
+  CreateCampaignDto,
+  CreateCampaignResponses
+} from "@application/dtos/campaign/create";
+import { DeleteCampaignResponses } from "@application/dtos/campaign/delete";
+import {
+  FindAllCampaignsDTO,
+  FindAllCampaignsResponse,
+  FindAllCampaignsResponses
+} from "@application/dtos/campaign/find-all";
+import {
+  CampaignDetails,
+  FindCampaignByIdResponses
+} from "@application/dtos/campaign/find-by-id";
+import {
+  UpdateCampaignDto,
+  UpdateCampaignResponses,
+  UpdateCampaignStatusDto,
+  UpdateCampaignStatusResponses
+} from "@application/dtos/campaign/update";
+import { CreateCampaignUseCase } from "@application/use-cases/campaign/create/create-campaign";
+import { DeleteCampaignUseCase } from "@application/use-cases/campaign/delete/delete-campaign";
+import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
+import { SearchCampaignsUseCase } from "@application/use-cases/campaign/search/search-campaigns";
+import {
+  UpdateCampaignStatusUseCase,
+  UpdateCampaignUseCase
+} from "@application/use-cases/campaign/update/update-campaign";
+import { UserRole } from "@domain/entities/user-role-enum";
+import { RequireToken } from "@infra/commons/decorators/require-token";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query
+} from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+
+@ApiTags("Campaigns")
+@Controller("campaigns")
+export class CampaignController {
+  constructor(
+    private readonly createCampaignUseCase: CreateCampaignUseCase,
+    private readonly updateCampaignUseCase: UpdateCampaignUseCase,
+    private readonly updateCampaignStatusUseCase: UpdateCampaignStatusUseCase,
+    private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
+    private readonly findCampaignByIdUseCase: FindCampaignByIdUseCase,
+    private readonly searchCampaignsUseCase: SearchCampaignsUseCase
+  ) {}
+
+  @Post()
+  @RequireToken()
+  @CreateCampaignResponses
+  async createCampaign(@Body() body: CreateCampaignDto): Promise<void> {
+    return await this.createCampaignUseCase.execute(body);
+  }
+
+  @Get()
+  @FindAllCampaignsResponses
+  async searchCampaigns(
+    @Query() query: FindAllCampaignsDTO
+  ): Promise<FindAllCampaignsResponse> {
+    return await this.searchCampaignsUseCase.execute(query);
+  }
+
+  @Get(":id")
+  @FindCampaignByIdResponses
+  async findCampaignById(
+    @Param("id") id: string
+  ): Promise<CampaignDetails | void> {
+    return await this.findCampaignByIdUseCase.execute(id);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(":id")
+  @UpdateCampaignResponses
+  async updateCampaign(
+    @Param("id") id: string,
+    @Body() body: UpdateCampaignDto
+  ): Promise<void> {
+    return await this.updateCampaignUseCase.execute(id, body);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(":id/status")
+  @RequireToken([UserRole.ADMIN])
+  @UpdateCampaignStatusResponses
+  async updateCampaignStatus(
+    @Param("id") id: string,
+    @Body() body: UpdateCampaignStatusDto
+  ): Promise<void> {
+    return await this.updateCampaignStatusUseCase.execute(id, body);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(":id")
+  @RequireToken([UserRole.ADMIN])
+  @DeleteCampaignResponses
+  async deleteCampaign(@Param("id") id: string): Promise<void> {
+    return await this.deleteCampaignUseCase.execute(id);
+  }
+}

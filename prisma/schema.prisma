@@ -17,8 +17,9 @@ model User {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  donor Donor?
-  admin Admin?
+  donor    Donor?
+  admin    Admin?
+  campaign Campaign[]
 
   passwordResetToken PasswordResetToken?
 
@@ -44,7 +45,6 @@ model Donor {
   phone     String
   cpf       String   @unique
 
-  campaign Campaign[]
   donation Donation[]
   address  Address[]
 
@@ -57,7 +57,6 @@ model Admin {
   id   String  @id @default(cuid())
   root Boolean @default(false)
 
-  campaign Campaign[]
 
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 
@@ -82,20 +81,18 @@ model Address {
 
 model Campaign {
   id            String         @id @default(cuid())
+  title         String
   description   String
   targetAmount  Decimal        @map("target_amount") @db.Decimal(12, 2)
-  currentAmount Decimal        @map("current_amount") @db.Decimal(12, 2)
+  currentAmount Decimal        @default(0) @map("current_amount") @db.Decimal(12, 2)
   startDate     DateTime?      @map("start_date") @db.Date
   endDate       DateTime?      @map("end_date") @db.Date
   imageUrl      String?        @map("image_url")
   status        CampaignStatus @default(PENDING)
-  donorId       String?        @map("donor_id")
-  adminId       String         @map("admin_id")
+  createdBy     String         @map("created_by")
+  donation      Donation[]
 
-  donation Donation[]
-
-  admin Admin  @relation(fields: [adminId], references: [id])
-  donor Donor? @relation(fields: [donorId], references: [id])
+  user  User   @relation(fields: [createdBy], references: [id])
 
   @@map("campaigns")
 }
