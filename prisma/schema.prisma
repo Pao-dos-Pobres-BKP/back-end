@@ -100,16 +100,15 @@ model Campaign {
 model Donation {
   id          String   @id @default(cuid())
   amount      Decimal  @db.Decimal(12, 2)
-  periodicity String?
-  impactArea  String?  @map("impact_area")
-  donorId     String   @map("donor_id")
+  periodicity Periodicity?
+  donorId     String?   @map("donor_id")
   campaignId  String?  @map("campaign_id")
   createdAt   DateTime @default(now()) @map("created_at")
 
   payment Payment[]
 
   campaign Campaign? @relation(fields: [campaignId], references: [id])
-  donor    Donor     @relation(fields: [donorId], references: [id])
+  donor    Donor?     @relation(fields: [donorId], references: [id])
 
   @@map("donations")
 }
@@ -186,4 +185,11 @@ enum Gender {
   MALE
   FEMALE
   OTHER
+}
+
+enum Periodicity {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUAL
+  YEARLY
 }
