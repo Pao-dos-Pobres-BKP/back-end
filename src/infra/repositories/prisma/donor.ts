@@ -41,7 +41,7 @@ export class PrismaDonorRepository implements DonorRepository {
       role: donor.user.role,
       cpf: donor.cpf,
       birthDate: donor.birthDate,
-      fullName: donor.fullName,
+      fullName: donor.user.fullName,
       gender: donor.gender,
       phone: donor.phone,
       createdAt: donor.user.createdAt,
@@ -64,7 +64,8 @@ export class PrismaDonorRepository implements DonorRepository {
         include: {
           user: {
             select: {
-              email: true
+              email: true,
+              fullName: true
             }
           }
         },
@@ -92,7 +93,7 @@ export class PrismaDonorRepository implements DonorRepository {
         email: donor.user.email,
         birthDate: donor.birthDate,
         cpf: donor.cpf,
-        fullName: donor.fullName,
+        fullName: donor.user.fullName,
         gender: donor.gender,
         phone: donor.phone
       })),
@@ -174,6 +175,7 @@ export class PrismaDonorRepository implements DonorRepository {
   }: CreateDonorParams): Promise<void> {
     await this.prisma.user.create({
       data: {
+        fullName,
         email,
         password,
         role,
@@ -181,7 +183,6 @@ export class PrismaDonorRepository implements DonorRepository {
           create: {
             birthDate,
             cpf,
-            fullName,
             gender,
             phone
           }
@@ -196,7 +197,6 @@ export class PrismaDonorRepository implements DonorRepository {
     await this.prisma.donor.update({
       where: { id },
       data: {
-        fullName,
         birthDate,
         gender,
         phone,
@@ -204,7 +204,8 @@ export class PrismaDonorRepository implements DonorRepository {
         user: {
           update: {
             email,
-            password
+            password,
+            fullName
           }
         }
       }
