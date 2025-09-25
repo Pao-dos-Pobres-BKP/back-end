@@ -8,6 +8,7 @@ import {
 import {
   IsBoolean,
   IsEmail,
+  IsNotEmpty,
   IsString,
   IsStrongPassword,
   MinLength
@@ -20,6 +21,14 @@ export class CreateAdminDto {
   })
   @IsEmail()
   email: string;
+
+  @ApiProperty({
+    description: "Administrator full name",
+    example: "John Doe"
+  })
+  @IsNotEmpty()
+  @IsString()
+  fullName: string;
 
   @ApiProperty({
     description: "Administrator password (minimum 8 characters)",

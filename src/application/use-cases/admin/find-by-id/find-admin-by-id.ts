@@ -21,6 +21,7 @@ export class FindAdminByIdUseCase {
 
     return {
       id: admin.id,
+      fullName: admin.fullName,
       email: admin.email,
       root: admin.root
     };

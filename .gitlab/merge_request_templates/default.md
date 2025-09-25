@@ -1,3 +1,7 @@
+## 🔗 Task no ClickUp
+<!-- Informe aqui o ID da task relacionada no ClickUp -->
+ID da Task:
+
 ## 📝 Descrição das mudanças
 <!-- Descreva brevemente o que este MR resolve ou implementa -->
 
@@ -22,4 +26,4 @@
 
 
 ## 📌 Notas adicionais
-<!-- Qualquer informação adicional que os revisores 
+<!-- Qualquer informação adicional para os revisores -->
