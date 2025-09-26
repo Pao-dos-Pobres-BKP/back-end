@@ -1,5 +1,5 @@
 export function santoAntonioTemplate(subject: string, name: string): string {
-return `
+  return `
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -77,8 +77,12 @@ return `
     `;
 }
 
-export function newYearTemplate(subject: string, name: string, year: number): string {
-return `
+export function newYearTemplate(
+  subject: string,
+  name: string,
+  year: number
+): string {
+  return `
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -153,11 +157,11 @@ return `
                     </div>
             </body>
             </html>
-    `
+    `;
 }
 
 export function christmasTemplate(subject: string, name: string): string {
-return `
+  return `
 <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -232,11 +236,11 @@ return `
                     </div>
             </body>
             </html>
-`
+`;
 }
 
 export function birthdayTemplate(subject: string, name: string): string {
-return `
+  return `
 <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -311,5 +315,5 @@ return `
                     </div>
             </body>
             </html>
-`
+`;
 }
