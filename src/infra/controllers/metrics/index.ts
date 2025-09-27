@@ -8,7 +8,7 @@ import { GetMetricsResponseDTO } from "@application/dtos/metrics/get-metrics";
 export class MetricsController {
   constructor(private readonly getMetricsUseCase: GetMetricsUseCase) {}
 
-  @Get()
+  @Get("global")
   @ApiOkResponse({
     type: GetMetricsResponseDTO,
     description: "Retorna métricas globais para o dashboard"
