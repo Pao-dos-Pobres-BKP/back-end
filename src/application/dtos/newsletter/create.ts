@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateNewsletterDto {
@@ -6,8 +6,9 @@ export class CreateNewsletterDto {
     example: "user@mail.com",
     description: "Email para inscrição na newsletter"
   })
-  @IsEmail({}, { message: "Email inválido" })
-  @IsNotEmpty({ message: "O email é obrigatório" })
+  @IsString()
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
 

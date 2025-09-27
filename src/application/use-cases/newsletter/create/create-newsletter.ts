@@ -15,12 +15,11 @@ export class CreateNewsletterUseCase {
 
   async execute(dto: CreateNewsletterDto): Promise<CreateNewsletterResponse> {
     const { email } = dto;
-
     const existingSubscription =
       await this.newsletterRepository.findByEmail(email);
 
     if (existingSubscription) {
-      this.exception.badRequest({
+      this.exception.conflict({
         message: "Email já inscrito na newsletter"
       });
     }
@@ -28,7 +27,7 @@ export class CreateNewsletterUseCase {
     await this.newsletterRepository.create({ email });
 
     return {
-      message: "Inscrição na newsletter realizada com sucesso"
+      message: "Inscrição realizada com sucesso"
     };
   }
 }

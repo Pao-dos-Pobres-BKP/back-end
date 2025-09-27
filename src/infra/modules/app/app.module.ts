@@ -11,6 +11,7 @@ import { FileModule } from "../file";
 import { NewsModule } from "../news";
 //import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
+import { NewsletterModule } from "../newsletter";
 
 //Metrics Module está quebrada.
 
@@ -30,7 +31,8 @@ import { CampaignModule } from "../campaign";
     FileModule,
     MailModule,
     NewsModule,
-    CampaignModule
+    CampaignModule,
+    NewsletterModule
   ]
 })
 export class AppModule {}
