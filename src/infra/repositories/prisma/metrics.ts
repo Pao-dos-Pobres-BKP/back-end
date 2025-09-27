@@ -54,6 +54,10 @@ export class MetricsRepository {
 
     const raw = result[0];
 
+    if (!raw) {
+      throw new Error("Query retornou resultado vazio");
+    }
+
     return {
       total_raised: Number(raw.total_raised),
       recurring_donations: raw.recurring_donations,
