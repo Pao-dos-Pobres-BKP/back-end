@@ -2,11 +2,15 @@ import { NewsletterRepository } from "@domain/repositories/newsletter";
 import { Newsletter } from "@domain/entities/newsletter";
 
 export class NewsletterRepositoryStub implements NewsletterRepository {
-  async findByEmail(): Promise<Newsletter | null> {
-    return;
+  async findByEmail(email: string): Promise<Newsletter | null> {
+    return {
+      id: "1",
+      email,
+      createdAt: new Date()
+    };
   }
 
   async create(): Promise<void> {
-    return;
+    return null;
   }
 }
