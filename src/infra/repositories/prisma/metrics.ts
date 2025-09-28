@@ -48,7 +48,7 @@ export class MetricsRepository {
         FROM donations d
         JOIN payments p ON d.id = p.donation_id
         WHERE d.created_at >= NOW() - INTERVAL '1 day' * ${days}
-          AND p.status = 'CONFIRMED' AND 'AUTHORIZED'
+          AND p.status = 'CONFIRMED'
           AND d.donor_id IS NOT NULL
       `
     );
