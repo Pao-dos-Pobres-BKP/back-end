@@ -1,4 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { applyDecorators } from "@nestjs/common";
+import { ApiOkResponse, ApiProperty } from "@nestjs/swagger";
 
 export interface GetMetricsRequestDTO {
   periodInDays: number;
@@ -28,3 +29,10 @@ export class GetMetricsResponseDTO {
   @ApiProperty({ type: PeriodMetricsDTO })
   last_365_days: PeriodMetricsDTO;
 }
+
+export const FindGlobalMentricsResponse = applyDecorators(
+  ApiOkResponse({
+    description: "Global metrics for dashboard",
+    type: GetMetricsResponseDTO
+  })
+);
