@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiNoContentResponse, ApiNotFoundResponse } from "@nestjs/swagger";
+import { ApiNoContentResponse, ApiNotFoundResponse, ApiOperation } from "@nestjs/swagger";
 
 export const DeleteDonationResponses = applyDecorators(
   ApiNoContentResponse({
@@ -7,5 +7,6 @@ export const DeleteDonationResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Not found a donation with this id"
-  })
+  }),
+  ApiOperation({ summary: "Delete a donation by ID" })
 );

@@ -1,7 +1,7 @@
 import { formatCPF, IsCPF } from "@application/dtos/utils/is-cpf";
 import { Gender } from "@domain/entities/gender-enum";
 import { applyDecorators } from "@nestjs/common";
-import { ApiCreatedResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { Transform, Type } from "class-transformer";
 import {
   IsDate,
@@ -83,5 +83,6 @@ export class CreateDonorDTO {
 export const CreateDonorResponses = applyDecorators(
   ApiCreatedResponse({
     description: "Donor created successfully"
-  })
+  }),
+  ApiOperation({ summary: "Create a new donor" })
 );

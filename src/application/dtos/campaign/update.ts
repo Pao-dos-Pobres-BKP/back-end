@@ -1,6 +1,7 @@
 import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   ApiProperty,
   ApiUnauthorizedResponse,
   PartialType
@@ -44,5 +45,6 @@ export const UpdateCampaignStatusResponses = applyDecorators(
   }),
   ApiUnauthorizedResponse({
     description: "Unauthorized - Invalid or missing token"
-  })
+  }),
+  ApiOperation({ summary: "Update a campaign by ID" })
 );

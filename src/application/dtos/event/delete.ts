@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiNoContentResponse, ApiNotFoundResponse } from "@nestjs/swagger";
+import { ApiNoContentResponse, ApiNotFoundResponse, ApiOperation } from "@nestjs/swagger";
 
 export const DeleteEventResponses = applyDecorators(
   ApiNoContentResponse({
@@ -7,5 +7,6 @@ export const DeleteEventResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Event with this id was not found"
-  })
+  }),
+  ApiOperation({ summary: "Delete an event by ID" })
 );
