@@ -4,7 +4,8 @@ import {
   ApiOkResponse,
   ApiProperty,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse
+  ApiForbiddenResponse,
+  ApiOperation
 } from "@nestjs/swagger";
 
 export class AdminDetails {
@@ -46,5 +47,6 @@ export const FindAdminByIdResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can view admin details"
-  })
+  }),
+  ApiOperation({ summary: "Find an administrator by ID" })
 );

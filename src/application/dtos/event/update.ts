@@ -1,6 +1,7 @@
 import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   PartialType
 } from "@nestjs/swagger";
 import { CreateEventDTO } from "./create";
@@ -14,5 +15,6 @@ export const UpdateEventResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Event not found"
-  })
+  }),
+  ApiOperation({ summary: "Update an event by ID" })
 );

@@ -5,12 +5,12 @@ import {
   ApiOperation
 } from "@nestjs/swagger";
 
-export const DeleteEventResponses = applyDecorators(
+export const DeleteNewsResponses = applyDecorators(
   ApiNoContentResponse({
-    description: "Event deleted successfully"
+    description: "News deleted successfully"
   }),
   ApiNotFoundResponse({
-    description: "Event with this id was not found"
+    description: "News not found"
   }),
-  ApiOperation({ summary: "Delete an event by ID" })
+  ApiOperation({ summary: "Delete a news item by ID" })
 );

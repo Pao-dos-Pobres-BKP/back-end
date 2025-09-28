@@ -2,6 +2,7 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
+  ApiOperation,
   ApiProperty
 } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
@@ -41,5 +42,6 @@ export const LoginResponses = applyDecorators(
   }),
   ApiBadRequestResponse({
     description: "Invalid Credentials"
-  })
+  }),
+  ApiOperation({ summary: "User login" })
 );

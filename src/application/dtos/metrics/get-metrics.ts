@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiOkResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 
 export interface GetMetricsRequestDTO {
   periodInDays: number;
@@ -34,5 +34,6 @@ export const FindGlobalMetricsResponse = applyDecorators(
   ApiOkResponse({
     description: "Global metrics for dashboard",
     type: GetMetricsResponseDTO
-  })
+  }),
+  ApiOperation({ summary: "Get global metrics for dashboard" })
 );

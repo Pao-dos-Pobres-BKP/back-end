@@ -3,8 +3,6 @@ import { NewsRepository } from "@domain/repositories/news";
 import { NewsRepositoryStub } from "@test/stubs/repositories/news";
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { News } from "@domain/entities/news";
-import { FindAllNewsDto } from "@application/dtos/news/find-all";
-
 describe("FindAllNewsUseCase", () => {
   let repo: NewsRepository;
   let useCase: FindAllNewsUseCase;
@@ -37,7 +35,10 @@ describe("FindAllNewsUseCase", () => {
 
     (repo.findAll as jest.Mock).mockResolvedValueOnce(mockResult);
 
-    const result = await useCase.execute({ page: 1, pageSize: 10 });
+    const result = await useCase.execute({
+      page: 1,
+      pageSize: 10
+    });
 
     expect(repo.findAll).toHaveBeenCalledWith({ page: 1, pageSize: 10 });
     expect(result).toEqual(mockResult);
@@ -53,7 +54,10 @@ describe("FindAllNewsUseCase", () => {
 
     (repo.findAll as jest.Mock).mockResolvedValueOnce(mockResult);
 
-    const result = await useCase.execute({} as unknown as FindAllNewsDto);
+    const result = await useCase.execute({
+      page: 1,
+      pageSize: 10
+    });
 
     expect(repo.findAll).toHaveBeenCalledWith({ page: 1, pageSize: 10 });
     expect(result).toEqual(mockResult);
