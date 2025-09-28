@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import {
   IsOptional,
   IsString,
@@ -9,6 +9,7 @@ import {
   IsDate
 } from "class-validator";
 import { Type } from "class-transformer";
+import { applyDecorators } from "@nestjs/common";
 
 export class CreateNewsDto {
   @ApiProperty({
@@ -56,3 +57,9 @@ export class CreateNewsDto {
   @IsUrl({ require_protocol: true, require_tld: true })
   url?: string;
 }
+  export const CreateNewsResponses = applyDecorators(
+    ApiCreatedResponse({
+      description: "News created successfully"
+    }),
+    ApiOperation({ summary: "Create a News" })
+  );

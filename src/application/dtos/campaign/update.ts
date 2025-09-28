@@ -33,7 +33,8 @@ export const UpdateCampaignResponses = applyDecorators(
   }),
   ApiUnauthorizedResponse({
     description: "Unauthorized - Invalid or missing token"
-  })
+  }),
+  ApiOperation({ summary: "Update a campaign by ID" })
 );
 
 export const UpdateCampaignStatusResponses = applyDecorators(
@@ -46,5 +47,5 @@ export const UpdateCampaignStatusResponses = applyDecorators(
   ApiUnauthorizedResponse({
     description: "Unauthorized - Invalid or missing token"
   }),
-  ApiOperation({ summary: "Update a campaign by ID" })
+  ApiOperation({ summary: "Update a campaign status" })
 );
