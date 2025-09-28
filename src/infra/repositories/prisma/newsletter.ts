@@ -5,6 +5,7 @@ import {
   NewsletterRepository,
   CreateNewsletterParams
 } from "@domain/repositories/newsletter";
+import { NewsletterMapper } from "@infra/mappers/prisma/newsletter-mapper";
 
 @Injectable()
 export class PrismaNewsletterRepository implements NewsletterRepository {
@@ -17,11 +18,7 @@ export class PrismaNewsletterRepository implements NewsletterRepository {
 
     if (!newsletter) return null;
 
-    return {
-      id: newsletter.id,
-      email: newsletter.email,
-      createdAt: newsletter.createdAt
-    };
+    return NewsletterMapper.toDomain(newsletter);
   }
 
   async create(data: CreateNewsletterParams): Promise<void> {
