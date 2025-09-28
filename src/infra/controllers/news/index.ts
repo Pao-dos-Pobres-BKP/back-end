@@ -11,9 +11,18 @@ import {
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { CreateNewsDto, CreateNewsResponses } from "@application/dtos/news/create";
-import { UpdateNewsDto, UpdateNewsResponses } from "@application/dtos/news/update";
-import { FindAllNewsDto, FindAllNewsResponses } from "@application/dtos/news/find-all";
+import {
+  CreateNewsDto,
+  CreateNewsResponses
+} from "@application/dtos/news/create";
+import {
+  UpdateNewsDto,
+  UpdateNewsResponses
+} from "@application/dtos/news/update";
+import {
+  FindAllNewsDto,
+  FindAllNewsResponses
+} from "@application/dtos/news/find-all";
 
 import { CreateNewsUseCase } from "@application/use-cases/news/create/create-news";
 import { FindAllNewsUseCase } from "@application/use-cases/news/find-all/find-all-news";
