@@ -9,11 +9,9 @@ import { AdminModule } from "../admin";
 import { MailModule } from "../mail";
 import { FileModule } from "../file";
 import { NewsModule } from "../news";
-//import { MetricsModule } from "../metrics";
+import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
-
-//Metrics Module está quebrada.
 
 @Module({
   imports: [
@@ -27,7 +25,7 @@ import { NewsletterModule } from "../newsletter";
     EventModule,
     AdminModule,
     NewsModule,
-    //MetricsModule,
+    MetricsModule,
     FileModule,
     MailModule,
     NewsModule,

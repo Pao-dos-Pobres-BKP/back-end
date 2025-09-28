@@ -8,9 +8,10 @@ import { MetricsRepository } from "@infra/repositories/prisma/metrics";
 import { AuthTokenGuard } from "@infra/commons/guards/token";
 import { RoleGuard } from "@infra/commons/guards/role";
 import { PrismaService } from "@infra/config/prisma";
+import { TokenModule } from "../token";
 
 @Module({
-  imports: [DatabaseModule, ExceptionModule],
+  imports: [DatabaseModule, ExceptionModule, TokenModule],
   controllers: [MetricsController],
   providers: [
     GetMetricsUseCase,

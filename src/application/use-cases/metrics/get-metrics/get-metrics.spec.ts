@@ -1,6 +1,9 @@
 import { GetMetricsUseCase } from "./get-metrics";
 import { MetricsRepository } from "@domain/repositories/metrics";
-import { PeriodMetricsDTO } from "@application/dtos/metrics/get-metrics";
+import {
+  GetMetricsResponseDTO,
+  PeriodMetricsDTO
+} from "@application/dtos/metrics/get-metrics";
 
 describe("GetMetricsUseCase", () => {
   let getMetricsUseCase: GetMetricsUseCase;
@@ -22,32 +25,23 @@ describe("GetMetricsUseCase", () => {
     average_ticket: 85.71
   };
 
+  const mockResponse: GetMetricsResponseDTO = {
+    last_30_days: mockMetrics30Days,
+    last_365_days: mockMetrics365Days
+  };
+
   beforeEach(() => {
     metricsRepository = {
-      getMetrics: jest.fn()
+      getMetrics: jest.fn().mockResolvedValue(mockResponse)
     } as unknown as MetricsRepository;
 
     getMetricsUseCase = new GetMetricsUseCase(metricsRepository);
   });
 
   it("should return metrics for last 30 and 365 days", async () => {
-    (metricsRepository.getMetrics as jest.Mock)
-      .mockImplementationOnce(async (days: number) => {
-        expect(days).toBe(30);
-        return mockMetrics30Days;
-      })
-      .mockImplementationOnce(async (days: number) => {
-        expect(days).toBe(365);
-        return mockMetrics365Days;
-      });
-
     const result = await getMetricsUseCase.execute();
 
-    expect(result).toEqual({
-      last_30_days: mockMetrics30Days,
-      last_365_days: mockMetrics365Days
-    });
-
-    expect(metricsRepository.getMetrics).toHaveBeenCalledTimes(2);
+    expect(result).toEqual(mockResponse);
+    expect(metricsRepository.getMetrics).toHaveBeenCalledTimes(1);
   });
 });
