@@ -1,10 +1,11 @@
 import { ApiOkResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
-import { PaginationDTO } from "../utils/pagination";
+import { PaginationEntityDTO } from "../utils/pagination";
 import { NewsDetails } from "./find-by-id";
 import { applyDecorators } from "@nestjs/common";
 
-export class FindAllNewsDto extends PaginationDTO {
+export class FindAllNewsDto extends PaginationEntityDTO {
   @ApiProperty({
+    description: "News",
     type: [NewsDetails]
   })
   data: NewsDetails[];

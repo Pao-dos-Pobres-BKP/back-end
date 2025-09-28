@@ -29,11 +29,10 @@ import { FindAllNewsUseCase } from "@application/use-cases/news/find-all/find-al
 import { FindNewsByIdUseCase } from "@application/use-cases/news/find-by-id/find-news-by-id";
 import { UpdateNewsUseCase } from "@application/use-cases/news/update/update-news";
 import { DeleteNewsUseCase } from "@application/use-cases/news/delete/delete-news";
-
-import { PaginatedEntity } from "@domain/constants/pagination";
 import { News } from "@domain/entities/news";
 import { FindNewsByIdResponses } from "@application/dtos/news/find-by-id";
 import { DeleteNewsResponses } from "@application/dtos/news/delete";
+import { PaginationDTO } from "@application/dtos/utils/pagination";
 
 @ApiTags("News")
 @Controller("news")
@@ -54,8 +53,8 @@ export class NewsController {
 
   @Get()
   @FindAllNewsResponses
-  async list(@Query() q: FindAllNewsDto): Promise<PaginatedEntity<News>> {
-    return await this.findAllUC.execute(q);
+  async list(@Query() query: PaginationDTO): Promise<FindAllNewsDto> {
+    return await this.findAllUC.execute(query);
   }
 
   @Get(":id")
