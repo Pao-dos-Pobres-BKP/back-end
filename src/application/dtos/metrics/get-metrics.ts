@@ -30,7 +30,7 @@ export class GetMetricsResponseDTO {
   last_365_days: PeriodMetricsDTO;
 }
 
-export const FindGlobalMentricsResponse = applyDecorators(
+export const FindGlobalMetricsResponse = applyDecorators(
   ApiOkResponse({
     description: "Global metrics for dashboard",
     type: GetMetricsResponseDTO
