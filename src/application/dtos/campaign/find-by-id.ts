@@ -2,6 +2,7 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiProperty
 } from "@nestjs/swagger";
 import { CampaignStatus } from "@prisma/client";
@@ -69,5 +70,6 @@ export const FindCampaignByIdResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "No campaign found with this ID"
-  })
+  }),
+  ApiOperation({ summary: "Find a campaign by ID" })
 );

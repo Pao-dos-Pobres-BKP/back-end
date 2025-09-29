@@ -3,7 +3,8 @@ import {
   ApiNotFoundResponse,
   PartialType,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse
+  ApiForbiddenResponse,
+  ApiOperation
 } from "@nestjs/swagger";
 import { applyDecorators } from "@nestjs/common";
 import { CreateAdminDto } from "./create";
@@ -22,5 +23,6 @@ export const UpdateAdminResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can update other admins"
-  })
+  }),
+  ApiOperation({ summary: "Update an administrator by ID" })
 );

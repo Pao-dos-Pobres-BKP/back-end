@@ -3,6 +3,7 @@ import {
   ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
 
@@ -18,5 +19,6 @@ export const DeleteCampaignResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can delete campaigns"
-  })
+  }),
+  ApiOperation({ summary: "Delete a campaign by ID" })
 );

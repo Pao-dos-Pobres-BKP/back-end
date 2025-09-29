@@ -1,4 +1,4 @@
-import { ApiOkResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiOkResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { PaginationDTO, PaginationEntityDTO } from "../utils/pagination";
 import { CampaignDetails } from "./find-by-id";
 import { applyDecorators } from "@nestjs/common";
@@ -48,5 +48,6 @@ export const FindAllCampaignsResponses = applyDecorators(
   ApiOkResponse({
     description: "All campaigns",
     type: FindAllCampaignsResponse
-  })
+  }),
+  ApiOperation({ summary: "Find all campaigns" })
 );
