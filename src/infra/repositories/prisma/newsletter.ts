@@ -26,4 +26,9 @@ export class PrismaNewsletterRepository implements NewsletterRepository {
       data
     });
   }
+
+  async findAll(): Promise<Newsletter[]> {
+    const newsletters = await this.prismaService.newsletter.findMany();
+    return newsletters.map(NewsletterMapper.toDomain);
+  }
 }

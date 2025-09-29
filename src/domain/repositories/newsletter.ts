@@ -7,4 +7,5 @@ export type CreateNewsletterParams = {
 export abstract class NewsletterRepository {
   abstract create(params: CreateNewsletterParams): Promise<void>;
   abstract findByEmail(email: string): Promise<Newsletter | null>;
+  abstract findAll(): Promise<Newsletter[]>;
 }
