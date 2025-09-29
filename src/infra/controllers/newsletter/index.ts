@@ -29,7 +29,7 @@ export class NewsletterController {
   @ApiOperation({ summary: "Newsletter Subscription" })
   @ApiResponse({
     status: 201,
-    description: "Subscription successful",
+    description: "Subscription successful"
   })
   @ApiResponse({
     status: 409,
