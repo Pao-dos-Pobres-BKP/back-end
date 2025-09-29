@@ -34,6 +34,10 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   S3_BUCKET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  S3_URL: string;
 }
 
 export class EnvConfig {
