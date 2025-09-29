@@ -13,4 +13,8 @@ export class NewsletterRepositoryStub implements NewsletterRepository {
   async create(): Promise<void> {
     return null;
   }
+
+  async findAll(): Promise<Newsletter[]> {
+    return [];
+  }
 }
