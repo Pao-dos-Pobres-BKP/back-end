@@ -26,14 +26,14 @@ export class NewsletterController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: "Inscrição na newsletter" })
+  @ApiOperation({ summary: "Newsletter Subscription" })
   @ApiResponse({
     status: 201,
-    description: "Inscrição realizada com sucesso"
+    description: "Subscription successful",
   })
   @ApiResponse({
     status: 409,
-    description: "Email já inscrito na newsletter"
+    description: "Email already subscribed to the newsletter"
   })
   async subscribe(
     @Body() body: CreateNewsletterDto
@@ -43,7 +43,7 @@ export class NewsletterController {
 
   @Get()
   @ApiOperation({
-    summary: "Exportar inscrições na newsletter em .xlsx (Excel)"
+    summary: "Export newsletter subscriptions to Excel"
   })
   @Header(
     "Content-Type",
