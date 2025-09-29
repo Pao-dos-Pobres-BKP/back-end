@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCreatedResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString } from "class-validator";
 
 export class CreateFileResponse {
@@ -38,5 +38,6 @@ export class CreateFileDTO {
 }
 
 export const CreateFileResponses = applyDecorators(
-  ApiCreatedResponse({ description: "File created successfully" })
+  ApiCreatedResponse({ description: "File created successfully" }),
+  ApiOperation({ summary: "Upload a file" })
 );

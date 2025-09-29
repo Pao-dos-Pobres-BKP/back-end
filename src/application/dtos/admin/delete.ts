@@ -3,7 +3,8 @@ import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse
+  ApiForbiddenResponse,
+  ApiOperation
 } from "@nestjs/swagger";
 
 export const DeleteAdminResponses = applyDecorators(
@@ -18,5 +19,6 @@ export const DeleteAdminResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can delete other admins"
-  })
+  }),
+  ApiOperation({ summary: "Delete an administrator by ID" })
 );

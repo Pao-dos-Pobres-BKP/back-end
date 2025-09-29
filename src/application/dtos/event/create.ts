@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCreatedResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   IsDate,
@@ -70,5 +70,6 @@ export class CreateEventDTO {
 export const CreateEventResponses = applyDecorators(
   ApiCreatedResponse({
     description: "Event created successfully"
-  })
+  }),
+  ApiOperation({ summary: "Create a new event" })
 );

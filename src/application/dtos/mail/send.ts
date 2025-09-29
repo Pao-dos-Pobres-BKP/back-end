@@ -1,4 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiProperty,
+  ApiPropertyOptional
+} from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import {
   IsString,
@@ -10,6 +15,7 @@ import {
   ValidateNested
 } from "class-validator";
 import { Transform } from "class-transformer";
+import { applyDecorators } from "@nestjs/common";
 
 export class EmailTagDTO {
   @ApiProperty()
@@ -83,3 +89,10 @@ export class SendEmailDTO {
   @IsString()
   configurationSetName?: string;
 }
+
+export const SendEmailResponseDecorator = applyDecorators(
+  ApiCreatedResponse({
+    description: "Email sent successfully"
+  }),
+  ApiOperation({ summary: "Send an email" })
+);
