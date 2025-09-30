@@ -3,6 +3,7 @@ import {
   PaginationParams
 } from "@domain/constants/pagination";
 import { Campaign, CampaignStatus } from "@prisma/client";
+import { Gender } from "@domain/entities/gender-enum";
 
 export interface CreateCampaignParams {
   title: string;
@@ -40,6 +41,15 @@ export interface CampaignDetailsResponse {
   createdBy: string;
 }
 
+export interface DonorSocialDataResponse {
+  id: string;
+  fullName: string;
+  gender: Gender;
+  birthDate: Date;
+  state: string;
+  city: string;
+}
+
 export abstract class CampaignRepository {
   abstract create(params: CreateCampaignParams): Promise<void>;
   abstract findById(id: string): Promise<Campaign | null>;
@@ -51,4 +61,5 @@ export abstract class CampaignRepository {
   ): Promise<PaginatedEntity<CampaignDetailsResponse>>;
   abstract update(id: string, params: UpdateCampaignParams): Promise<void>;
   abstract delete(id: string): Promise<void>;
+  abstract findDonorsSocialDataByCampaign(campaignId: string): Promise<DonorSocialDataResponse[]>;
 }

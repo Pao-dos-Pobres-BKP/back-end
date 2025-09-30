@@ -2,7 +2,8 @@ import { PaginatedEntity } from "@domain/constants/pagination";
 import { Campaign } from "@prisma/client";
 import {
   CampaignRepository,
-  CampaignDetailsResponse
+  CampaignDetailsResponse,
+  DonorSocialDataResponse
 } from "@domain/repositories/campaign";
 
 export class CampaignRepositoryStub implements CampaignRepository {
@@ -25,6 +26,10 @@ export class CampaignRepositoryStub implements CampaignRepository {
   }
 
   async delete(): Promise<void> {
+    return;
+  }
+
+  async findDonorsSocialDataByCampaign(): Promise<DonorSocialDataResponse[]> {
     return;
   }
 }
