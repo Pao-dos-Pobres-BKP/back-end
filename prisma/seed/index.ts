@@ -3,6 +3,7 @@ import { clearDb } from "./clear-db";
 import { userDonorsMock } from "../mocks/user";
 import { eventsMock } from "../mocks/events";
 import { newsMock } from "../mocks/news";
+import { newsletterMock } from "prisma/mocks/newsletter";
 
 const prisma = new PrismaClient();
 
@@ -26,6 +27,12 @@ async function main(): Promise<void> {
   for (const newsData of newsMock) {
     await prisma.news.create({
       data: newsData
+    });
+  }
+
+  for (const newsletterData of newsletterMock) {
+    await prisma.newsletter.create({
+      data: newsletterData
     });
   }
 }

@@ -1,5 +1,5 @@
 import { applyDecorators } from "@nestjs/common";
-import { ApiCreatedResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 import { Min } from "class-validator";
 import {
   IsNotEmpty,
@@ -62,5 +62,6 @@ export class CreateDonationDTO {
 export const CreateDonationResponses = applyDecorators(
   ApiCreatedResponse({
     description: "Donation created successfully"
-  })
+  }),
+  ApiOperation({ summary: "Create a donation" })
 );

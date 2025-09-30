@@ -1,4 +1,7 @@
-import { PeriodMetricsDTO } from "@application/dtos/metrics/get-metrics";
+import {
+  GetMetricsResponseDTO,
+  PeriodMetricsDTO
+} from "@application/dtos/metrics/get-metrics";
 
 export interface Metrics {
   last_30_days: PeriodMetricsDTO;
@@ -6,5 +9,5 @@ export interface Metrics {
 }
 
 export abstract class MetricsRepository {
-  abstract getMetrics(days: number): Promise<PeriodMetricsDTO>;
+  abstract getMetrics(): Promise<GetMetricsResponseDTO>;
 }
