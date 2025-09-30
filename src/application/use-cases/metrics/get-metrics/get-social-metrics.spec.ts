@@ -1,4 +1,4 @@
-import { GetSocialMetricsUseCase } from "./get-social-metrics";
+import { GetSocialMetricsUseCase } from "../../metrics/get-metrics/get-social-metrics";
 import { SocialMetricsRepository } from "@domain/repositories/social-metrics";
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 

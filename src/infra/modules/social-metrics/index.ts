@@ -8,12 +8,11 @@ import { GetSocialMetricsUseCase } from "@application/use-cases/metrics/get-metr
 import { SocialMetricsRepository as ISocialMetricsRepository } from "@domain/repositories/social-metrics";
 import { SocialMetricsRepository } from "@infra/repositories/prisma/social-metrics";
 
-import { AuthTokenGuard } from "@infra/commons/guards/token";
-import { RoleGuard } from "@infra/commons/guards/role";
 import { PrismaService } from "@infra/config/prisma";
+import { TokenModule } from "@infra/modules/token"; 
 
 @Module({
-  imports: [DatabaseModule, ExceptionModule],
+  imports: [DatabaseModule, ExceptionModule, TokenModule], 
   controllers: [SocialMetricsController],
   providers: [
     GetSocialMetricsUseCase,
@@ -21,8 +20,6 @@ import { PrismaService } from "@infra/config/prisma";
       provide: ISocialMetricsRepository,
       useClass: SocialMetricsRepository,
     },
-    AuthTokenGuard,
-    RoleGuard,
     PrismaService,
   ],
 })
