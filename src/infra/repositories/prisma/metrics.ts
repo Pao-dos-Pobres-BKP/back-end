@@ -4,10 +4,14 @@ import {
   GetMetricsResponseDTO,
   PeriodMetricsDTO
 } from "@application/dtos/metrics/get-metrics";
+import {
+  MetricsRepository as IMetricsRepository,
+  DonorStatisticsData
+} from "@domain/repositories/metrics";
 import { Prisma } from "@prisma/client";
 
 @Injectable()
-export class MetricsRepository {
+export class MetricsRepository implements IMetricsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -62,5 +66,41 @@ export class MetricsRepository {
       average_ticket: Number(raw.average_ticket),
       new_donors: Number(raw.new_donors)
     };
+  }
+
+  async getCampaignDonorsStatistics(
+    campaignId: string
+  ): Promise<DonorStatisticsData[]> {
+    const donors = await this.prisma.donation.findMany({
+      where: {
+        campaignId: campaignId,
+        donorId: { not: null }
+      },
+      select: {
+        donor: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                fullName: true,
+                deletedAt: true
+              }
+            },
+            birthDate: true,
+            gender: true
+          }
+        }
+      },
+      distinct: ["donorId"]
+    });
+
+    return donors
+      .filter((donation) => donation.donor && donation.donor.user)
+      .map((donation) => ({
+        id: donation.donor!.id,
+        fullName: donation.donor!.user.fullName,
+        gender: donation.donor!.gender,
+        birthDate: donation.donor!.birthDate
+      }));
   }
 }

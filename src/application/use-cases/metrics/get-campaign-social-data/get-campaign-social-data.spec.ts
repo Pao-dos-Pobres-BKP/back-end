@@ -1,7 +1,9 @@
 import { CampaignRepository } from "@domain/repositories/campaign";
+import { MetricsRepository } from "@domain/repositories/metrics";
 import { createMockCampaign } from "@test/builders/campaign";
 import { createMockDonorsSocialDataList } from "@test/builders/donor-social-data";
 import { CampaignRepositoryStub } from "@test/stubs/repositories/campaign";
+import { MetricsRepositoryStub } from "@test/stubs/repositories/metrics";
 import { GetCampaignSocialDataUseCase } from "./get-campaign-social-data";
 import { Gender } from "@domain/entities/gender-enum";
 import { NotFoundException } from "@nestjs/common";
@@ -9,10 +11,12 @@ import { NotFoundException } from "@nestjs/common";
 describe("GetCampaignSocialDataUseCase", () => {
   let sut: GetCampaignSocialDataUseCase;
   let campaignRepository: CampaignRepository;
+  let metricsRepository: MetricsRepository;
 
   beforeEach(() => {
     campaignRepository = new CampaignRepositoryStub();
-    sut = new GetCampaignSocialDataUseCase(campaignRepository);
+    metricsRepository = new MetricsRepositoryStub();
+    sut = new GetCampaignSocialDataUseCase(campaignRepository, metricsRepository);
   });
 
   it("should throw an error when campaign is not found", async () => {
@@ -39,14 +43,14 @@ describe("GetCampaignSocialDataUseCase", () => {
 
     jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
     jest
-      .spyOn(campaignRepository, "findDonorsSocialDataByCampaign")
+      .spyOn(metricsRepository, "getCampaignDonorsStatistics")
       .mockResolvedValue(mockDonors);
 
     const result = await sut.execute(mockCampaign.id);
 
     expect(campaignRepository.findById).toHaveBeenCalledWith(mockCampaign.id);
     expect(
-      campaignRepository.findDonorsSocialDataByCampaign
+      metricsRepository.getCampaignDonorsStatistics
     ).toHaveBeenCalledWith(mockCampaign.id);
 
     expect(result.campaign).toBeDefined();
@@ -73,7 +77,7 @@ describe("GetCampaignSocialDataUseCase", () => {
 
     jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
     jest
-      .spyOn(campaignRepository, "findDonorsSocialDataByCampaign")
+      .spyOn(metricsRepository, "getCampaignDonorsStatistics")
       .mockResolvedValue(emptyDonors);
 
     const result = await sut.execute(mockCampaign.id);
@@ -99,7 +103,7 @@ describe("GetCampaignSocialDataUseCase", () => {
 
     jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
     jest
-      .spyOn(campaignRepository, "findDonorsSocialDataByCampaign")
+      .spyOn(metricsRepository, "getCampaignDonorsStatistics")
       .mockResolvedValue(mockDonors);
 
     const result = await sut.execute(mockCampaign.id);

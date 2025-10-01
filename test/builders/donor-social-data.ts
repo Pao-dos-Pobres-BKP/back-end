@@ -1,10 +1,10 @@
-import { DonorSocialDataResponse } from "@domain/repositories/campaign";
+import { DonorStatisticsData } from "@domain/repositories/metrics";
 import { Gender } from "@domain/entities/gender-enum";
 import { faker } from "@faker-js/faker";
 
 export const createMockDonorSocialData = (
-  override: Partial<DonorSocialDataResponse> = {}
-): DonorSocialDataResponse => ({
+  override: Partial<DonorStatisticsData> = {}
+): DonorStatisticsData => ({
   id: faker.string.uuid(),
   fullName: faker.person.fullName(),
   gender: faker.helpers.arrayElement(Object.values(Gender)),
@@ -14,7 +14,7 @@ export const createMockDonorSocialData = (
 
 export const createMockDonorsSocialDataList = (
   count: number = 5,
-  override: Partial<DonorSocialDataResponse> = {}
-): DonorSocialDataResponse[] => {
+  override: Partial<DonorStatisticsData> = {}
+): DonorStatisticsData[] => {
   return Array.from({ length: count }, () => createMockDonorSocialData(override));
 };

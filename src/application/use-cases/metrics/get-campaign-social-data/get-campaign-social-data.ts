@@ -4,15 +4,19 @@ import {
   AgeDistribution,
   CampaignInfo
 } from "@application/dtos/metrics/campaign-social-data";
+import { CampaignRepository } from "@domain/repositories/campaign";
 import {
-  CampaignRepository,
-  DonorSocialDataResponse
-} from "@domain/repositories/campaign";
+  MetricsRepository,
+  DonorStatisticsData
+} from "@domain/repositories/metrics";
 import { Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class GetCampaignSocialDataUseCase {
-  constructor(private readonly campaignRepository: CampaignRepository) {}
+  constructor(
+    private readonly campaignRepository: CampaignRepository,
+    private readonly metricsRepository: MetricsRepository
+  ) {}
 
   async execute(campaignId: string): Promise<CampaignSocialDataResponse> {
     const campaign = await this.campaignRepository.findById(campaignId);
@@ -21,7 +25,7 @@ export class GetCampaignSocialDataUseCase {
     }
 
     const donorsData =
-      await this.campaignRepository.findDonorsSocialDataByCampaign(campaignId);
+      await this.metricsRepository.getCampaignDonorsStatistics(campaignId);
 
     const genderDistribution = this.calculateGenderDistribution(donorsData);
 
@@ -76,7 +80,7 @@ export class GetCampaignSocialDataUseCase {
   }
 
   private calculateGenderDistribution(
-    donors: DonorSocialDataResponse[]
+    donors: DonorStatisticsData[]
   ): GenderDistribution[] {
     const genderCounts = donors.reduce(
       (acc, donor) => {
@@ -94,7 +98,7 @@ export class GetCampaignSocialDataUseCase {
   }
 
   private calculateAgeDistribution(
-    donors: DonorSocialDataResponse[]
+    donors: DonorStatisticsData[]
   ): AgeDistribution[] {
     const ageCounts = donors.reduce(
       (acc, donor) => {

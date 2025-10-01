@@ -1,5 +1,10 @@
 import { MetricsRepository } from "@domain/repositories/metrics";
-import { GetMetricsResponseDTO, PeriodMetricsDTO } from "@application/dtos/metrics/get-metrics";
+import {
+  GetMetricsResponseDTO,
+  PeriodMetricsDTO
+} from "@application/dtos/metrics/get-metrics";
+import { DonorStatisticsData } from "@domain/repositories/metrics";
+import { Gender } from "@domain/entities/gender-enum";
 
 export class MetricsRepositoryStub implements MetricsRepository {
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -21,5 +26,33 @@ export class MetricsRepositoryStub implements MetricsRepository {
       },
       last_365_days: mockPeriodData
     };
+  }
+
+  async getCampaignDonorsStatistics(
+    campaignId: string
+  ): Promise<DonorStatisticsData[]> {
+    if (campaignId === "empty-campaign") {
+      return [];
+    }
+    return [
+      {
+        id: "donor-1",
+        fullName: "João Silva",
+        gender: Gender.MALE,
+        birthDate: new Date("1990-05-15")
+      },
+      {
+        id: "donor-2",
+        fullName: "Maria Santos",
+        gender: Gender.FEMALE,
+        birthDate: new Date("1985-08-22")
+      },
+      {
+        id: "donor-3",
+        fullName: "Carlos Oliveira",
+        gender: Gender.MALE,
+        birthDate: new Date("1995-12-10")
+      }
+    ];
   }
 }

@@ -2,8 +2,7 @@ import {
   CampaignRepository,
   CreateCampaignParams,
   UpdateCampaignParams,
-  CampaignDetailsResponse,
-  DonorSocialDataResponse
+  CampaignDetailsResponse
 } from "@domain/repositories/campaign";
 import { PrismaService } from "@infra/config/prisma";
 import { CampaignMapper } from "@infra/mappers/prisma/campaign-mapper";
@@ -133,39 +132,5 @@ export class PrismaCampaignRepository implements CampaignRepository {
     await this.prisma.campaign.delete({
       where: { id }
     });
-  }
-
-  async findDonorsSocialDataByCampaign(campaignId: string): Promise<DonorSocialDataResponse[]> {
-    const donors = await this.prisma.donation.findMany({
-      where: { 
-        campaignId: campaignId,
-        donorId: { not: null }
-      },
-      select: {
-        donor: {
-          select: {
-            id: true,
-            user: {
-              select: {
-                fullName: true,
-                deletedAt: true
-              }
-            },
-            birthDate: true,
-            gender: true
-          }
-        }
-      },
-      distinct: ['donorId'] 
-    });
-
-    return donors
-      .filter(donation => donation.donor && donation.donor.user)
-      .map(donation => ({
-        id: donation.donor!.id,
-        fullName: donation.donor!.user.fullName,
-        gender: donation.donor!.gender,
-        birthDate: donation.donor!.birthDate
-      }));
   }
 }
