@@ -9,8 +9,6 @@ export const createMockDonorSocialData = (
   fullName: faker.person.fullName(),
   gender: faker.helpers.arrayElement(Object.values(Gender)),
   birthDate: faker.date.birthdate({ min: 18, max: 80, mode: 'age' }),
-  state: faker.location.state({ abbreviated: true }),
-  city: faker.location.city(),
   ...override
 });
 

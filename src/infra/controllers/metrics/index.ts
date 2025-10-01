@@ -5,11 +5,11 @@ import {
   FindGlobalMetricsResponse,
   GetMetricsResponseDTO
 } from "@application/dtos/metrics/get-metrics";
-import { GetCampaignSocialDataUseCase } from "@application/use-cases/campaign/social-data/get-campaign-social-data";
+import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
 import {
   CampaignSocialDataResponse,
   GetCampaignSocialDataResponses
-} from "@application/dtos/campaign/social-data";
+} from "@application/dtos/metrics/campaign-social-data";
 
 @ApiTags("Metrics")
 @Controller("metrics")

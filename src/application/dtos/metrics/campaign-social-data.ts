@@ -84,18 +84,6 @@ export class DonorSocialData {
     example: "25-35"
   })
   ageRange: string;
-
-  @ApiProperty({
-    description: "State where the donor lives",
-    example: "RS"
-  })
-  state: string;
-
-  @ApiProperty({
-    description: "City where the donor lives",
-    example: "Porto Alegre"
-  })
-  city: string;
 }
 
 export class GenderDistribution {
@@ -124,32 +112,6 @@ export class AgeDistribution {
     example: 8
   })
   count: number;
-}
-
-export class LocationDistribution {
-  @ApiProperty({
-    description: "State code",
-    example: "RS"
-  })
-  state: string;
-
-  @ApiProperty({
-    description: "City name",
-    example: "Porto Alegre"
-  })
-  city: string;
-
-  @ApiProperty({
-    description: "Count of donors from this location",
-    example: 12
-  })
-  count: number;
-
-  @ApiProperty({
-    description: "Percentage of donors from this location",
-    example: 52.2
-  })
-  percentage: number;
 }
 
 export class CampaignSocialDataResponse {

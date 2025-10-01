@@ -46,8 +46,6 @@ export interface DonorSocialDataResponse {
   fullName: string;
   gender: Gender;
   birthDate: Date;
-  state: string;
-  city: string;
 }
 
 export abstract class CampaignRepository {

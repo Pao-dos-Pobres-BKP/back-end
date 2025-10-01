@@ -29,15 +29,11 @@ describe("GetCampaignSocialDataUseCase", () => {
     const mockDonors = [
       ...createMockDonorsSocialDataList(3, {
         gender: Gender.MALE,
-        birthDate: new Date("1990-01-01"),
-        state: "RS",
-        city: "Porto Alegre"
+        birthDate: new Date("1990-01-01")
       }),
       ...createMockDonorsSocialDataList(2, {
         gender: Gender.FEMALE,
-        birthDate: new Date("1985-01-01"),
-        state: "SP",
-        city: "São Paulo"
+        birthDate: new Date("1985-01-01")
       })
     ];
 

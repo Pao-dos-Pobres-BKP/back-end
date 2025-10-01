@@ -3,7 +3,7 @@ import { DatabaseModule } from "../database";
 import { ExceptionModule } from "../exception";
 import { MetricsController } from "@infra/controllers/metrics/index";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
-import { GetCampaignSocialDataUseCase } from "@application/use-cases/campaign/social-data/get-campaign-social-data";
+import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
 import { MetricsRepository as IMetricsRepository } from "@domain/repositories/metrics";
 import { MetricsRepository } from "@infra/repositories/prisma/metrics";
 import { CampaignRepository } from "@domain/repositories/campaign";

@@ -3,7 +3,7 @@ import {
   GenderDistribution,
   AgeDistribution,
   CampaignInfo
-} from "@application/dtos/campaign/social-data";
+} from "@application/dtos/metrics/campaign-social-data";
 import {
   CampaignRepository,
   DonorSocialDataResponse
@@ -27,20 +27,17 @@ export class GetCampaignSocialDataUseCase {
 
     const ageDistribution = this.calculateAgeDistribution(donorsData);
 
+    const targetAmount = Number(campaign.targetAmount);
+    const currentAmount = Number(campaign.currentAmount);
+    const percentage = targetAmount > 0
+      ? Number(((currentAmount / targetAmount) * 100).toFixed(3))
+      : 0;
+
     const campaignInfo: CampaignInfo = {
       description: campaign.description,
-      targetAmount: Number(campaign.targetAmount),
-      currentAmount: Number(campaign.currentAmount),
-      percentage:
-        Number(campaign.targetAmount) > 0
-          ? Number(
-              (
-                (Number(campaign.currentAmount) /
-                  Number(campaign.targetAmount)) *
-                100
-              ).toFixed(3)
-            )
-          : 0,
+      targetAmount,
+      currentAmount,
+      percentage,
       startDate: campaign.startDate,
       endDate: campaign.endDate,
       imageUrl: campaign.imageUrl,
@@ -84,13 +81,13 @@ export class GetCampaignSocialDataUseCase {
     const genderCounts = donors.reduce(
       (acc, donor) => {
         const genderLower = donor.gender.toLowerCase();
-        acc[genderLower] = (acc[genderLower] || 0) + 1;
+        acc.set(genderLower, (acc.get(genderLower) || 0) + 1);
         return acc;
       },
-      {} as Record<string, number>
+      new Map<string, number>()
     );
 
-    return Object.entries(genderCounts).map(([gender, count]) => ({
+    return Array.from(genderCounts.entries()).map(([gender, count]) => ({
       gender,
       count
     }));
@@ -103,13 +100,13 @@ export class GetCampaignSocialDataUseCase {
       (acc, donor) => {
         const age = this.calculateAge(donor.birthDate);
         const ageRange = this.getAgeRange(age);
-        acc[ageRange] = (acc[ageRange] || 0) + 1;
+        acc.set(ageRange, (acc.get(ageRange) || 0) + 1);
         return acc;
       },
-      {} as Record<string, number>
+      new Map<string, number>()
     );
 
-    return Object.entries(ageCounts).map(([ageRange, count]) => ({
+    return Array.from(ageCounts.entries()).map(([ageRange, count]) => ({
       ageRange,
       count
     }));

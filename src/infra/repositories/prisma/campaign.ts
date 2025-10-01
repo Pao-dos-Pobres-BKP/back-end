@@ -152,14 +152,7 @@ export class PrismaCampaignRepository implements CampaignRepository {
               }
             },
             birthDate: true,
-            gender: true,
-            address: {
-              select: {
-                state: true,
-                city: true
-              },
-              take: 1 
-            }
+            gender: true
           }
         }
       },
@@ -172,9 +165,7 @@ export class PrismaCampaignRepository implements CampaignRepository {
         id: donation.donor!.id,
         fullName: donation.donor!.user.fullName,
         gender: donation.donor!.gender,
-        birthDate: donation.donor!.birthDate,
-        state: donation.donor!.address[0]?.state || 'N/A',
-        city: donation.donor!.address[0]?.city || 'N/A'
+        birthDate: donation.donor!.birthDate
       }));
   }
 }
