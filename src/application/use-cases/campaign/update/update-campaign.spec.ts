@@ -163,8 +163,8 @@ describe("UpdateCampaignUseCase", () => {
       description: "Updated Description",
       targetAmount: 2000,
       currentAmount: 1000,
-      startDate: new Date("2025-10-01"),
-      endDate: new Date("2025-12-31"),
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-12-31"),
       imageUrl: "http://example.com/updated-image.jpg"
     };
 
