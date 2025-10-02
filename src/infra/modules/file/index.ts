@@ -30,6 +30,6 @@ import { FileController } from "@infra/controllers/file";
     DeleteFileUseCase,
     FindFileByIdUseCase
   ],
-  exports: [CreateFileUseCase, DeleteFileUseCase]
+  exports: [CreateFileUseCase, DeleteFileUseCase, S3IntegrationHelper, S3Client]
 })
 export class FileModule {}
