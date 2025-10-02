@@ -18,6 +18,26 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   JWT_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  AWS_REGION: string;
+
+  @IsString()
+  @IsNotEmpty()
+  MAIL_FROM: string;
+
+  @IsString()
+  @IsNotEmpty()
+  MAIL_REPLY_TO: string;
+
+  @IsString()
+  @IsNotEmpty()
+  S3_BUCKET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  S3_URL: string;
 }
 
 export class EnvConfig {
