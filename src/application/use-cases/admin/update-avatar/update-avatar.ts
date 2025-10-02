@@ -3,15 +3,13 @@ import { AdminRepository } from "@domain/repositories/admin";
 import { Injectable } from "@nestjs/common";
 import { CreateFileDTO } from "@application/dtos/file/create";
 import { CreateFileUseCase } from "src/application/use-cases/file/create/create-file";
-import { DeleteFileUseCase } from "@application/use-cases/file/delete/delete-file";
 
 @Injectable()
 export class UpdateAdminAvatarUseCase {
   constructor(
     private readonly adminRepository: AdminRepository,
     private readonly exceptionService: ExceptionsAdapter,
-    private readonly createFileUseCase: CreateFileUseCase,
-    private readonly deleteFileUseCase: DeleteFileUseCase
+    private readonly createFileUseCase: CreateFileUseCase
   ) {}
 
   async execute(id: string, file: CreateFileDTO): Promise<void> {
@@ -23,7 +21,6 @@ export class UpdateAdminAvatarUseCase {
       });
     }
     const avatar = await this.createFileUseCase.execute(file);
-    await this.deleteFileUseCase.execute(admin.imageUrl);
-    await this.adminRepository.update(id, { imageUrl: avatar.key });
+    await this.adminRepository.update(id, { imageUrl: avatar.url });
   }
 }
