@@ -2,18 +2,18 @@ import {
   SendEmailDTO,
   SendEmailResponseDecorator
 } from "@application/dtos/mail/send";
-import { MailAdapter } from "@domain/adapters/mail";
+import { QueueAdapter } from "@domain/adapters/queue";
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Mail")
 @Controller("mail")
 export class MailController {
-  constructor(private readonly mailIntegration: MailAdapter) {}
+  constructor(private readonly queueIntegration: QueueAdapter) {}
 
   @Post("send")
   @SendEmailResponseDecorator
   async sendEmail(@Body() mail: SendEmailDTO): Promise<void> {
-    await this.mailIntegration.sendMail(mail.to, mail.subject, mail.html);
+    await this.queueIntegration.addJob("send-email", mail);
   }
 }
