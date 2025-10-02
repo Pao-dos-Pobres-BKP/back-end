@@ -38,6 +38,26 @@ class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   S3_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  QUEUE_ATTEMPTS: number;
+
+  @IsString()
+  @IsNotEmpty()
+  QUEUE_DELAY_BETWEEN_ATTEMPTS: number;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_HOST: string;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_PORT: number;
+
+  @IsOptional()
+  @IsString()
+  REDIS_PASS?: string;
 }
 
 export class EnvConfig {

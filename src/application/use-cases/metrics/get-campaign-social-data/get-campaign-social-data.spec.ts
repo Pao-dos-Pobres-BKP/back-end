@@ -16,7 +16,10 @@ describe("GetCampaignSocialDataUseCase", () => {
   beforeEach(() => {
     campaignRepository = new CampaignRepositoryStub();
     metricsRepository = new MetricsRepositoryStub();
-    sut = new GetCampaignSocialDataUseCase(campaignRepository, metricsRepository);
+    sut = new GetCampaignSocialDataUseCase(
+      campaignRepository,
+      metricsRepository
+    );
   });
 
   it("should throw an error when campaign is not found", async () => {
@@ -49,9 +52,9 @@ describe("GetCampaignSocialDataUseCase", () => {
     const result = await sut.execute(mockCampaign.id);
 
     expect(campaignRepository.findById).toHaveBeenCalledWith(mockCampaign.id);
-    expect(
-      metricsRepository.getCampaignDonorsStatistics
-    ).toHaveBeenCalledWith(mockCampaign.id);
+    expect(metricsRepository.getCampaignDonorsStatistics).toHaveBeenCalledWith(
+      mockCampaign.id
+    );
 
     expect(result.campaign).toBeDefined();
     expect(result.campaign.description).toBe(mockCampaign.description);
