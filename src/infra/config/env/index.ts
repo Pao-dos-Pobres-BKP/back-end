@@ -37,6 +37,10 @@ class EnvironmentVariables {
 
   @IsString()
   @IsNotEmpty()
+  S3_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
   QUEUE_ATTEMPTS: number;
 
   @IsString()

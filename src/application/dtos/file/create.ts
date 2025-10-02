@@ -9,6 +9,10 @@ export class CreateFileResponse {
   @IsString()
   key: string;
 
+  @ApiProperty({ description: "The public URL of the uploaded file." })
+  @IsString()
+  url: string;
+
   @ApiProperty({ description: "The MIME type of the file." })
   @IsString()
   contentType: string;
