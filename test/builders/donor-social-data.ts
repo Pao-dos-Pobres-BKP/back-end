@@ -8,7 +8,7 @@ export const createMockDonorSocialData = (
   id: faker.string.uuid(),
   fullName: faker.person.fullName(),
   gender: faker.helpers.arrayElement(Object.values(Gender)),
-  birthDate: faker.date.birthdate({ min: 18, max: 80, mode: 'age' }),
+  birthDate: faker.date.birthdate({ min: 18, max: 80, mode: "age" }),
   ...override
 });
 
@@ -16,5 +16,7 @@ export const createMockDonorsSocialDataList = (
   count: number = 5,
   override: Partial<DonorStatisticsData> = {}
 ): DonorStatisticsData[] => {
-  return Array.from({ length: count }, () => createMockDonorSocialData(override));
+  return Array.from({ length: count }, () =>
+    createMockDonorSocialData(override)
+  );
 };
