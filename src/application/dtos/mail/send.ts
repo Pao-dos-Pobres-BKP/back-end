@@ -4,7 +4,7 @@ import {
   ApiProperty,
   ApiPropertyOptional
 } from "@nestjs/swagger";
-import { IsString, IsEmail, Length } from "class-validator";
+import { IsString, IsEmail, Length, IsOptional, IsArray } from "class-validator";
 import { applyDecorators } from "@nestjs/common";
 
 export class SendEmailDTO {
@@ -20,6 +20,41 @@ export class SendEmailDTO {
   @ApiPropertyOptional({ description: "HTML content of the email" })
   @IsString()
   html: string;
+
+  @ApiPropertyOptional({ description: "CC recipients" })
+  @IsOptional()
+  cc?: string | string[];
+
+  @ApiPropertyOptional({ description: "BCC recipients" })
+  @IsOptional()
+  bcc?: string | string[];
+
+  @ApiPropertyOptional({ description: "Reply-to addresses" })
+  @IsOptional()
+  replyTo?: string | string[];
+
+  @ApiPropertyOptional({ description: "Plain text content of the email" })
+  @IsOptional()
+  @IsString()
+  text?: string;
+
+  @ApiPropertyOptional({ description: "Configuration set name" })
+  @IsOptional()
+  @IsString()
+  configurationSetName?: string;
+
+  @ApiPropertyOptional({ description: "Email tags" })
+  @IsOptional()
+  @IsArray()
+  tags?: Array<{
+    name: string;
+    value: string;
+  }>;
+
+  @ApiPropertyOptional({ description: "Sender email address" })
+  @IsOptional()
+  @IsEmail()
+  from?: string;
 }
 
 export const SendEmailResponseDecorator = applyDecorators(
