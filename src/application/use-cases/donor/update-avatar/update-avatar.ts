@@ -2,7 +2,7 @@ import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonorRepository } from "@domain/repositories/donor";
 import { Injectable } from "@nestjs/common";
 import { CreateFileDTO } from "@application/dtos/file/create";
-import { CreateFileUseCase } from "@application/use-cases/file/create/create-file";
+import { CreateFileUseCase } from "../../file/create/create-file";
 
 @Injectable()
 export class UpdateDonorAvatarUseCase {
