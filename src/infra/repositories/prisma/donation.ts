@@ -25,6 +25,13 @@ export class PrismaDonationRepository implements DonationRepository {
     return DonationMapper.toDomain(donation);
   }
 
+  async findAllByCampaign(campaignId: string): Promise<Donation[]> {
+    const donations = await this.prisma.donation.findMany({
+      where: { campaignId }
+    });
+    return donations.map(DonationMapper.toDomain);
+  }
+
   async findAllByDonor(
     donorId: string,
     { page, pageSize }: PaginationParams
