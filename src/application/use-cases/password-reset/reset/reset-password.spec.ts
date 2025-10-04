@@ -3,7 +3,7 @@ import { ResetPasswordUseCase } from "./reset-password";
 import { DonorRepository } from "@domain/repositories/donor";
 import { AdminRepository } from "@domain/repositories/admin";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
-import { ExceptionsServiceStub } from "test/stubs/adapters/exceptions";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
 describe("ResetPassword", () => {
