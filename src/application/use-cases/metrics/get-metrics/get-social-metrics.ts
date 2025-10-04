@@ -4,12 +4,10 @@ import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-socia
 
 @Injectable()
 export class GetSocialMetricsUseCase {
-  constructor(
-    @Inject(SocialMetricsRepository)
-    private readonly socialMetricsRepository: SocialMetricsRepository
-  ) {}
+  constructor(private readonly repo: SocialMetricsRepository) {}
 
-  async execute(): Promise<GetSocialMetricsResponseDTO> {
-    return this.socialMetricsRepository.getSocialMetrics();
+  async execute(days: number): Promise<GetSocialMetricsResponseDTO> {
+    return await this.repo.getSocialMetrics(days);
   }
 }
+

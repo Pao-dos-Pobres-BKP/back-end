@@ -12,8 +12,6 @@ import { NewsModule } from "../news";
 import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
-import { SocialMetricsModule } from "../social-metrics";
-
 
 //Metrics Module está quebrada.
 
@@ -35,7 +33,7 @@ import { SocialMetricsModule } from "../social-metrics";
     NewsModule,
     CampaignModule,
     NewsletterModule,
-    SocialMetricsModule
+    MetricsModule
   ]
 })
 export class AppModule {}

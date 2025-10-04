@@ -7,26 +7,25 @@ import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-socia
 export class SocialMetricsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getSocialMetrics(): Promise<GetSocialMetricsResponseDTO> {
+  async getSocialMetrics(days: number): Promise<GetSocialMetricsResponseDTO> {
     type RawGenderResult = { gender: string | null; count: string | number | null };
     type RawAgeResult = { age_range: string | null; count: string | number | null };
 
-          const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
-        SELECT 
-          d.gender::text AS gender,  
-          COUNT(*)::int AS count
-        FROM donors d
-        JOIN users u ON u.id = d.id
-        WHERE u.deleted_at IS NULL
-          AND EXISTS (
-            SELECT 1
-            FROM donations dn
-            WHERE dn.donor_id = d.id
-              AND dn.created_at >= NOW() - INTERVAL '365 days'
-          )
-        GROUP BY d.gender
-      `);
-
+    const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
+      SELECT 
+        d.gender::text AS gender,  
+        COUNT(*)::int AS count
+      FROM donors d
+      JOIN users u ON u.id = d.id
+      WHERE u.deleted_at IS NULL
+        AND EXISTS (
+          SELECT 1
+          FROM donations dn
+          WHERE dn.donor_id = d.id
+            AND dn.created_at >= NOW() - INTERVAL '${days} days'
+        )
+      GROUP BY d.gender
+    `);
 
     const ageRows = await this.prisma.$queryRawUnsafe<RawAgeResult[]>(`
       SELECT
@@ -44,7 +43,7 @@ export class SocialMetricsRepository {
           SELECT 1
           FROM donations dn
           WHERE dn.donor_id = d.id
-            AND dn.created_at >= NOW() - INTERVAL '365 days'
+            AND dn.created_at >= NOW() - INTERVAL '${days} days'
         )
       GROUP BY age_range
       ORDER BY age_range
