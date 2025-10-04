@@ -11,7 +11,7 @@ interface ResetPasswordParams {
 }
 
 @Injectable()
-export class ResetPassword {
+export class ResetPasswordUseCase {
   constructor(
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
     private readonly donorRepository: DonorRepository,

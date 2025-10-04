@@ -1,17 +1,24 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { RequestPasswordReset } from "./request-password-reset";
+import { RequestPasswordResetUseCase } from "./request-password-reset";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
 import { ExceptionsServiceStub } from "test/stubs/adapters/exceptions";
+import { SendEmailUseCase } from "@application/use-cases/mail/send/send-email";
 import * as bcrypt from "bcryptjs";
 
 describe("RequestPasswordReset", () => {
-  let service: RequestPasswordReset;
+  let service: RequestPasswordResetUseCase;
   let userRepository: Partial<UserRepository>;
   let tokenRepository: Partial<PasswordResetTokenRepository>;
+  let sendEmailUseCase: Partial<SendEmailUseCase>;
   let exceptions: ExceptionsServiceStub;
 
-  const user = { id: "user-123", email: "test@example.com" };
+  const email = "test@example.com";
+  const user = {
+    id: "user-id",
+    email,
+    fullName: "Test User"
+  };
 
   beforeEach(async () => {
     userRepository = {
@@ -23,54 +30,66 @@ describe("RequestPasswordReset", () => {
       create: jest.fn()
     };
 
+    sendEmailUseCase = {
+      execute: jest.fn()
+    };
+
     exceptions = new ExceptionsServiceStub();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        RequestPasswordReset,
+        RequestPasswordResetUseCase,
         { provide: UserRepository, useValue: userRepository },
         { provide: PasswordResetTokenRepository, useValue: tokenRepository },
+        { provide: SendEmailUseCase, useValue: sendEmailUseCase },
         { provide: "ExceptionsAdapter", useValue: exceptions }
       ]
     }).compile();
 
-    service = module.get(RequestPasswordReset);
+    service = module.get(RequestPasswordResetUseCase);
 
     jest.spyOn(bcrypt, "hash").mockResolvedValue("hashed-code" as never);
-    jest.spyOn(console, "log").mockImplementation(() => {});
   });
 
-  it("deve lançar exceção se o usuário não for encontrado", async () => {
+  it("should raise an exception if the user is not found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.execute("invalid@example.com")).rejects.toThrow(
-      "Usuário não encontrado."
-    );
+    await expect(service.execute(email)).rejects.toThrow("User not found.");
   });
 
-  it("deve lançar exceção se já houver uma solicitação recente", async () => {
+  it("should raise an exception if there has been a recent request", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(1);
 
-    await expect(service.execute(user.email)).rejects.toThrow(
-      "Já existe uma solicitação recente. Aguarde o código expirar."
+    await expect(service.execute(email)).rejects.toThrow(
+      "There already is a recent request. Wait for the token to expire."
     );
   });
 
-  it("deve gerar e salvar o token se não houver solicitações recentes", async () => {
+  it("should create token and send e-mail if there are not any recent requests", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(0);
 
-    await service.execute(user.email);
+    const createSpy = jest.spyOn(tokenRepository, "create");
+    const emailSpy = jest.spyOn(sendEmailUseCase, "execute");
 
-    expect(tokenRepository.create).toHaveBeenCalledWith(
+    await service.execute(email);
+
+    expect(createSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: user.id,
-        tokenHash: "hashed-code"
+        tokenHash: "hashed-code",
+        expiresAt: expect.any(Date)
       })
     );
-    expect(console.log).toHaveBeenCalledWith(
-      expect.stringContaining("Código de recuperação para")
+
+    expect(emailSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: [email],
+        subject: "Recuperação de Senha",
+        html: expect.stringContaining("Feliz Dia de Santo Antônio"),
+        text: expect.stringContaining("Seu código de recuperação é:")
+      })
     );
   });
 });

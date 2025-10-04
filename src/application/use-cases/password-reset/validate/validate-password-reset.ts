@@ -1,25 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
-import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
+import { UserRepository } from "@domain/repositories/user";
 import * as bcrypt from "bcryptjs";
 
-interface ValidatePasswordResetParams {
-  email: string;
-  code: string;
-}
-
 @Injectable()
-export class ValidatePasswordReset {
+export class ValidatePasswordResetUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
     private readonly exceptions: ExceptionsAdapter
   ) {}
 
-  async execute(params: ValidatePasswordResetParams): Promise<void> {
-    const { email, code } = params;
-
+  async execute(email: string, code: string): Promise<void> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       this.exceptions.notFound({
@@ -27,29 +20,28 @@ export class ValidatePasswordReset {
       });
     }
 
-    const latestToken =
+    const token =
       await this.passwordResetTokenRepository.findLatestValidTokenByUserId(
         user.id
       );
-    if (!latestToken) {
-      this.exceptions.notFound({
-        message: "Nenhum código de recuperação encontrado para este usuário."
+    if (!token) {
+      this.exceptions.badRequest({
+        message: "Nenhuma solicitação de recuperação encontrada."
       });
     }
 
-    if (latestToken.expiresAt <= new Date()) {
+    const isValid = await bcrypt.compare(code, token.token);
+    if (!isValid) {
+      this.exceptions.badRequest({
+        message: "Código inválido."
+      });
+    }
+
+    const now = new Date();
+    if (token.expiresAt < now) {
       this.exceptions.badRequest({
         message: "O código de recuperação expirou."
       });
     }
-
-    const isCodeValid = await bcrypt.compare(code, latestToken.token);
-    if (!isCodeValid) {
-      this.exceptions.badRequest({
-        message: "Código de recuperação inválido."
-      });
-    }
-
-    await this.passwordResetTokenRepository.markAsUsed(latestToken.id);
   }
 }

@@ -12,6 +12,7 @@ import { NewsModule } from "../news";
 import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
+import { PasswordResetModule } from "../password-reset";
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { NewsletterModule } from "../newsletter";
     MailModule,
     NewsModule,
     CampaignModule,
-    NewsletterModule
+    NewsletterModule,
+    PasswordResetModule
   ]
 })
 export class AppModule {}
