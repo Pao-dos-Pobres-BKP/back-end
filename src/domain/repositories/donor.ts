@@ -26,6 +26,7 @@ export interface UpdateDonorParams {
   gender?: Gender;
   phone?: string;
   cpf?: string;
+  imageUrl?: string;
 }
 
 export interface DonorDetailsResponse {

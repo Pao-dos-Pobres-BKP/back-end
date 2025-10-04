@@ -23,13 +23,11 @@ export class CreateFileUseCase {
       Bucket: this.s3Helper.bucket(),
       Key,
       Body: file.buffer,
-      ContentType: file.mimetype || "application/octet-stream",
-      ACL: "public-read"
+      ContentType: file.mimetype || "application/octet-stream"
     };
     await this.s3.send(new PutObjectCommand(params));
 
     const url = this.s3Helper.publicUrl(Key);
-
     return {
       key: Key,
       contentType: file.mimetype || "application/octet-stream",
