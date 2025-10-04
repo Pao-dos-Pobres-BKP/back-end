@@ -16,7 +16,7 @@ export class MetricsController {
   @Get()
   @ApiOkResponse({
     type: GetMetricsResponseDTO,
-    description: "Retorna métricas globais para o dashboard",
+    description: "Retorna métricas globais para o dashboard"
   })
   async getMetrics(): Promise<GetMetricsResponseDTO> {
     return await this.getMetricsUseCase.execute();
@@ -26,7 +26,7 @@ export class MetricsController {
   @ApiQuery({ name: "days", required: false, example: 365 })
   @ApiOkResponse({
     type: GetSocialMetricsResponseDTO,
-    description: "Retorna distribuição de doadores por gênero e faixa etária",
+    description: "Retorna distribuição de doadores por gênero e faixa etária"
   })
   async getSocialMetrics(
     @Query("days") days = 365

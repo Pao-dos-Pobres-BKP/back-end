@@ -8,8 +8,14 @@ export class SocialMetricsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSocialMetrics(days: number): Promise<GetSocialMetricsResponseDTO> {
-    type RawGenderResult = { gender: string | null; count: string | number | null };
-    type RawAgeResult = { age_range: string | null; count: string | number | null };
+    type RawGenderResult = {
+      gender: string | null;
+      count: string | number | null;
+    };
+    type RawAgeResult = {
+      age_range: string | null;
+      count: string | number | null;
+    };
 
     const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
       SELECT 

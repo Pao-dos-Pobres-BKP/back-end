@@ -31,7 +31,7 @@ describe("GetSocialMetricsUseCase", () => {
   });
 
   it("should return social metrics (gender and age distributions)", async () => {
-    const result = await getSocialMetricsUseCase.execute();
+    const result = await getSocialMetricsUseCase.execute(30);
 
     expect(result).toEqual(mockResponse);
     expect(socialMetricsRepository.getSocialMetrics).toHaveBeenCalledTimes(1);

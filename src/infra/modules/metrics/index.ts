@@ -21,15 +21,15 @@ import { TokenModule } from "../token";
     GetSocialMetricsUseCase,
     {
       provide: IMetricsRepository,
-      useClass: MetricsRepository,
+      useClass: MetricsRepository
     },
     {
       provide: ISocialMetricsRepository,
-      useClass: SocialMetricsRepository,
+      useClass: SocialMetricsRepository
     },
     AuthTokenGuard,
     RoleGuard,
-    PrismaService,
-  ],
+    PrismaService
+  ]
 })
 export class MetricsModule {}

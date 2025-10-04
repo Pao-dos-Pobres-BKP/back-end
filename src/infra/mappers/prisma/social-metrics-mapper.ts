@@ -18,12 +18,12 @@ export class SocialMetricsMapper {
     return {
       genderDistribution: genderRows.map((g) => ({
         gender: g.gender ?? "other",
-        count: Number(g.count) || 0,
+        count: Number(g.count) || 0
       })),
       ageDistribution: ageRows.map((a) => ({
         ageRange: a.age_range ?? "unknown",
-        count: Number(a.count) || 0,
-      })),
+        count: Number(a.count) || 0
+      }))
     };
   }
 }

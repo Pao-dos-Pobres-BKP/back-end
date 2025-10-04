@@ -10,4 +10,3 @@ export class GetSocialMetricsUseCase {
     return await this.repo.getSocialMetrics(days);
   }
 }
-
