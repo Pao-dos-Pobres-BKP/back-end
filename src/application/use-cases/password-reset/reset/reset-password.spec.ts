@@ -1,4 +1,3 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { ResetPasswordUseCase } from "./reset-password";
 import { DonorRepository } from "@domain/repositories/donor";
 import { AdminRepository } from "@domain/repositories/admin";
@@ -7,11 +6,11 @@ import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
 describe("ResetPassword", () => {
-  let service: ResetPasswordUseCase;
-  let donorRepository: Partial<DonorRepository>;
-  let adminRepository: Partial<AdminRepository>;
-  let tokenRepository: Partial<PasswordResetTokenRepository>;
+  let donorRepository: DonorRepository;
+  let adminRepository: AdminRepository;
+  let tokenRepository: PasswordResetTokenRepository;
   let exceptions: ExceptionsServiceStub;
+  let useCase: ResetPasswordUseCase;
 
   const email = "test@example.com";
   const donorUser = { id: "donor-id", email };
@@ -22,83 +21,77 @@ describe("ResetPassword", () => {
     expiresAt: new Date(Date.now() + 5 * 60 * 1000)
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     donorRepository = {
       findByEmail: jest.fn(),
       update: jest.fn()
-    };
+    } as unknown as DonorRepository;
 
     adminRepository = {
       findByEmail: jest.fn(),
       update: jest.fn()
-    };
+    } as unknown as AdminRepository;
 
     tokenRepository = {
       findLatestValidTokenByUserId: jest.fn(),
       markAsUsed: jest.fn()
-    };
+    } as unknown as PasswordResetTokenRepository;
 
     exceptions = new ExceptionsServiceStub();
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ResetPasswordUseCase,
-        { provide: DonorRepository, useValue: donorRepository },
-        { provide: AdminRepository, useValue: adminRepository },
-        { provide: PasswordResetTokenRepository, useValue: tokenRepository },
-        { provide: "ExceptionsAdapter", useValue: exceptions }
-      ]
-    }).compile();
+    useCase = new ResetPasswordUseCase(
+      tokenRepository,
+      donorRepository,
+      adminRepository,
+      exceptions
+    );
 
-    service = module.get(ResetPasswordUseCase);
-
-    jest.spyOn(bcrypt, "hash").mockResolvedValue("hashed-password" as never);
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "hashed-password");
+    jest.spyOn(tokenRepository, "markAsUsed");
   });
 
-  it("should raise an exception if user is not found", async () => {
+  it("should throw if user not found", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
     await expect(
-      service.execute({ email, newPassword: "newpass123" })
-    ).rejects.toThrow("User not found.");
+      useCase.execute({ email, newPassword: "newpass123" })
+    ).rejects.toThrow("Usuário não encontrado.");
   });
 
-  it("should raise an exception if no valid token is found", async () => {
+  it("should throw if no valid token found", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(donorUser);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(null);
 
     await expect(
-      service.execute({ email, newPassword: "newpass123" })
-    ).rejects.toThrow("No valid reset token found.");
+      useCase.execute({ email, newPassword: "newpass123" })
+    ).rejects.toThrow("Nenhum código de recuperação válido encontrado.");
   });
 
-  it("should raise an exception if token has expired", async () => {
-    const expiredToken = {
-      ...validToken,
-      expiresAt: new Date(Date.now() - 1000)
-    };
-
+  it("should throw if token expired", async () => {
+    const expired = { ...validToken, expiresAt: new Date(Date.now() - 1000) };
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(donorUser);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
-    ).mockResolvedValue(expiredToken);
+    ).mockResolvedValue(expired);
 
     await expect(
-      service.execute({ email, newPassword: "newpass123" })
-    ).rejects.toThrow("The reset token has expired.");
+      useCase.execute({ email, newPassword: "newpass123" })
+    ).rejects.toThrow("O código de recuperação expirou.");
   });
 
-  it("should update the donor password and mark the token as used", async () => {
+  it("should update donor password and mark token used", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(donorUser);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(validToken);
 
-    await service.execute({ email, newPassword: "newpass123" });
+    await useCase.execute({ email, newPassword: "newpass123" });
 
     expect(donorRepository.update).toHaveBeenCalledWith(donorUser.id, {
       password: "hashed-password"
@@ -106,14 +99,14 @@ describe("ResetPassword", () => {
     expect(tokenRepository.markAsUsed).toHaveBeenCalledWith(validToken.id);
   });
 
-  it("should update the admin password and mark the token as used", async () => {
+  it("should update admin password and mark token used", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(adminUser);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(validToken);
 
-    await service.execute({ email, newPassword: "adminPass123" });
+    await useCase.execute({ email, newPassword: "adminPass123" });
 
     expect(adminRepository.update).toHaveBeenCalledWith(adminUser.id, {
       password: "hashed-password"

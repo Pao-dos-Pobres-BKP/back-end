@@ -1,17 +1,16 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { RequestPasswordResetUseCase } from "./request-password-reset";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
-import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { SendEmailUseCase } from "@application/use-cases/mail/send/send-email";
+import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
 describe("RequestPasswordReset", () => {
-  let service: RequestPasswordResetUseCase;
-  let userRepository: Partial<UserRepository>;
-  let tokenRepository: Partial<PasswordResetTokenRepository>;
-  let sendEmailUseCase: Partial<SendEmailUseCase>;
+  let userRepository: UserRepository;
+  let tokenRepository: PasswordResetTokenRepository;
+  let sendEmailUseCase: SendEmailUseCase;
   let exceptions: ExceptionsServiceStub;
+  let useCase: RequestPasswordResetUseCase;
 
   const email = "test@example.com";
   const user = {
@@ -20,70 +19,67 @@ describe("RequestPasswordReset", () => {
     fullName: "Test User"
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     userRepository = {
       findByEmail: jest.fn()
-    };
+    } as unknown as UserRepository;
 
     tokenRepository = {
       countRecentRequests: jest.fn(),
       create: jest.fn()
-    };
+    } as unknown as PasswordResetTokenRepository;
 
     sendEmailUseCase = {
       execute: jest.fn()
-    };
+    } as unknown as SendEmailUseCase;
 
     exceptions = new ExceptionsServiceStub();
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RequestPasswordResetUseCase,
-        { provide: UserRepository, useValue: userRepository },
-        { provide: PasswordResetTokenRepository, useValue: tokenRepository },
-        { provide: SendEmailUseCase, useValue: sendEmailUseCase },
-        { provide: "ExceptionsAdapter", useValue: exceptions }
-      ]
-    }).compile();
+    useCase = new RequestPasswordResetUseCase(
+      userRepository,
+      tokenRepository,
+      exceptions,
+      sendEmailUseCase
+    );
 
-    service = module.get(RequestPasswordResetUseCase);
-
-    jest.spyOn(bcrypt, "hash").mockResolvedValue("hashed-code" as never);
+    jest
+      .spyOn(bcrypt, "hash")
+      .mockImplementation(async () => "hashed-password");
+    jest.spyOn(tokenRepository, "create");
+    jest.spyOn(sendEmailUseCase, "execute");
   });
 
-  it("should raise an exception if the user is not found", async () => {
+  it("should throw if user not found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.execute(email)).rejects.toThrow("User not found.");
-  });
-
-  it("should raise an exception if there has been a recent request", async () => {
-    (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
-    (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(1);
-
-    await expect(service.execute(email)).rejects.toThrow(
-      "There already is a recent request. Wait for the token to expire."
+    await expect(useCase.execute(email)).rejects.toThrow(
+      "Usuário não encontrado."
     );
   });
 
-  it("should create token and send e-mail if there are not any recent requests", async () => {
+  it("should throw if recent request exists", async () => {
+    (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
+    (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(1);
+
+    await expect(useCase.execute(email)).rejects.toThrow(
+      "Já existe uma solicitação recente. Aguarde o código expirar."
+    );
+  });
+
+  it("should create token and send e-mail when no recent request", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(0);
 
-    const createSpy = jest.spyOn(tokenRepository, "create");
-    const emailSpy = jest.spyOn(sendEmailUseCase, "execute");
+    await useCase.execute(email);
 
-    await service.execute(email);
-
-    expect(createSpy).toHaveBeenCalledWith(
+    expect(tokenRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: user.id,
         tokenHash: "hashed-code",
         expiresAt: expect.any(Date)
       })
     );
-
-    expect(emailSpy).toHaveBeenCalledWith(
+    expect(sendEmailUseCase.execute).toHaveBeenCalledWith(
       expect.objectContaining({
         to: [email],
         subject: "Recuperação de Senha",

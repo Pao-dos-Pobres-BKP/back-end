@@ -1,4 +1,3 @@
-import { Test, TestingModule } from "@nestjs/testing";
 import { ValidatePasswordResetUseCase } from "./validate-password-reset";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
@@ -6,105 +5,95 @@ import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
 describe("ValidatePasswordReset", () => {
-  let service: ValidatePasswordResetUseCase;
-  let userRepository: Partial<UserRepository>;
-  let tokenRepository: Partial<PasswordResetTokenRepository>;
+  let userRepository: UserRepository;
+  let tokenRepository: PasswordResetTokenRepository;
   let exceptions: ExceptionsServiceStub;
+  let useCase: ValidatePasswordResetUseCase;
 
   const email = "test@example.com";
   const user = { id: "user-id", email };
-  const code = "123456";
+  const code = "1234";
   const hashedCode = "hashed-code";
-
   const validToken = {
     id: "token-id",
     token: hashedCode,
-    expiresAt: new Date(Date.now() + 10 * 60 * 1000)
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000)
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     userRepository = {
       findByEmail: jest.fn()
-    };
+    } as unknown as UserRepository;
 
     tokenRepository = {
       findLatestValidTokenByUserId: jest.fn()
-    };
+    } as unknown as PasswordResetTokenRepository;
 
     exceptions = new ExceptionsServiceStub();
 
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ValidatePasswordResetUseCase,
-        { provide: UserRepository, useValue: userRepository },
-        { provide: PasswordResetTokenRepository, useValue: tokenRepository },
-        { provide: "ExceptionsAdapter", useValue: exceptions }
-      ]
-    }).compile();
-
-    service = module.get(ValidatePasswordResetUseCase);
+    useCase = new ValidatePasswordResetUseCase(
+      userRepository,
+      tokenRepository,
+      exceptions
+    );
 
     jest.spyOn(bcrypt, "compare").mockImplementation(async (raw, hashed) => {
       return raw === code && hashed === hashedCode;
     });
+    jest.spyOn(tokenRepository, "findLatestValidTokenByUserId");
   });
 
-  it("should raise an exception if user is not found", async () => {
+  it("should throw if user not found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
-    await expect(service.execute(email, code)).rejects.toThrow(
-      "User not found."
+    await expect(useCase.execute(email, code)).rejects.toThrow(
+      "Usuário não encontrado."
     );
   });
 
-  it("should raise an exception if no valid token is found", async () => {
+  it("should throw if no valid token found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(null);
 
-    await expect(service.execute(email, code)).rejects.toThrow(
-      "No valid reset request found."
+    await expect(useCase.execute(email, code)).rejects.toThrow(
+      "Nenhuma solicitação de recuperação encontrada para este usuário."
     );
   });
 
-  it("should raise an exception if the token is invalid", async () => {
+  it("should throw if token invalid", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(validToken);
+    jest.spyOn(bcrypt, "compare").mockImplementation(async () => false);
 
-    jest.spyOn(bcrypt, "compare").mockResolvedValue(false as never);
-
-    await expect(service.execute(email, "wrong-code")).rejects.toThrow(
-      "Invalid token."
+    await expect(useCase.execute(email, "wrong-code")).rejects.toThrow(
+      "Código de recuperação inválido."
     );
   });
 
-  it("should raise an exception if the token is expired", async () => {
-    const expiredToken = {
-      ...validToken,
-      expiresAt: new Date(Date.now() - 1000)
-    };
-
+  it("should throw if token expired", async () => {
+    const expired = { ...validToken, expiresAt: new Date(Date.now() - 1000) };
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
-    ).mockResolvedValue(expiredToken);
-    jest.spyOn(bcrypt, "compare").mockResolvedValue(true as never);
+    ).mockResolvedValue(expired);
+    jest.spyOn(bcrypt, "compare").mockImplementation(async () => true);
 
-    await expect(service.execute(email, code)).rejects.toThrow(
-      "The reset token has expired."
+    await expect(useCase.execute(email, code)).rejects.toThrow(
+      "O código de recuperação expirou."
     );
   });
 
-  it("should validate correctly if token is valid and not expired", async () => {
+  it("should succeed if valid token", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(validToken);
-    jest.spyOn(bcrypt, "compare").mockResolvedValue(true as never);
+    jest.spyOn(bcrypt, "compare").mockImplementation(async () => true);
 
-    await expect(service.execute(email, code)).resolves.toBeUndefined();
+    await expect(useCase.execute(email, code)).resolves.toBeUndefined();
   });
 });
