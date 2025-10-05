@@ -32,6 +32,7 @@ import { QueueModule } from "../queue";
     NewsModule,
     CampaignModule,
     NewsletterModule,
+    MetricsModule,
     QueueModule
   ]
 })
