@@ -31,11 +31,16 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UploadedFile,
+  UseInterceptors
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
 import { RequireToken } from "@infra/commons/decorators/require-token";
 import { UserRole } from "@domain/entities/user-role-enum";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { CreateFileDTO } from "@application/dtos/file/create";
+import { UpdateAdminAvatarUseCase } from "@application/use-cases/admin/update-avatar/update-avatar";
 
 @ApiTags("Admin")
 @Controller("admin")
@@ -43,6 +48,7 @@ export class AdminController {
   constructor(
     private readonly createAdminUseCase: CreateAdminUseCase,
     private readonly updateAdminUseCase: UpdateAdminUseCase,
+    private readonly updateAdminAvatarUseCase: UpdateAdminAvatarUseCase,
     private readonly deleteAdminUseCase: DeleteAdminUseCase,
     private readonly findAdminByIdUseCase: FindAdminByIdUseCase,
     private readonly findAllAdminsUseCase: FindAllAdminsUseCase
@@ -80,6 +86,35 @@ export class AdminController {
     @Body() body: UpdateAdminDto
   ): Promise<void> {
     return await this.updateAdminUseCase.execute(id, body);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(":id/avatar")
+  @RequireToken([UserRole.ADMIN])
+  @UpdateAdminResponses
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary"
+        }
+      }
+    }
+  })
+  async updateAdminAvatar(
+    @Param("id") id: string,
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<void> {
+    const body: CreateFileDTO = {
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      originalname: file.originalname
+    };
+    return await this.updateAdminAvatarUseCase.execute(id, body);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
