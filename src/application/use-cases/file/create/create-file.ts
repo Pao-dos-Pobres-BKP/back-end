@@ -1,4 +1,8 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  PutObjectCommandInput
+} from "@aws-sdk/client-s3";
 import {
   CreateFileDTO,
   CreateFileResponse
@@ -15,19 +19,20 @@ export class CreateFileUseCase {
 
   async execute(file: CreateFileDTO): Promise<CreateFileResponse> {
     const Key = this.s3Helper.buildKey(file.originalname);
-    await this.s3.send(
-      new PutObjectCommand({
-        Bucket: this.s3Helper.bucket(),
-        Key,
-        Body: file.buffer,
-        ContentType: file.mimetype || "application/octet-stream"
-      })
-    );
+    const params: PutObjectCommandInput = {
+      Bucket: this.s3Helper.bucket(),
+      Key,
+      Body: file.buffer,
+      ContentType: file.mimetype || "application/octet-stream"
+    };
+    await this.s3.send(new PutObjectCommand(params));
 
+    const url = this.s3Helper.publicUrl(Key);
     return {
       key: Key,
       contentType: file.mimetype || "application/octet-stream",
-      size: file.buffer.length
+      size: file.buffer.length,
+      url
     };
   }
 }

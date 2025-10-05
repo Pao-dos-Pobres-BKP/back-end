@@ -17,6 +17,7 @@ export interface UpdateAdminParams {
   email?: string;
   fullName?: string;
   password?: string;
+  imageUrl?: string;
   root?: boolean;
 }
 

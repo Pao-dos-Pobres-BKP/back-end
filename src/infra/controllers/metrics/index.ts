@@ -1,8 +1,15 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiTags, ApiOkResponse, ApiQuery } from "@nestjs/swagger";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
+import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
 import { GetSocialMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-social-metrics";
-import { GetMetricsResponseDTO } from "@application/dtos/metrics/get-metrics";
+import {
+  GetMetricsResponseDTO,
+  FindGlobalMetricsResponse
+} from "@application/dtos/metrics/get-metrics";
+import {
+  CampaignSocialDataResponse
+} from "@application/dtos/metrics/campaign-social-data";
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 
 @ApiTags("Metrics")
@@ -10,6 +17,7 @@ import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-socia
 export class MetricsController {
   constructor(
     private readonly getMetricsUseCase: GetMetricsUseCase,
+    private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase,
     private readonly getSocialMetricsUseCase: GetSocialMetricsUseCase
   ) {}
 
@@ -20,6 +28,17 @@ export class MetricsController {
   })
   async getMetrics(): Promise<GetMetricsResponseDTO> {
     return await this.getMetricsUseCase.execute();
+  }
+
+  @Get("campaigns/:id/social-data")
+  @ApiOkResponse({
+    type: CampaignSocialDataResponse,
+    description: "Retorna dados sociais de uma campanha específica"
+  })
+  async getCampaignSocialData(
+    @Param("id") id: string
+  ): Promise<CampaignSocialDataResponse> {
+    return await this.getCampaignSocialDataUseCase.execute(id);
   }
 
   @Get("social-distribution")

@@ -36,6 +36,7 @@ export class PrismaAdminRepository implements AdminRepository {
       fullName: admin.user.fullName,
       email: admin.user.email,
       password: admin.user.password,
+      imageUrl: admin.user.imageUrl,
       role: admin.user.role,
       root: admin.root,
       createdAt: admin.user.createdAt,
@@ -157,7 +158,7 @@ export class PrismaAdminRepository implements AdminRepository {
   }
 
   async update(id: string, params: UpdateAdminParams): Promise<void> {
-    const { email, password, root } = params;
+    const { email, password, root, imageUrl } = params;
 
     await this.prisma.admin.update({
       where: { id },
@@ -165,6 +166,7 @@ export class PrismaAdminRepository implements AdminRepository {
         root,
         user: {
           update: {
+            imageUrl,
             email,
             password
           }

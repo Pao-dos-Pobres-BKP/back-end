@@ -12,8 +12,7 @@ import { NewsModule } from "../news";
 import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
-
-//Metrics Module está quebrada.
+import { QueueModule } from "../queue";
 
 @Module({
   imports: [
@@ -33,7 +32,8 @@ import { NewsletterModule } from "../newsletter";
     NewsModule,
     CampaignModule,
     NewsletterModule,
-    MetricsModule
+    MetricsModule,
+    QueueModule
   ]
 })
 export class AppModule {}

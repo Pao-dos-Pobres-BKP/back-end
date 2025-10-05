@@ -5,6 +5,7 @@ export class User {
   fullName: string;
   email: string;
   password: string;
+  imageUrl?: string;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
