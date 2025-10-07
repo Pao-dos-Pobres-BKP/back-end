@@ -10,5 +10,5 @@ export const HealthCheckResponses = applyDecorators(
   ApiResponse({
     status: 503,
     description: "System is unhealthy"
-  }),
+  })
 );
