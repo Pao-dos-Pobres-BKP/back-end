@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import { Prisma } from "@prisma/client";
 
 export const newsMock: Prisma.NewsCreateInput[] = Array.from({
-  length: 10
+  length: 50
 }).map(() => ({
   title: faker.lorem.sentence(),
   description: faker.lorem.paragraphs(2),
