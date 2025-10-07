@@ -12,6 +12,7 @@ import { AuthTokenGuard } from "@infra/commons/guards/token";
 import { RoleGuard } from "@infra/commons/guards/role";
 import { PrismaService } from "@infra/config/prisma";
 import { TokenModule } from "../token";
+import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/find-by-date/get-donation-by-payment-method";
 
 @Module({
   imports: [DatabaseModule, ExceptionModule, TokenModule],
@@ -19,6 +20,7 @@ import { TokenModule } from "../token";
   providers: [
     GetMetricsUseCase,
     GetCampaignSocialDataUseCase,
+    GetDonationByPaymentMethodAndDateUseCase,
     {
       provide: IMetricsRepository,
       useClass: MetricsRepository

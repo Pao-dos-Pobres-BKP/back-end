@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
 import {
@@ -10,13 +10,20 @@ import {
   CampaignSocialDataResponse,
   GetCampaignSocialDataResponses
 } from "@application/dtos/metrics/campaign-social-data";
+import {
+  DonationByPaymentMethodAndDateResponse,
+  GetDonationByPaymentMethodAndDateDTO,
+  GetDonationByPaymentMethodAndDateResponses
+} from "@application/dtos/metrics/get-donation-by-payment-method";
+import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/find-by-date/get-donation-by-payment-method";
 
 @ApiTags("Metrics")
 @Controller("metrics")
 export class MetricsController {
   constructor(
     private readonly getMetricsUseCase: GetMetricsUseCase,
-    private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase
+    private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase,
+    private readonly getDonationByPaymentMethodAndDateUseCase: GetDonationByPaymentMethodAndDateUseCase
   ) {}
 
   @Get("global")
@@ -31,5 +38,13 @@ export class MetricsController {
     @Param("id") id: string
   ): Promise<CampaignSocialDataResponse> {
     return await this.getCampaignSocialDataUseCase.execute(id);
+  }
+
+  @Get("donation/payment-method")
+  @GetDonationByPaymentMethodAndDateResponses
+  async getDonationByPaymentMethodAndDate(
+    @Query() query: GetDonationByPaymentMethodAndDateDTO
+  ): Promise<DonationByPaymentMethodAndDateResponse> {
+    return await this.getDonationByPaymentMethodAndDateUseCase.execute(query);
   }
 }

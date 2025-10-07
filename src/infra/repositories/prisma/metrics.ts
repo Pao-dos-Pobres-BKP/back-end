@@ -9,6 +9,7 @@ import {
   DonorStatisticsData
 } from "@domain/repositories/metrics";
 import { Prisma } from "@prisma/client";
+import { TotalDonationAmountByPaymentMethodResponse } from "@domain/repositories/metrics";
 
 @Injectable()
 export class MetricsRepository implements IMetricsRepository {
@@ -102,5 +103,42 @@ export class MetricsRepository implements IMetricsRepository {
         gender: donation.donor!.gender,
         birthDate: donation.donor!.birthDate
       }));
+  }
+
+  async findByDateDonationByPaymentMethod(
+    startDate: Date,
+    endDate: Date
+  ): Promise<TotalDonationAmountByPaymentMethodResponse> {
+    const totalDonationAmountByPaymentMethod =
+      await this.prisma.payment.groupBy({
+        by: ["paymentMethod"],
+        where: {
+          paidAt: {
+            gte: startDate,
+            lte: endDate
+          },
+          status: "CONFIRMED"
+        },
+        _sum: {
+          amount: true
+        },
+        _count: {
+          id: true
+        }
+      });
+
+    const formattedData = totalDonationAmountByPaymentMethod.map((item) => ({
+      paymentMethod: item.paymentMethod,
+      totalAmount: Number(item._sum.amount || 0),
+      totalQuantity: item._count.id
+    }));
+
+    return {
+      rangeDate: {
+        startDate,
+        endDate
+      },
+      totalDonationAmountByPaymentMethodAmount: formattedData
+    };
   }
 }

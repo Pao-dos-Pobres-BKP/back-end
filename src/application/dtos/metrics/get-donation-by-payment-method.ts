@@ -4,7 +4,7 @@ import { PaymentMethod } from "@prisma/client";
 import { Type } from "class-transformer";
 import { IsDate } from "class-validator";
 
-export class FindTotalDonationAmountByPaymentMethodAndDateDTO {
+export class GetDonationByPaymentMethodAndDateDTO {
   @ApiProperty({
     description: "Start date",
     type: Date
@@ -22,7 +22,7 @@ export class FindTotalDonationAmountByPaymentMethodAndDateDTO {
   endDate: Date;
 }
 
-export class rangeDatePaymentMethodAmount {
+export class RangeDatePaymentMethodAmount {
   @ApiProperty({
     description: "Start date",
     type: Date
@@ -40,7 +40,7 @@ export class rangeDatePaymentMethodAmount {
   endDate: Date;
 }
 
-export class totalDonationAmountByPaymentMethodAmount {
+export class DonationByPaymentMethodAmount {
   @ApiProperty({
     description: "Payment method",
     enum: PaymentMethod
@@ -60,25 +60,24 @@ export class totalDonationAmountByPaymentMethodAmount {
   totalQuantity: number;
 }
 
-export class FindTotalDonationAmountByPaymentMethodAndDateResponse {
+export class DonationByPaymentMethodAndDateResponse {
   @ApiProperty({
     description: "Range date",
-    type: rangeDatePaymentMethodAmount
+    type: RangeDatePaymentMethodAmount
   })
-  rangeDate: rangeDatePaymentMethodAmount;
+  rangeDate: RangeDatePaymentMethodAmount;
 
   @ApiProperty({
-    description: "Total donation amount by payment method and date",
-    type: totalDonationAmountByPaymentMethodAmount
+    description: "Donation amount by payment method and date",
+    type: DonationByPaymentMethodAmount
   })
-  data: totalDonationAmountByPaymentMethodAmount[];
+  data: DonationByPaymentMethodAmount[];
 }
 
-export const FindTotalDonationAmountByPaymentMethodAndDateResponses =
-  applyDecorators(
-    ApiOkResponse({
-      description: "Total donation amount by date",
-      type: FindTotalDonationAmountByPaymentMethodAndDateResponse
-    }),
-    ApiOperation({ summary: "Find total donation amount by date" })
-  );
+export const GetDonationByPaymentMethodAndDateResponses = applyDecorators(
+  ApiOkResponse({
+    description: "Get donation amount by date",
+    type: DonationByPaymentMethodAndDateResponse
+  }),
+  ApiOperation({ summary: "Get donation amount by date" })
+);

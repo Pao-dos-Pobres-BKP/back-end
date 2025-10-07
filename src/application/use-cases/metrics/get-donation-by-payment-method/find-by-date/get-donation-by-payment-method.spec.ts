@@ -1,85 +1,27 @@
-import { FindTotalDonationAmountByPaymentMethodAndDateUseCase } from "./find-by-date";
-import { TotalDonationAmountByPaymentMethodRepository } from "@domain/repositories/totalDonationAmountByPaymentMethod";
+import { GetDonationByPaymentMethodAndDateUseCase } from "./get-donation-by-payment-method";
 import {
-  FindTotalDonationAmountByPaymentMethodAndDateDTO,
-  FindTotalDonationAmountByPaymentMethodAndDateResponse
-} from "@application/dtos/totalDonationAmountByPaymentMethod/find-by-date";
+  GetDonationByPaymentMethodAndDateDTO,
+  DonationByPaymentMethodAndDateResponse
+} from "@application/dtos/metrics/get-donation-by-payment-method";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { PaymentMethod } from "@prisma/client";
+import { MetricsRepository } from "@domain/repositories/metrics";
+import { MetricsRepositoryStub } from "@test/stubs/repositories/metrics";
 
-describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
-  let useCase: FindTotalDonationAmountByPaymentMethodAndDateUseCase;
-  let repository: TotalDonationAmountByPaymentMethodRepository;
+describe("GetDonationByPaymentMethodAndDateUseCase", () => {
+  let useCase: GetDonationByPaymentMethodAndDateUseCase;
+  let repository: MetricsRepository;
   let exceptionService: ExceptionsAdapter;
 
   const startDate = new Date("2025-01-01");
   const endDate = new Date("2025-12-31");
 
-  const mockRepositoryResponse = {
-    rangeDate: {
-      startDate,
-      endDate
-    },
-    totalDonationAmountByPaymentMethodAmount: [
-      {
-        paymentMethod: PaymentMethod.PIX,
-        totalAmount: 5000,
-        totalQuantity: 25
-      },
-      {
-        paymentMethod: PaymentMethod.CREDIT_CARD,
-        totalAmount: 10000,
-        totalQuantity: 15
-      },
-      {
-        paymentMethod: PaymentMethod.BANK_SLIP,
-        totalAmount: 3000,
-        totalQuantity: 10
-      }
-    ]
-  };
-
-  const expectedResponse: FindTotalDonationAmountByPaymentMethodAndDateResponse =
-    {
-      rangeDate: {
-        startDate,
-        endDate
-      },
-      data: [
-        {
-          paymentMethod: PaymentMethod.PIX,
-          totalAmount: 5000,
-          totalQuantity: 25
-        },
-        {
-          paymentMethod: PaymentMethod.CREDIT_CARD,
-          totalAmount: 10000,
-          totalQuantity: 15
-        },
-        {
-          paymentMethod: PaymentMethod.BANK_SLIP,
-          totalAmount: 3000,
-          totalQuantity: 10
-        }
-      ]
-    };
-
   beforeEach(() => {
-    repository = {
-      findByDate: jest.fn().mockResolvedValue(mockRepositoryResponse)
-    } as unknown as TotalDonationAmountByPaymentMethodRepository;
+    repository = new MetricsRepositoryStub();
+    exceptionService = new ExceptionsServiceStub();
 
-    exceptionService = {
-      badRequest: jest.fn(),
-      notFound: jest.fn(),
-      forbidden: jest.fn(),
-      conflict: jest.fn(),
-      internalServerError: jest.fn(),
-      unauthorized: jest.fn()
-    } as ExceptionsServiceStub;
-
-    useCase = new FindTotalDonationAmountByPaymentMethodAndDateUseCase(
+    useCase = new GetDonationByPaymentMethodAndDateUseCase(
       repository,
       exceptionService
     );
@@ -87,17 +29,40 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
 
   describe("execute", () => {
     it("should return total donation amount by payment method for valid date range", async () => {
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const spy = jest.spyOn(repository, "findByDateDonationByPaymentMethod");
+
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate,
         endDate
       };
 
       const result = await useCase.execute(dto);
 
-      expect(result).toEqual(expectedResponse);
-      expect(repository.findByDate).toHaveBeenCalledTimes(1);
-      expect(repository.findByDate).toHaveBeenCalledWith(startDate, endDate);
-      expect(exceptionService.badRequest).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        rangeDate: {
+          startDate,
+          endDate
+        },
+        data: [
+          {
+            paymentMethod: PaymentMethod.PIX,
+            totalAmount: 5000,
+            totalQuantity: 25
+          },
+          {
+            paymentMethod: PaymentMethod.CREDIT_CARD,
+            totalAmount: 10000,
+            totalQuantity: 15
+          },
+          {
+            paymentMethod: PaymentMethod.BANK_SLIP,
+            totalAmount: 3000,
+            totalQuantity: 10
+          }
+        ]
+      });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(startDate, endDate);
     });
 
     it("should allow start date equal to end date", async () => {
@@ -116,9 +81,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(sameDateResponse);
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(sameDateResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate: sameDate,
         endDate: sameDate
       };
@@ -138,8 +105,10 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
           }
         ]
       });
-      expect(repository.findByDate).toHaveBeenCalledWith(sameDate, sameDate);
-      expect(exceptionService.badRequest).not.toHaveBeenCalled();
+      expect(repository.findByDateDonationByPaymentMethod).toHaveBeenCalledWith(
+        sameDate,
+        sameDate
+      );
     });
 
     it("should return empty data when no donations found in date range", async () => {
@@ -148,9 +117,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         totalDonationAmountByPaymentMethodAmount: []
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(emptyResponse);
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(emptyResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate,
         endDate
       };
@@ -161,7 +132,10 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         rangeDate: { startDate, endDate },
         data: []
       });
-      expect(repository.findByDate).toHaveBeenCalledWith(startDate, endDate);
+      expect(repository.findByDateDonationByPaymentMethod).toHaveBeenCalledWith(
+        startDate,
+        endDate
+      );
     });
 
     it("should handle single day date range", async () => {
@@ -180,9 +154,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(singleDayResponse);
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(singleDayResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate: singleDate,
         endDate: singleDate
       };
@@ -202,7 +178,7 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
           }
         ]
       });
-      expect(repository.findByDate).toHaveBeenCalledWith(
+      expect(repository.findByDateDonationByPaymentMethod).toHaveBeenCalledWith(
         singleDate,
         singleDate
       );
@@ -220,9 +196,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(pixOnlyResponse);
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(pixOnlyResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate,
         endDate
       };
@@ -253,11 +231,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(
-        creditCardOnlyResponse
-      );
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(creditCardOnlyResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate,
         endDate
       };
@@ -288,11 +266,11 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(
-        bankSlipOnlyResponse
-      );
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(bankSlipOnlyResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate,
         endDate
       };
@@ -339,24 +317,24 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(
-        largeRangeResponse
-      );
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(largeRangeResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate: largeRangeStart,
         endDate: largeRangeEnd
       };
 
       const result = (await useCase.execute(
         dto
-      )) as FindTotalDonationAmountByPaymentMethodAndDateResponse;
+      )) as DonationByPaymentMethodAndDateResponse;
 
       expect(result).toBeDefined();
       expect(result.rangeDate.startDate).toEqual(largeRangeStart);
       expect(result.rangeDate.endDate).toEqual(largeRangeEnd);
       expect(result.data).toHaveLength(3);
-      expect(repository.findByDate).toHaveBeenCalledWith(
+      expect(repository.findByDateDonationByPaymentMethod).toHaveBeenCalledWith(
         largeRangeStart,
         largeRangeEnd
       );
@@ -366,17 +344,16 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
       const startDateCopy = new Date("2025-01-01T00:00:00.000Z");
       const endDateCopy = new Date("2025-12-31T23:59:59.999Z");
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const spy = jest.spyOn(repository, "findByDateDonationByPaymentMethod");
+
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate: startDateCopy,
         endDate: endDateCopy
       };
 
       await useCase.execute(dto);
 
-      expect(repository.findByDate).toHaveBeenCalledWith(
-        startDateCopy,
-        endDateCopy
-      );
+      expect(spy).toHaveBeenCalledWith(startDateCopy, endDateCopy);
     });
 
     it("should preserve exact data structure from repository response", async () => {
@@ -394,16 +371,18 @@ describe("FindTotalDonationAmountByPaymentMethodAndDateUseCase", () => {
         ]
       };
 
-      (repository.findByDate as jest.Mock).mockResolvedValue(specificResponse);
+      jest
+        .spyOn(repository, "findByDateDonationByPaymentMethod")
+        .mockResolvedValue(specificResponse);
 
-      const dto: FindTotalDonationAmountByPaymentMethodAndDateDTO = {
+      const dto: GetDonationByPaymentMethodAndDateDTO = {
         startDate: new Date("2025-03-01"),
         endDate: new Date("2025-03-31")
       };
 
       const result = (await useCase.execute(
         dto
-      )) as FindTotalDonationAmountByPaymentMethodAndDateResponse;
+      )) as DonationByPaymentMethodAndDateResponse;
 
       expect(result).toBeDefined();
       expect(result.rangeDate).toEqual(specificResponse.rangeDate);
