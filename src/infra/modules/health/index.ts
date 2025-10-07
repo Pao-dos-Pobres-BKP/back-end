@@ -10,6 +10,6 @@ import { PingUseCase } from "@application/use-cases/health/ping";
 @Module({
   imports: [TerminusModule, HttpModule],
   controllers: [HealthController, PingController],
-  providers: [PrismaService, HealthUseCase, PingUseCase],
+  providers: [PrismaService, HealthUseCase, PingUseCase]
 })
 export class HealthModule {}

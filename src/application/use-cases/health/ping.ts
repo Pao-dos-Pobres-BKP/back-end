@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 export interface PingResponse {
   message: string;
@@ -7,6 +7,6 @@ export interface PingResponse {
 @Injectable()
 export class PingUseCase {
   async execute(): Promise<PingResponse> {
-    return { message: 'pong' };
+    return { message: "pong" };
   }
 }

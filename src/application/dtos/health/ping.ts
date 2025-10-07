@@ -5,6 +5,5 @@ import { ApiResponse } from "@nestjs/swagger/dist/decorators/api-response.decora
 export const PingResponses = applyDecorators(
   ApiResponse({ status: 200, description: "Ping successful" }),
   ApiResponse({ status: 500, description: "Internal server error" }),
-  ApiOperation({ summary: "Ping the server to check if it's alive" }
-  )
+  ApiOperation({ summary: "Ping the server to check if it's alive" })
 );
