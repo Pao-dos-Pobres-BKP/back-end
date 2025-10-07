@@ -4,7 +4,6 @@ import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import * as bcrypt from "bcryptjs";
 import { SendEmailUseCase } from "../../mail/send/send-email";
-import { santoAntonioTemplate } from "@domain/email-templates/email-template";
 
 @Injectable()
 export class RequestPasswordResetUseCase {
@@ -45,13 +44,11 @@ export class RequestPasswordResetUseCase {
     });
 
     const subject = "Recuperação de Senha";
-    const html = santoAntonioTemplate(subject, user.fullName);
     const text = `Seu código de recuperação é: ${code}`;
 
     await this.sendEmailUseCase.execute({
       to: [email],
       subject,
-      html,
       text
     });
   }
