@@ -15,7 +15,7 @@ import {
   GetDonationByPaymentMethodAndDateDTO,
   GetDonationByPaymentMethodAndDateResponses
 } from "@application/dtos/metrics/get-donation-by-payment-method";
-import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/find-by-date/get-donation-by-payment-method";
+import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/get-donation-by-payment-method";
 
 @ApiTags("Metrics")
 @Controller("metrics")
