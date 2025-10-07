@@ -13,6 +13,7 @@ import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { QueueModule } from "../queue";
+import { TotalDonationAmountByPaymentMethodModule } from "../totalDonationAmountByPaymentMethod";
 
 @Module({
   imports: [
@@ -29,10 +30,10 @@ import { QueueModule } from "../queue";
     MetricsModule,
     FileModule,
     MailModule,
-    NewsModule,
     CampaignModule,
     NewsletterModule,
-    QueueModule
+    QueueModule,
+    TotalDonationAmountByPaymentMethodModule
   ]
 })
 export class AppModule {}

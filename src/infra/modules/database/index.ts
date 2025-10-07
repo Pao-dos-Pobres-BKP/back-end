@@ -5,6 +5,7 @@ import { EventRepository } from "@domain/repositories/event";
 import { UserRepository } from "@domain/repositories/user";
 import { NewsRepository } from "@domain/repositories/news";
 import { NewsletterRepository } from "@domain/repositories/newsletter";
+import { TotalDonationAmountByPaymentMethodRepository } from "@domain/repositories/totalDonationAmountByPaymentMethod";
 
 import { PrismaService } from "@infra/config/prisma";
 import { PrismaAdminRepository } from "@infra/repositories/prisma/admin";
@@ -14,6 +15,7 @@ import { PrismaEventRepository } from "@infra/repositories/prisma/event";
 import { PrismaUserRepository } from "@infra/repositories/prisma/user";
 import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
 import { PrismaNewsletterRepository } from "@infra/repositories/prisma/newsletter";
+import { PrismaTotalDonationAmountByPaymentMethodRepository } from "@infra/repositories/prisma/totalDonationAmountByPaymentMethod";
 
 import { Module } from "@nestjs/common";
 import { DonationRepository } from "@domain/repositories/donation";
@@ -53,6 +55,10 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     {
       useClass: PrismaNewsletterRepository,
       provide: NewsletterRepository
+    },
+    {
+      useClass: PrismaTotalDonationAmountByPaymentMethodRepository,
+      provide: TotalDonationAmountByPaymentMethodRepository
     }
   ],
   exports: [
@@ -63,7 +69,8 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     EventRepository,
     NewsRepository,
     DonationRepository,
-    NewsletterRepository
+    NewsletterRepository,
+    TotalDonationAmountByPaymentMethodRepository
   ]
 })
 export class DatabaseModule {}

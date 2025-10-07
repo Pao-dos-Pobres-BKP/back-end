@@ -4,6 +4,7 @@ import { userDonorsMock } from "../mocks/user";
 import { eventsMock } from "../mocks/events";
 import { newsMock } from "../mocks/news";
 import { newsletterMock } from "prisma/mocks/newsletter";
+import { donationsMockForPayments, paymentsMock } from "../mocks/payments";
 
 const prisma = new PrismaClient();
 
@@ -33,6 +34,18 @@ async function main(): Promise<void> {
   for (const newsletterData of newsletterMock) {
     await prisma.newsletter.create({
       data: newsletterData
+    });
+  }
+
+  for (const donationData of donationsMockForPayments) {
+    await prisma.donation.create({
+      data: donationData
+    });
+  }
+
+  for (const paymentData of paymentsMock) {
+    await prisma.payment.create({
+      data: paymentData
     });
   }
 }
