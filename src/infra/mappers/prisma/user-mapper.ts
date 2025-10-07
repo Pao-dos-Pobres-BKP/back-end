@@ -8,6 +8,7 @@ export class UserMapper {
       fullName: user.fullName,
       email: user.email,
       password: user.password,
+      imageUrl: user.imageUrl,
       role: user.role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,

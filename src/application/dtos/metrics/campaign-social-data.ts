@@ -17,13 +17,13 @@ export class CampaignInfo {
 
   @ApiProperty({
     description: "Target amount for the campaign",
-    example: 10000.00
+    example: 10000.0
   })
   targetAmount: number;
 
   @ApiProperty({
     description: "Current amount raised",
-    example: 7500.50
+    example: 7500.5
   })
   currentAmount: number;
 
@@ -142,8 +142,9 @@ export const GetCampaignSocialDataResponses = applyDecorators(
   ApiNotFoundResponse({
     description: "Campaign not found"
   }),
-  ApiOperation({ 
+  ApiOperation({
     summary: "Get social data of donors for a campaign",
-    description: "Returns demographic information about all donors (including deleted ones) who have donated to a specific campaign"
+    description:
+      "Returns demographic information about all donors (including deleted ones) who have donated to a specific campaign"
   })
 );

@@ -21,6 +21,7 @@ import { DeleteDonorUseCase } from "@application/use-cases/donor/delete/delete-d
 import { FindAllDonorsUseCase } from "@application/use-cases/donor/find-all/find-all-donors";
 import { FindDonorByIdUseCase } from "@application/use-cases/donor/find-by-id/find-donor-by-id";
 import { UpdateDonorUseCase } from "@application/use-cases/donor/update/update-donor";
+import { UpdateDonorAvatarUseCase } from "@application/use-cases/donor/update-avatar/update-avatar";
 import {
   Body,
   Controller,
@@ -31,9 +32,13 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UploadedFile,
+  UseInterceptors
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { CreateFileDTO } from "@application/dtos/file/create";
 
 @ApiTags("Donors")
 @Controller("donors")
@@ -41,6 +46,7 @@ export class DonorController {
   constructor(
     private readonly createDonorUseCase: CreateDonorUseCase,
     private readonly updateDonorUseCase: UpdateDonorUseCase,
+    private readonly updateDonorAvatarUseCase: UpdateDonorAvatarUseCase,
     private readonly deleteDonorUseCase: DeleteDonorUseCase,
     private readonly findDonorByIdUseCase: FindDonorByIdUseCase,
     private readonly findAllDonorsUseCase: FindAllDonorsUseCase
@@ -74,6 +80,34 @@ export class DonorController {
     @Body() body: UpdateDonorDTO
   ): Promise<void> {
     return await this.updateDonorUseCase.execute(id, body);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Patch(":id/avatar")
+  @UpdateDonorResponses
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary"
+        }
+      }
+    }
+  })
+  async updateDonorAvatar(
+    @Param("id") id: string,
+    @UploadedFile() file: Express.Multer.File
+  ): Promise<void> {
+    const body: CreateFileDTO = {
+      buffer: file.buffer,
+      mimetype: file.mimetype,
+      originalname: file.originalname
+    };
+    return await this.updateDonorAvatarUseCase.execute(id, body);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

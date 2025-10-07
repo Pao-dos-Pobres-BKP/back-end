@@ -13,6 +13,7 @@ import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { PasswordResetModule } from "../password-reset";
+import { QueueModule } from "../queue";
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { PasswordResetModule } from "../password-reset";
     NewsModule,
     CampaignModule,
     NewsletterModule,
-    PasswordResetModule
+    PasswordResetModule,
+    QueueModule
   ]
 })
 export class AppModule {}

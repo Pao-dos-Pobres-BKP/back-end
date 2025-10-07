@@ -33,9 +33,10 @@ export class GetCampaignSocialDataUseCase {
 
     const targetAmount = Number(campaign.targetAmount);
     const currentAmount = Number(campaign.currentAmount);
-    const percentage = targetAmount > 0
-      ? Number(((currentAmount / targetAmount) * 100).toFixed(3))
-      : 0;
+    const percentage =
+      targetAmount > 0
+        ? Number(((currentAmount / targetAmount) * 100).toFixed(3))
+        : 0;
 
     const campaignInfo: CampaignInfo = {
       description: campaign.description,
@@ -82,14 +83,11 @@ export class GetCampaignSocialDataUseCase {
   private calculateGenderDistribution(
     donors: DonorStatisticsData[]
   ): GenderDistribution[] {
-    const genderCounts = donors.reduce(
-      (acc, donor) => {
-        const genderLower = donor.gender.toLowerCase();
-        acc.set(genderLower, (acc.get(genderLower) || 0) + 1);
-        return acc;
-      },
-      new Map<string, number>()
-    );
+    const genderCounts = donors.reduce((acc, donor) => {
+      const genderLower = donor.gender.toLowerCase();
+      acc.set(genderLower, (acc.get(genderLower) || 0) + 1);
+      return acc;
+    }, new Map<string, number>());
 
     return Array.from(genderCounts.entries()).map(([gender, count]) => ({
       gender,
@@ -100,15 +98,12 @@ export class GetCampaignSocialDataUseCase {
   private calculateAgeDistribution(
     donors: DonorStatisticsData[]
   ): AgeDistribution[] {
-    const ageCounts = donors.reduce(
-      (acc, donor) => {
-        const age = this.calculateAge(donor.birthDate);
-        const ageRange = this.getAgeRange(age);
-        acc.set(ageRange, (acc.get(ageRange) || 0) + 1);
-        return acc;
-      },
-      new Map<string, number>()
-    );
+    const ageCounts = donors.reduce((acc, donor) => {
+      const age = this.calculateAge(donor.birthDate);
+      const ageRange = this.getAgeRange(age);
+      acc.set(ageRange, (acc.get(ageRange) || 0) + 1);
+      return acc;
+    }, new Map<string, number>());
 
     return Array.from(ageCounts.entries()).map(([ageRange, count]) => ({
       ageRange,

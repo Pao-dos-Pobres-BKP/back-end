@@ -81,7 +81,7 @@ describe("CreateDonorUseCase", () => {
     jest.spyOn(donorRepository, "findByCPF").mockResolvedValue(null);
 
     await sut.execute({
-      birthDate: new Date("2026-01-01"), 
+      birthDate: new Date("2026-01-01"),
       cpf: "123.456.789-10",
       email: "example@email.com",
       fullName: "John Doe",
