@@ -3,7 +3,7 @@ import { PasswordResetTokenRepository } from "@domain/repositories/password-rese
 import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import * as bcrypt from "bcryptjs";
-import { SendEmailUseCase } from "@application/use-cases/mail/send/send-email";
+import { SendEmailUseCase } from "../../mail/send/send-email";
 import { santoAntonioTemplate } from "@domain/email-templates/email-template";
 
 @Injectable()
@@ -21,6 +21,7 @@ export class RequestPasswordResetUseCase {
       this.exceptions.notFound({
         message: "Usuário não encontrado."
       });
+      return;
     }
 
     const recentRequests =
@@ -42,8 +43,6 @@ export class RequestPasswordResetUseCase {
       userId: user.id,
       expiresAt
     });
-
-    console.log(`[Simulação] Código de recuperação para ${email}: ${code}`);
 
     const subject = "Recuperação de Senha";
     const html = santoAntonioTemplate(subject, user.fullName);

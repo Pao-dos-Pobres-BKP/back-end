@@ -30,6 +30,7 @@ export class ResetPasswordUseCase {
       this.exceptions.notFound({
         message: "Usuário não encontrado."
       });
+      return;
     }
 
     const userId = user.id;
@@ -42,12 +43,14 @@ export class ResetPasswordUseCase {
       this.exceptions.badRequest({
         message: "Nenhum código de recuperação válido encontrado."
       });
+      return;
     }
 
     if (latestToken.expiresAt <= new Date()) {
       this.exceptions.badRequest({
         message: "O código de recuperação expirou."
       });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

@@ -46,6 +46,10 @@ describe("ValidatePasswordReset", () => {
   it("should throw if user not found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
+    jest.spyOn(exceptions, "notFound").mockImplementation(() => {
+      throw new Error("Usuário não encontrado.");
+    });
+
     await expect(useCase.execute(email, code)).rejects.toThrow(
       "Usuário não encontrado."
     );
@@ -56,6 +60,12 @@ describe("ValidatePasswordReset", () => {
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(null);
+
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error(
+        "Nenhuma solicitação de recuperação encontrada para este usuário."
+      );
+    });
 
     await expect(useCase.execute(email, code)).rejects.toThrow(
       "Nenhuma solicitação de recuperação encontrada para este usuário."
@@ -69,6 +79,10 @@ describe("ValidatePasswordReset", () => {
     ).mockResolvedValue(validToken);
     jest.spyOn(bcrypt, "compare").mockImplementation(async () => false);
 
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error("Código de recuperação inválido.");
+    });
+
     await expect(useCase.execute(email, "wrong-code")).rejects.toThrow(
       "Código de recuperação inválido."
     );
@@ -81,6 +95,10 @@ describe("ValidatePasswordReset", () => {
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(expired);
     jest.spyOn(bcrypt, "compare").mockImplementation(async () => true);
+
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error("O código de recuperação expirou.");
+    });
 
     await expect(useCase.execute(email, code)).rejects.toThrow(
       "O código de recuperação expirou."

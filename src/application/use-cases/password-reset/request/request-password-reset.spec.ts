@@ -1,7 +1,7 @@
 import { RequestPasswordResetUseCase } from "./request-password-reset";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
-import { SendEmailUseCase } from "@application/use-cases/mail/send/send-email";
+import { SendEmailUseCase } from "../../mail/send/send-email";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
@@ -52,6 +52,10 @@ describe("RequestPasswordReset", () => {
   it("should throw if user not found", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
+    jest.spyOn(exceptions, "notFound").mockImplementation(() => {
+      throw new Error("Usuário não encontrado.");
+    });
+
     await expect(useCase.execute(email)).rejects.toThrow(
       "Usuário não encontrado."
     );
@@ -60,6 +64,12 @@ describe("RequestPasswordReset", () => {
   it("should throw if recent request exists", async () => {
     (userRepository.findByEmail as jest.Mock).mockResolvedValue(user);
     (tokenRepository.countRecentRequests as jest.Mock).mockResolvedValue(1);
+
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error(
+        "Já existe uma solicitação recente. Aguarde o código expirar."
+      );
+    });
 
     await expect(useCase.execute(email)).rejects.toThrow(
       "Já existe uma solicitação recente. Aguarde o código expirar."
@@ -75,7 +85,7 @@ describe("RequestPasswordReset", () => {
     expect(tokenRepository.create).toHaveBeenCalledWith(
       expect.objectContaining({
         userId: user.id,
-        tokenHash: "hashed-code",
+        tokenHash: "hashed-password",
         expiresAt: expect.any(Date)
       })
     );

@@ -56,6 +56,10 @@ describe("ResetPassword", () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(null);
 
+    jest.spyOn(exceptions, "notFound").mockImplementation(() => {
+      throw new Error("Usuário não encontrado.");
+    });
+
     await expect(
       useCase.execute({ email, newPassword: "newpass123" })
     ).rejects.toThrow("Usuário não encontrado.");
@@ -66,6 +70,10 @@ describe("ResetPassword", () => {
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(null);
+
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error("Nenhum código de recuperação válido encontrado.");
+    });
 
     await expect(
       useCase.execute({ email, newPassword: "newpass123" })
@@ -78,6 +86,10 @@ describe("ResetPassword", () => {
     (
       tokenRepository.findLatestValidTokenByUserId as jest.Mock
     ).mockResolvedValue(expired);
+
+    jest.spyOn(exceptions, "badRequest").mockImplementation(() => {
+      throw new Error("O código de recuperação expirou.");
+    });
 
     await expect(
       useCase.execute({ email, newPassword: "newpass123" })

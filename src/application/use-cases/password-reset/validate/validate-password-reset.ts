@@ -18,6 +18,7 @@ export class ValidatePasswordResetUseCase {
       this.exceptions.notFound({
         message: "Usuário não encontrado."
       });
+      return;
     }
 
     const token =
@@ -28,6 +29,7 @@ export class ValidatePasswordResetUseCase {
       this.exceptions.badRequest({
         message: "Nenhuma solicitação de recuperação encontrada."
       });
+      return;
     }
 
     const isValid = await bcrypt.compare(code, token.token);
@@ -35,6 +37,7 @@ export class ValidatePasswordResetUseCase {
       this.exceptions.badRequest({
         message: "Código inválido."
       });
+      return;
     }
 
     const now = new Date();
@@ -42,6 +45,7 @@ export class ValidatePasswordResetUseCase {
       this.exceptions.badRequest({
         message: "O código de recuperação expirou."
       });
+      return;
     }
   }
 }
