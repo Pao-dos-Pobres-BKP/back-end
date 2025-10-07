@@ -11,5 +11,4 @@ export const HealthCheckResponses = applyDecorators(
     status: 503,
     description: "System is unhealthy"
   }),
-  ApiOperation({ summary: "Check system health" })
 );
