@@ -8,7 +8,7 @@ import {
   MetricsRepository as IMetricsRepository,
   DonorStatisticsData
 } from "@domain/repositories/metrics";
-import { Prisma } from "@prisma/client";
+import { Prisma, PaymentMethod } from "@prisma/client";
 import { TotalDonationAmountByPaymentMethodResponse } from "@domain/repositories/metrics";
 
 @Injectable()
@@ -109,28 +109,30 @@ export class MetricsRepository implements IMetricsRepository {
     startDate: Date,
     endDate: Date
   ): Promise<TotalDonationAmountByPaymentMethodResponse> {
-    const totalDonationAmountByPaymentMethod =
-      await this.prisma.payment.groupBy({
-        by: ["paymentMethod"],
-        where: {
-          paidAt: {
-            gte: startDate,
-            lte: endDate
-          },
-          status: "CONFIRMED"
-        },
-        _sum: {
-          amount: true
-        },
-        _count: {
-          id: true
-        }
-      });
+    const totalDonationAmountByPaymentMethod = await this.prisma.$queryRaw<
+      Array<{
+        paymentMethod: string;
+        totalAmount: number;
+        totalQuantity: number;
+      }>
+    >(
+      Prisma.sql`
+        SELECT 
+          payment_method as "paymentMethod",
+          COALESCE(SUM(amount), 0)::FLOAT as "totalAmount",
+          COUNT(id)::INTEGER as "totalQuantity"
+        FROM payments 
+        WHERE paid_at >= ${startDate}
+          AND paid_at <= ${endDate}
+          AND status = 'CONFIRMED'
+        GROUP BY payment_method
+      `
+    );
 
     const formattedData = totalDonationAmountByPaymentMethod.map((item) => ({
-      paymentMethod: item.paymentMethod,
-      totalAmount: Number(item._sum.amount || 0),
-      totalQuantity: item._count.id
+      paymentMethod: item.paymentMethod as PaymentMethod,
+      totalAmount: Number(item.totalAmount || 0),
+      totalQuantity: item.totalQuantity
     }));
 
     return {
