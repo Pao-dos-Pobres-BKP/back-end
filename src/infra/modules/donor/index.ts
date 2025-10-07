@@ -8,13 +8,16 @@ import { DeleteDonorUseCase } from "@application/use-cases/donor/delete/delete-d
 import { FindAllDonorsUseCase } from "@application/use-cases/donor/find-all/find-all-donors";
 import { FindDonorByIdUseCase } from "@application/use-cases/donor/find-by-id/find-donor-by-id";
 import { UpdateDonorUseCase } from "@application/use-cases/donor/update/update-donor";
+import { UpdateDonorAvatarUseCase } from "@application/use-cases/donor/update-avatar/update-avatar";
+import { FileModule } from "../file";
 
 @Module({
-  imports: [DatabaseModule, ExceptionModule, HashModule],
+  imports: [DatabaseModule, ExceptionModule, HashModule, FileModule],
   controllers: [DonorController],
   providers: [
     CreateDonorUseCase,
     UpdateDonorUseCase,
+    UpdateDonorAvatarUseCase,
     DeleteDonorUseCase,
     FindDonorByIdUseCase,
     FindAllDonorsUseCase

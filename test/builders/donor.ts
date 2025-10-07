@@ -27,6 +27,7 @@ export const createMockDonorWithUser = (
   phone: faker.phone.number(),
   createdAt: faker.date.past({ years: 10 }),
   updatedAt: new Date(),
+  imageUrl: null,
   deletedAt: null,
   ...override
 });

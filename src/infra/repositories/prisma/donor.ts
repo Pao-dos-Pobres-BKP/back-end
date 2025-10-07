@@ -192,7 +192,16 @@ export class PrismaDonorRepository implements DonorRepository {
   }
 
   async update(id: string, params: UpdateDonorParams): Promise<void> {
-    const { email, password, fullName, birthDate, gender, phone, cpf } = params;
+    const {
+      email,
+      password,
+      fullName,
+      birthDate,
+      gender,
+      phone,
+      cpf,
+      imageUrl
+    } = params;
 
     await this.prisma.donor.update({
       where: { id },
@@ -205,7 +214,8 @@ export class PrismaDonorRepository implements DonorRepository {
           update: {
             email,
             password,
-            fullName
+            fullName,
+            imageUrl
           }
         }
       }
