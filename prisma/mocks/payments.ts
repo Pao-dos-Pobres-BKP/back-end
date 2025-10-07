@@ -29,7 +29,7 @@ export const createPaymentsMockWithIds = (
           { weight: 0.85, value: PaymentStatus.CONFIRMED },
           { weight: 0.1, value: PaymentStatus.FAILED },
           { weight: 0.05, value: PaymentStatus.PENDING }
-        ]);
+        ]) as PaymentStatus;
       } else if (paymentMethod === PaymentMethod.BANK_SLIP) {
         // Bank slip payments can take longer, more pending
         status = faker.helpers.weightedArrayElement([
@@ -37,7 +37,7 @@ export const createPaymentsMockWithIds = (
           { weight: 0.15, value: PaymentStatus.PENDING },
           { weight: 0.1, value: PaymentStatus.FAILED },
           { weight: 0.05, value: PaymentStatus.CANCELED }
-        ]);
+        ]) as PaymentStatus;
       } else {
         // Credit card payments
         status = faker.helpers.weightedArrayElement([
@@ -46,16 +46,18 @@ export const createPaymentsMockWithIds = (
           { weight: 0.1, value: PaymentStatus.FAILED },
           { weight: 0.03, value: PaymentStatus.REFUNDED },
           { weight: 0.02, value: PaymentStatus.CANCELED }
-        ]);
+        ]) as PaymentStatus;
       }
 
       // Set paidAt date if payment is confirmed, authorized, or refunded
       if (
-        [
-          PaymentStatus.CONFIRMED,
-          PaymentStatus.AUTHORIZED,
-          PaymentStatus.REFUNDED
-        ].includes(status)
+        (
+          [
+            PaymentStatus.CONFIRMED,
+            PaymentStatus.AUTHORIZED,
+            PaymentStatus.REFUNDED
+          ] as PaymentStatus[]
+        ).includes(status)
       ) {
         paidAt = faker.date.between({
           from: new Date("2024-01-01"),

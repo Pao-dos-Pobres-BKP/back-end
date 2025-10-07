@@ -6,6 +6,7 @@ import { Donation } from "@domain/entities/donation";
 import {
   CreateDonationParams,
   DonationDetailsResponse,
+  DonationDetailsResponseWithPayment,
   DonationRepository,
   UpdateDonationParams
 } from "@domain/repositories/donation";
@@ -25,11 +26,25 @@ export class PrismaDonationRepository implements DonationRepository {
     return DonationMapper.toDomain(donation);
   }
 
-  async findAllByCampaign(campaignId: string): Promise<Donation[]> {
+  async findAllByCampaign(
+    campaignId: string
+  ): Promise<DonationDetailsResponseWithPayment[]> {
     const donations = await this.prisma.donation.findMany({
-      where: { campaignId }
+      where: { campaignId },
+      include: {
+        payment: true
+      }
     });
-    return donations.map(DonationMapper.toDomain);
+
+    return donations.map((donation) => ({
+      id: donation.id,
+      amount: Number(donation.amount),
+      periodicity: donation.periodicity,
+      campaignId: donation.campaignId,
+      donorId: donation.donorId,
+      createdAt: donation.createdAt,
+      payment: donation.payment
+    }));
   }
 
   async findAllByDonor(
