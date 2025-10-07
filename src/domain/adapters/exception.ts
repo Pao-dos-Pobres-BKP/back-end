@@ -9,4 +9,5 @@ export abstract class ExceptionsAdapter {
   abstract forbidden(params?: ExceptionParams): void;
   abstract unauthorized(params?: ExceptionParams): void;
   abstract notFound(params?: ExceptionParams): void;
+  abstract healthError(params: ExceptionParams): void;
 }
