@@ -2,6 +2,7 @@ import { Controller, Get } from "@nestjs/common";
 import { HealthCheck } from "@nestjs/terminus";
 import { HealthUseCase } from "@application/use-cases/health/health";
 import { HealthReport } from "@domain/adapters/health";
+import { HealthCheckResponses } from "@application/dtos/health/health";
 
 @Controller("health")
 export class HealthController {
@@ -9,6 +10,7 @@ export class HealthController {
 
   @Get()
   @HealthCheck()
+  @HealthCheckResponses
   async execute(): Promise<HealthReport> {
     return this.healthUseCase.execute();
   }
