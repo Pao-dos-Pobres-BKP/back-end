@@ -30,14 +30,18 @@ async function main(): Promise<void> {
     });
   }
 
-  for (let i = 0; i < Math.min(addressesMock.length, createdDonors.length); i++) {
+  for (
+    let i = 0;
+    i < Math.min(addressesMock.length, createdDonors.length);
+    i++
+  ) {
     const addressData = {
       ...addressesMock[i],
       donor: {
         connect: { id: createdDonors[i] }
       }
     };
-    
+
     await prisma.address.create({
       data: addressData
     });
