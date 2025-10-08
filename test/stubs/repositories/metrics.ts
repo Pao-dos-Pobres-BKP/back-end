@@ -3,8 +3,12 @@ import {
   GetMetricsResponseDTO,
   PeriodMetricsDTO
 } from "@application/dtos/metrics/get-metrics";
-import { DonorStatisticsData } from "@domain/repositories/metrics";
+import {
+  DonorStatisticsData,
+  TotalDonationAmountByPaymentMethodResponse
+} from "@domain/repositories/metrics";
 import { Gender } from "@domain/entities/gender-enum";
+import { PaymentMethod } from "@prisma/client";
 
 export class MetricsRepositoryStub implements MetricsRepository {
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -54,5 +58,34 @@ export class MetricsRepositoryStub implements MetricsRepository {
         birthDate: new Date("1995-12-10")
       }
     ];
+  }
+
+  async findByDateDonationByPaymentMethod(
+    startDate: Date,
+    endDate: Date
+  ): Promise<TotalDonationAmountByPaymentMethodResponse> {
+    return {
+      rangeDate: {
+        startDate,
+        endDate
+      },
+      totalDonationAmountByPaymentMethodAmount: [
+        {
+          paymentMethod: PaymentMethod.PIX,
+          totalAmount: 5000,
+          totalQuantity: 25
+        },
+        {
+          paymentMethod: PaymentMethod.CREDIT_CARD,
+          totalAmount: 10000,
+          totalQuantity: 15
+        },
+        {
+          paymentMethod: PaymentMethod.BANK_SLIP,
+          totalAmount: 3000,
+          totalQuantity: 10
+        }
+      ]
+    };
   }
 }
