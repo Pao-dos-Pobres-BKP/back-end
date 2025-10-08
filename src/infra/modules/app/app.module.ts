@@ -13,6 +13,8 @@ import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { QueueModule } from "../queue";
+import { HealthModule } from "../health";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +33,8 @@ import { QueueModule } from "../queue";
     MailModule,
     CampaignModule,
     NewsletterModule,
-    QueueModule
+    QueueModule,
+    HealthModule
   ]
 })
 export class AppModule {}
