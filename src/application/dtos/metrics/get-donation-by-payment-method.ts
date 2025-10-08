@@ -76,8 +76,8 @@ export class DonationByPaymentMethodAndDateResponse {
 
 export const GetDonationByPaymentMethodAndDateResponses = applyDecorators(
   ApiOkResponse({
-    description: "Get donation amount by date",
+    description: "Get donation amount by payment method",
     type: DonationByPaymentMethodAndDateResponse
   }),
-  ApiOperation({ summary: "Get donation amount by date" })
+  ApiOperation({ summary: "Get donation amount by payment method" })
 );

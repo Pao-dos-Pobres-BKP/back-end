@@ -13,7 +13,6 @@ import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { QueueModule } from "../queue";
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +27,7 @@ import { QueueModule } from "../queue";
     NewsModule,
     MetricsModule,
     FileModule,
+    NewsModule,
     MailModule,
     CampaignModule,
     NewsletterModule,
