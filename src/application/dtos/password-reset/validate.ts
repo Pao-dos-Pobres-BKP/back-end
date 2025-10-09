@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
-export class ValidatePasswordResetDto {
+export class ValidateCodeDto {
   @ApiProperty({
     example: "usuario@email.com",
     description: "Email do usuário que solicitou a redefinição"
@@ -21,6 +21,6 @@ export class ValidatePasswordResetDto {
   code: string;
 }
 
-export interface ValidatePasswordResetResponse {
+export interface ValidateCodeResponse {
   message: string;
 }

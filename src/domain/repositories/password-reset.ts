@@ -11,7 +11,7 @@ export abstract class PasswordResetTokenRepository {
   abstract findLatestValidTokenByUserId(
     userId: string
   ): Promise<PasswordResetToken | null>;
-  abstract markAsUsed(tokenId: string): Promise<void>;
+  abstract deleteUsedCode(tokenId: string): Promise<void>;
   abstract deleteExpiredTokens(): Promise<void>;
   abstract countRecentRequests(
     userId: string,

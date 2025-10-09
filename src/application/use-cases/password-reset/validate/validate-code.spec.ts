@@ -1,14 +1,14 @@
-import { ValidatePasswordResetUseCase } from "./validate-password-reset";
+import { ValidateCodeUseCase } from "./validate-code";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
-describe("ValidatePasswordReset", () => {
+describe("ValidateCode", () => {
   let userRepository: UserRepository;
   let tokenRepository: PasswordResetTokenRepository;
   let exceptions: ExceptionsServiceStub;
-  let useCase: ValidatePasswordResetUseCase;
+  let useCase: ValidateCodeUseCase;
 
   const email = "test@example.com";
   const user = { id: "user-id", email };
@@ -31,7 +31,7 @@ describe("ValidatePasswordReset", () => {
 
     exceptions = new ExceptionsServiceStub();
 
-    useCase = new ValidatePasswordResetUseCase(
+    useCase = new ValidateCodeUseCase(
       userRepository,
       tokenRepository,
       exceptions

@@ -61,6 +61,6 @@ export class ResetPasswordUseCase {
       await this.adminRepository.update(userId, { password: hashedPassword });
     }
 
-    await this.passwordResetTokenRepository.markAsUsed(latestToken.id);
+    await this.passwordResetTokenRepository.deleteUsedCode(latestToken.id);
   }
 }

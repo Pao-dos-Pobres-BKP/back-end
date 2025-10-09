@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 import { PasswordResetController } from "@infra/controllers/password-reset/index";
 import { RequestPasswordResetUseCase } from "@application/use-cases/password-reset/request/request-password-reset";
-import { ValidatePasswordResetUseCase } from "@application/use-cases/password-reset/validate/validate-password-reset";
+import { ValidateCodeUseCase } from "@application/use-cases/password-reset/validate/validate-code";
 import { ResetPasswordUseCase } from "@application/use-cases/password-reset/reset/reset-password";
 import { DonorRepository } from "@domain/repositories/donor";
 import { AdminRepository } from "@domain/repositories/admin";
@@ -21,7 +21,7 @@ import { DatabaseModule } from "../database";
   controllers: [PasswordResetController],
   providers: [
     RequestPasswordResetUseCase,
-    ValidatePasswordResetUseCase,
+    ValidateCodeUseCase,
     ResetPasswordUseCase,
     SendEmailUseCase,
     { provide: DonorRepository, useClass: PrismaDonorRepository },

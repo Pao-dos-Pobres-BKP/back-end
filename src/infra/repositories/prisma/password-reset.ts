@@ -37,7 +37,7 @@ export class PrismaPasswordResetTokenRepository
     });
   }
 
-  async markAsUsed(tokenId: string): Promise<void> {
+  async deleteUsedCode(tokenId: string): Promise<void> {
     await this.prismaService.passwordResetToken.delete({
       where: { id: tokenId }
     });

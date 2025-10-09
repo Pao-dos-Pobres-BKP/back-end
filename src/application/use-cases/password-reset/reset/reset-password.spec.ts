@@ -49,7 +49,7 @@ describe("ResetPassword", () => {
     jest
       .spyOn(bcrypt, "hash")
       .mockImplementation(async () => "hashed-password");
-    jest.spyOn(tokenRepository, "markAsUsed");
+    jest.spyOn(tokenRepository, "deleteUsedCode");
   });
 
   it("should throw if user not found", async () => {
@@ -108,7 +108,7 @@ describe("ResetPassword", () => {
     expect(donorRepository.update).toHaveBeenCalledWith(donorUser.id, {
       password: "hashed-password"
     });
-    expect(tokenRepository.markAsUsed).toHaveBeenCalledWith(validToken.id);
+    expect(tokenRepository.deleteUsedCode).toHaveBeenCalledWith(validToken.id);
   });
 
   it("should update admin password and mark token used", async () => {
@@ -123,6 +123,6 @@ describe("ResetPassword", () => {
     expect(adminRepository.update).toHaveBeenCalledWith(adminUser.id, {
       password: "hashed-password"
     });
-    expect(tokenRepository.markAsUsed).toHaveBeenCalledWith(validToken.id);
+    expect(tokenRepository.deleteUsedCode).toHaveBeenCalledWith(validToken.id);
   });
 });

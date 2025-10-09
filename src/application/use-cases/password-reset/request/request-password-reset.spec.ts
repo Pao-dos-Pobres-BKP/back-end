@@ -93,6 +93,7 @@ describe("RequestPasswordReset", () => {
       expect.objectContaining({
         to: [email],
         subject: "Recuperação de Senha",
+        html: expect.stringContaining("Recuperação de Senha"),
         text: expect.stringContaining("Seu código de recuperação é:")
       })
     );

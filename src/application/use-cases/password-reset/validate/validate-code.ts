@@ -5,7 +5,7 @@ import { UserRepository } from "@domain/repositories/user";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
-export class ValidatePasswordResetUseCase {
+export class ValidateCodeUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,

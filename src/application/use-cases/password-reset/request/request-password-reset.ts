@@ -4,6 +4,7 @@ import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import * as bcrypt from "bcryptjs";
 import { SendEmailUseCase } from "../../mail/send/send-email";
+import { passwordResetTemplate } from "@domain/email-templates/email-template";
 
 @Injectable()
 export class RequestPasswordResetUseCase {
@@ -27,7 +28,7 @@ export class RequestPasswordResetUseCase {
       await this.passwordResetTokenRepository.countRecentRequests(user.id, 5);
     if (recentRequests > 0) {
       this.exceptions.badRequest({
-        message: "Já existe uma solicitação recente. Aguarde o código expirar."
+        message: "Já existe uma solicitação recente."
       });
     }
 
@@ -44,10 +45,12 @@ export class RequestPasswordResetUseCase {
     });
 
     const subject = "Recuperação de Senha";
+    const html = passwordResetTemplate(subject, user.fullName, code);
     const text = `Seu código de recuperação é: ${code}`;
 
     await this.sendEmailUseCase.execute({
       to: [email],
+      html,
       subject,
       text
     });
