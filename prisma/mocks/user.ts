@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { Prisma, Gender } from "@prisma/client";
+import { Prisma, Gender, UserRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const validCPFs: string[] = [
@@ -25,7 +25,7 @@ export const userDonorsMock: Prisma.UserCreateInput[] = [
   {
     email: "donor@email.com",
     password: passwordHashed,
-    role: "DONOR",
+    role: UserRole.DONOR,
     fullName: "Doador Principal",
     donor: {
       create: {
@@ -39,7 +39,7 @@ export const userDonorsMock: Prisma.UserCreateInput[] = [
   ...Array.from({ length: 49 }).map((_, index) => ({
     email: faker.internet.email(),
     password: passwordHashed,
-    role: "DONOR" as const,
+    role: UserRole.DONOR,
     fullName: faker.person.fullName(),
     donor: {
       create: {
@@ -53,8 +53,8 @@ export const userDonorsMock: Prisma.UserCreateInput[] = [
   
   ...Array.from({ length: 5 }).map((_, index) => ({
     email: `donor.deleted${index + 1}@example.com`,
-    password: passwordHashed, // Donor@1234
-    role: "DONOR" as const,
+    password: passwordHashed,
+    role: UserRole.DONOR,
     fullName: `${faker.person.fullName()} (Deletado)`,
     deletedAt: faker.date.recent({ days: 30 }),
     donor: {
@@ -71,8 +71,8 @@ export const userAdminsMock: Prisma.UserCreateInput[] = [
   {
     email: "admin@email.com",
     fullName: "Admin Principal",
-    password: passwordHashed, // Admin@1234
-    role: "ADMIN",
+    password: passwordHashed,
+    role: UserRole.ADMIN,
     admin: {
       create: {
         root: true
@@ -83,7 +83,7 @@ export const userAdminsMock: Prisma.UserCreateInput[] = [
     email: `admin${index + 1}@example.com`,
     fullName: faker.person.fullName(),
     password: passwordHashed,
-    role: "ADMIN" as const,
+    role: UserRole.ADMIN,
     admin: {
       create: {
         root: index < 2
