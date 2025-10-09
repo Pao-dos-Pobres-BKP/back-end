@@ -1,7 +1,6 @@
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { CampaignRepository } from "@domain/repositories/campaign";
 import { Injectable } from "@nestjs/common";
-import { handleDateRange } from "./handleDateRange";
 import {
   DonationDetailsResponseWithPayment,
   DonationRepository
@@ -27,25 +26,12 @@ export class ComparePaymentMethodsUseCase {
     private readonly exceptionService: ExceptionsAdapter
   ) {}
 
-  async execute(
-    id: string,
-    startDate: Date,
-    endDate: Date
-  ): Promise<CampaignWithMetrics | void> {
+  async execute(id: string): Promise<CampaignWithMetrics | void> {
     try {
       const campaign = await this.campaignRepository.findById(id);
-
       if (!campaign) {
         return this.exceptionService.notFound({
           message: "Campaign not found"
-        });
-      }
-
-      const dateRangeError = handleDateRange(startDate, endDate);
-
-      if (dateRangeError) {
-        return this.exceptionService.badRequest({
-          message: dateRangeError.message
         });
       }
 

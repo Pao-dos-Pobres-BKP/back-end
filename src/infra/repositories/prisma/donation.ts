@@ -30,21 +30,15 @@ export class PrismaDonationRepository implements DonationRepository {
     campaignId: string
   ): Promise<DonationDetailsResponseWithPayment[]> {
     const donations = await this.prisma.donation.findMany({
-      where: { campaignId },
+      where: {
+        campaignId
+      },
       include: {
         payment: true
       }
     });
 
-    return donations.map((donation) => ({
-      id: donation.id,
-      amount: Number(donation.amount),
-      periodicity: donation.periodicity,
-      campaignId: donation.campaignId,
-      donorId: donation.donorId,
-      createdAt: donation.createdAt,
-      payment: donation.payment
-    }));
+    return donations.map(DonationMapper.toDomainWithPayment);
   }
 
   async findAllByDonor(
