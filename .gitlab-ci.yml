@@ -1,4 +1,9 @@
-stages: [local_test_build, build_and_push, mirror_to_github, deploy_to_ec2]
+stages: [
+    # local_test_build,
+    build_and_push,
+    mirror_to_github,
+    deploy_to_ec2
+  ]
 
 variables:
   DOCKER_BUILDKIT: "1"
