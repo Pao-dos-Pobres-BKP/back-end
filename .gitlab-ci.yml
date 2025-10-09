@@ -69,7 +69,21 @@ deploy_to_ec2:
         aws ecr get-login-password --region $AWS_DEFAULT_REGION | \
           sudo docker login --username AWS --password-stdin $ECR_URL && \
         sudo docker pull $IMAGE && \
-        sudo docker service update --with-registry-auth --image $IMAGE $SERVICE_NAME
+        sudo docker service update --with-registry-auth \
+          --image $IMAGE \
+          --env-add DATABASE_URL="$DATABASE_URL" \
+          --env-add PORT="$PORT" \
+          --env-add AWS_REGION="$AWS_DEFAULT_REGION" \
+          --env-add S3_BUCKET="$S3_BUCKET" \
+          --env-add S3_URL="$S3_URL" \
+          --env-add MAIL_FROM="$MAIL_FROM" \
+          --env-add MAIL_REPLY_TO="$MAIL_REPLY_TO" \
+          --env-add REDIS_HOST="$REDIS_HOST" \
+          --env-add REDIS_PORT="$REDIS_PORT" \
+          --env-add JWT_SECRET="$JWT_SECRET" \
+          --env-add QUEUE_ATTEMPTS="$QUEUE_ATTEMPTS" \
+          --env-add QUEUE_DELAY_BETWEEN_ATTEMPTS="$QUEUE_DELAY_BETWEEN_ATTEMPTS" \
+          $SERVICE_NAME
       "
   only:
     - main

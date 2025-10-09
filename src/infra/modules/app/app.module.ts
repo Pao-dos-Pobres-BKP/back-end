@@ -14,6 +14,7 @@ import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { PasswordResetModule } from "../password-reset";
 import { QueueModule } from "../queue";
+import { HealthModule } from "../health";
 
 @Module({
   imports: [
@@ -29,12 +30,13 @@ import { QueueModule } from "../queue";
     NewsModule,
     MetricsModule,
     FileModule,
-    MailModule,
     NewsModule,
+    MailModule,
     CampaignModule,
     NewsletterModule,
     PasswordResetModule,
-    QueueModule
+    QueueModule,
+    HealthModule
   ]
 })
 export class AppModule {}
