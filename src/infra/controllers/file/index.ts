@@ -1,9 +1,16 @@
 import {
   CreateFileDTO,
-  CreateFileResponse
+  CreateFileResponse,
+  CreateFileResponses
 } from "@application/dtos/file/create";
-import { DeleteFileResponse } from "@application/dtos/file/delete";
-import { FindFileByIdResponse } from "@application/dtos/file/file-by-id";
+import {
+  DeleteFileResponse,
+  DeleteFileResponseDecorator
+} from "@application/dtos/file/delete";
+import {
+  FindFileByIdResponse,
+  FindFileByIdResponseDecorator
+} from "@application/dtos/file/file-by-id";
 import { CreateFileUseCase } from "@application/use-cases/file/create/create-file";
 import { DeleteFileUseCase } from "@application/use-cases/file/delete/delete-file";
 import { FindFileByIdUseCase } from "@application/use-cases/file/find-by-id/find-file-by-id";
@@ -29,6 +36,7 @@ export class FileController {
   ) {}
 
   @Post()
+  @CreateFileResponses
   @UseInterceptors(FileInterceptor("file"))
   @ApiConsumes("multipart/form-data")
   @ApiBody({
@@ -54,11 +62,13 @@ export class FileController {
   }
 
   @Get(":id")
+  @FindFileByIdResponseDecorator
   async getFileById(@Param("id") id: string): Promise<FindFileByIdResponse> {
     return await this.findFileByIdUseCase.execute(id);
   }
 
   @Delete(":id")
+  @DeleteFileResponseDecorator
   async deleteFile(@Param("id") id: string): Promise<DeleteFileResponse> {
     return await this.deleteFileUseCase.execute(id);
   }

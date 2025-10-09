@@ -1,6 +1,7 @@
 import {
   ApiNoContentResponse,
   ApiNotFoundResponse,
+  ApiOperation,
   PartialType
 } from "@nestjs/swagger";
 import { CreateDonorDTO } from "./create";
@@ -14,5 +15,16 @@ export const UpdateDonorResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Donor not found"
-  })
+  }),
+  ApiOperation({ summary: "Update a donor by ID" })
+);
+
+export const UpdateDonorAvatarResponses = applyDecorators(
+  ApiNoContentResponse({
+    description: "Donor avatar updated successfully"
+  }),
+  ApiNotFoundResponse({
+    description: "Donor not found"
+  }),
+  ApiOperation({ summary: "Update a donor avatar by ID" })
 );

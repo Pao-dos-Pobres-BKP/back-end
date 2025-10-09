@@ -9,10 +9,11 @@ import { AdminModule } from "../admin";
 import { MailModule } from "../mail";
 import { FileModule } from "../file";
 import { NewsModule } from "../news";
-//import { MetricsModule } from "../metrics";
+import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
-
-//Metrics Module está quebrada.
+import { NewsletterModule } from "../newsletter";
+import { QueueModule } from "../queue";
+import { HealthModule } from "../health";
 
 @Module({
   imports: [
@@ -26,11 +27,14 @@ import { CampaignModule } from "../campaign";
     EventModule,
     AdminModule,
     NewsModule,
-    //MetricsModule,
+    MetricsModule,
     FileModule,
-    MailModule,
     NewsModule,
-    CampaignModule
+    MailModule,
+    CampaignModule,
+    NewsletterModule,
+    QueueModule,
+    HealthModule
   ]
 })
 export class AppModule {}

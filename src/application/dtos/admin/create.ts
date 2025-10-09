@@ -3,7 +3,8 @@ import {
   ApiCreatedResponse,
   ApiProperty,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse
+  ApiForbiddenResponse,
+  ApiOperation
 } from "@nestjs/swagger";
 import {
   IsBoolean,
@@ -56,5 +57,6 @@ export const CreateAdminResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can create other admins"
-  })
+  }),
+  ApiOperation({ summary: "Create a new administrator" })
 );

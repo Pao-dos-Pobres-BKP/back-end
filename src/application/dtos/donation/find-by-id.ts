@@ -3,6 +3,7 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiProperty
 } from "@nestjs/swagger";
 
@@ -51,5 +52,6 @@ export const FindDonationByIdResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "Not found a donation with this id"
-  })
+  }),
+  ApiOperation({ summary: "Find a donation by ID" })
 );

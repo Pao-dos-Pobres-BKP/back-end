@@ -1,19 +1,50 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiTags, ApiOkResponse } from "@nestjs/swagger";
+import { Controller, Get, Param, Query } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
-import { GetMetricsResponseDTO } from "@application/dtos/metrics/get-metrics";
+import {
+  FindGlobalMetricsResponse,
+  GetMetricsResponseDTO
+} from "@application/dtos/metrics/get-metrics";
+import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
+import {
+  CampaignSocialDataResponse,
+  GetCampaignSocialDataResponses
+} from "@application/dtos/metrics/campaign-social-data";
+import {
+  DonationByPaymentMethodAndDateResponse,
+  GetDonationByPaymentMethodAndDateDTO,
+  GetDonationByPaymentMethodAndDateResponses
+} from "@application/dtos/metrics/get-donation-by-payment-method";
+import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/get-donation-by-payment-method";
 
 @ApiTags("Metrics")
 @Controller("metrics")
 export class MetricsController {
-  constructor(private readonly getMetricsUseCase: GetMetricsUseCase) {}
+  constructor(
+    private readonly getMetricsUseCase: GetMetricsUseCase,
+    private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase,
+    private readonly getDonationByPaymentMethodAndDateUseCase: GetDonationByPaymentMethodAndDateUseCase
+  ) {}
 
-  @Get()
-  @ApiOkResponse({
-    type: GetMetricsResponseDTO,
-    description: "Retorna métricas globais para o dashboard"
-  })
+  @Get("global")
+  @FindGlobalMetricsResponse
   async getMetrics(): Promise<GetMetricsResponseDTO> {
     return await this.getMetricsUseCase.execute();
+  }
+
+  @Get("campaigns/:id/social-data")
+  @GetCampaignSocialDataResponses
+  async getCampaignSocialData(
+    @Param("id") id: string
+  ): Promise<CampaignSocialDataResponse> {
+    return await this.getCampaignSocialDataUseCase.execute(id);
+  }
+
+  @Get("donation/payment-method")
+  @GetDonationByPaymentMethodAndDateResponses
+  async getDonationByPaymentMethodAndDate(
+    @Query() query: GetDonationByPaymentMethodAndDateDTO
+  ): Promise<DonationByPaymentMethodAndDateResponse> {
+    return await this.getDonationByPaymentMethodAndDateUseCase.execute(query);
   }
 }

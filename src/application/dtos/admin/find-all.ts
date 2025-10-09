@@ -2,7 +2,8 @@ import {
   ApiOkResponse,
   ApiProperty,
   ApiUnauthorizedResponse,
-  ApiForbiddenResponse
+  ApiForbiddenResponse,
+  ApiOperation
 } from "@nestjs/swagger";
 import { PaginationEntityDTO } from "../utils/pagination";
 import { applyDecorators } from "@nestjs/common";
@@ -26,5 +27,6 @@ export const FindAllAdminsResponses = applyDecorators(
   }),
   ApiForbiddenResponse({
     description: "Forbidden - Only admins can view admin list"
-  })
+  }),
+  ApiOperation({ summary: "Find all administrators" })
 );
