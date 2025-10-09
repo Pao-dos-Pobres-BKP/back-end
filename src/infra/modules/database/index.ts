@@ -4,6 +4,7 @@ import { DonorRepository } from "@domain/repositories/donor";
 import { EventRepository } from "@domain/repositories/event";
 import { UserRepository } from "@domain/repositories/user";
 import { NewsRepository } from "@domain/repositories/news";
+import { NewsletterRepository } from "@domain/repositories/newsletter";
 
 import { PrismaService } from "@infra/config/prisma";
 import { PrismaAdminRepository } from "@infra/repositories/prisma/admin";
@@ -12,6 +13,7 @@ import { PrismaDonorRepository } from "@infra/repositories/prisma/donor";
 import { PrismaEventRepository } from "@infra/repositories/prisma/event";
 import { PrismaUserRepository } from "@infra/repositories/prisma/user";
 import { PrismaNewsRepository } from "@infra/repositories/prisma/news";
+import { PrismaNewsletterRepository } from "@infra/repositories/prisma/newsletter";
 
 import { Module } from "@nestjs/common";
 import { DonationRepository } from "@domain/repositories/donation";
@@ -47,6 +49,10 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     {
       useClass: PrismaNewsRepository,
       provide: NewsRepository
+    },
+    {
+      useClass: PrismaNewsletterRepository,
+      provide: NewsletterRepository
     }
   ],
   exports: [
@@ -56,7 +62,8 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     UserRepository,
     EventRepository,
     NewsRepository,
-    DonationRepository
+    DonationRepository,
+    NewsletterRepository
   ]
 })
 export class DatabaseModule {}

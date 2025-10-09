@@ -2,6 +2,7 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiNotFoundResponse,
   ApiOkResponse,
+  ApiOperation,
   ApiProperty
 } from "@nestjs/swagger";
 
@@ -72,5 +73,6 @@ export const FindEventByIdResponses = applyDecorators(
   }),
   ApiNotFoundResponse({
     description: "No event found with this ID"
-  })
+  }),
+  ApiOperation({ summary: "Find an event by ID" })
 );

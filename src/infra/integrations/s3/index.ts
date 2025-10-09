@@ -13,6 +13,10 @@ export class S3IntegrationHelper {
     return process.env.S3_PREFIX ?? "";
   }
 
+  public publicUrl(key: string): string {
+    return `${process.env.S3_URL}/${key}`;
+  }
+
   private resolveExt(originalName: string, contentType?: string): string {
     const byMime = contentType ? mime.getExtension(contentType) : null;
     if (byMime) return `.${byMime}`;

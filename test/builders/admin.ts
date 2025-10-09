@@ -21,5 +21,6 @@ export const createMockAdminWithUser = (
   createdAt: faker.date.past({ years: 1 }),
   updatedAt: new Date(),
   deletedAt: null,
+  imageUrl: null,
   ...override
 });

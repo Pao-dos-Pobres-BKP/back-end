@@ -1,6 +1,7 @@
 import { applyDecorators } from "@nestjs/common";
 import {
   ApiCreatedResponse,
+  ApiOperation,
   ApiProperty,
   ApiUnauthorizedResponse
 } from "@nestjs/swagger";
@@ -117,5 +118,6 @@ export const CreateCampaignResponses = applyDecorators(
   }),
   ApiUnauthorizedResponse({
     description: "Unauthorized - Invalid or missing token"
-  })
+  }),
+  ApiOperation({ summary: "Create a new campaign" })
 );

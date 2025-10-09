@@ -12,6 +12,7 @@ model User {
   email     String    @unique
   password  String
   role      UserRole
+  imageUrl  String?   @map("image_url")
   fullName  String    @map("full_name")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -57,7 +58,6 @@ model Admin {
   id   String  @id @default(cuid())
   root Boolean @default(false)
 
-
   user User @relation(fields: [id], references: [id], onDelete: Cascade)
 
   @@map("admins")
@@ -92,23 +92,23 @@ model Campaign {
   createdBy     String         @map("created_by")
   donation      Donation[]
 
-  user  User   @relation(fields: [createdBy], references: [id])
+  user User @relation(fields: [createdBy], references: [id])
 
   @@map("campaigns")
 }
 
 model Donation {
-  id          String   @id @default(cuid())
-  amount      Decimal  @db.Decimal(12, 2)
+  id          String       @id @default(cuid())
+  amount      Decimal      @db.Decimal(12, 2)
   periodicity Periodicity?
-  donorId     String?   @map("donor_id")
-  campaignId  String?  @map("campaign_id")
-  createdAt   DateTime @default(now()) @map("created_at")
+  donorId     String?      @map("donor_id")
+  campaignId  String?      @map("campaign_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
 
   payment Payment[]
 
   campaign Campaign? @relation(fields: [campaignId], references: [id])
-  donor    Donor?     @relation(fields: [donorId], references: [id])
+  donor    Donor?    @relation(fields: [donorId], references: [id])
 
   @@map("donations")
 }
@@ -151,6 +151,14 @@ model Events {
   updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("events")
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("newsletter")
 }
 
 enum UserRole {
