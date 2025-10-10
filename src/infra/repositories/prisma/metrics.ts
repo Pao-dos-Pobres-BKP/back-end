@@ -10,6 +10,8 @@ import {
 } from "@domain/repositories/metrics";
 import { Prisma, PaymentMethod } from "@prisma/client";
 import { TotalDonationAmountByPaymentMethodResponse } from "@domain/repositories/metrics";
+import { DonationsRaisedByPeriodResponse } from "@application/dtos/metrics/get-donations-raised-by-period";
+import { monthNames, RaisedByPeriodDataItem } from "@domain/entities/metrics";
 
 @Injectable()
 export class MetricsRepository implements IMetricsRepository {
@@ -142,5 +144,148 @@ export class MetricsRepository implements IMetricsRepository {
       },
       totalDonationAmountByPaymentMethodAmount: formattedData
     };
+  }
+
+  async findDonationsRaisedByPeriod(
+    startDate: Date,
+    endDate: Date
+  ): Promise<DonationsRaisedByPeriodResponse> {
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const rangeDate = { startDate, endDate };
+
+    if (diffDays <= 31) {
+      const dailyData = await this.getDailyDonations(startDate, endDate);
+      return {
+        rangeDate,
+        daily: { data: dailyData }
+      };
+    } else if (diffDays <= 93) {
+      const weeklyData = await this.getWeeklyDonations(startDate, endDate);
+      return {
+        rangeDate,
+        weekly: { data: weeklyData }
+      };
+    } else {
+      const monthlyData = await this.getMonthlyDonations(startDate, endDate);
+      return {
+        rangeDate,
+        monthly: { data: monthlyData }
+      };
+    }
+  }
+
+  private async getDailyDonations(
+    startDate: Date,
+    endDate: Date
+  ): Promise<RaisedByPeriodDataItem[]> {
+    const result = await this.prisma.$queryRaw<
+      Array<{ date: string; amount: string }>
+    >(
+      Prisma.sql`
+        WITH date_series AS (
+          SELECT generate_series(
+            ${startDate}::date,
+            ${endDate}::date,
+            '1 day'::interval
+          )::date as date
+        )
+        SELECT 
+          ds.date::text as date,
+          COALESCE(SUM(p.amount), 0)::DECIMAL as amount
+        FROM date_series ds
+        LEFT JOIN payments p ON DATE(p.paid_at) = ds.date 
+          AND p.status = 'CONFIRMED'
+        LEFT JOIN donations d ON d.id = p.donation_id
+        GROUP BY ds.date
+        ORDER BY ds.date
+      `
+    );
+
+    return result.map((item) => ({
+      label: item.date,
+      amount: Number(item.amount || "0")
+    }));
+  }
+
+  private async getWeeklyDonations(
+    startDate: Date,
+    endDate: Date
+  ): Promise<RaisedByPeriodDataItem[]> {
+    const result = await this.prisma.$queryRaw<
+      Array<{
+        week_start: string;
+        week_end: string;
+        amount: string;
+      }>
+    >(
+      Prisma.sql`
+        WITH week_series AS (
+          SELECT generate_series(
+            DATE_TRUNC('week', ${startDate}::date),
+            DATE_TRUNC('week', ${endDate}::date),
+            '1 week'::interval
+          )::date as week_start_date
+        )
+        SELECT 
+          TO_CHAR(ws.week_start_date, 'DD/MM') as week_start,
+          TO_CHAR(ws.week_start_date + INTERVAL '6 days', 'DD/MM') as week_end,
+          COALESCE(SUM(p.amount), 0)::DECIMAL as amount
+        FROM week_series ws
+        LEFT JOIN payments p ON DATE_TRUNC('week', p.paid_at) = ws.week_start_date
+          AND p.paid_at >= ${startDate}
+          AND p.paid_at <= ${endDate}
+          AND p.status = 'CONFIRMED'
+        LEFT JOIN donations d ON d.id = p.donation_id
+        GROUP BY ws.week_start_date
+        ORDER BY ws.week_start_date
+      `
+    );
+
+    return result.map((item, index) => ({
+      label: `Week ${index + 1} (${item.week_start} - ${item.week_end})`,
+      amount: Number(item.amount || "0")
+    }));
+  }
+
+  private async getMonthlyDonations(
+    startDate: Date,
+    endDate: Date
+  ): Promise<RaisedByPeriodDataItem[]> {
+    const result = await this.prisma.$queryRaw<
+      Array<{
+        month: number;
+        year: number;
+        amount: string;
+      }>
+    >(
+      Prisma.sql`
+        WITH month_series AS (
+          SELECT generate_series(
+            DATE_TRUNC('month', ${startDate}::date),
+            DATE_TRUNC('month', ${endDate}::date),
+            '1 month'::interval
+          )::date as month_date
+        )
+        SELECT 
+          EXTRACT(MONTH FROM ms.month_date)::INTEGER as month,
+          EXTRACT(YEAR FROM ms.month_date)::INTEGER as year,
+          COALESCE(SUM(p.amount), 0)::DECIMAL as amount
+        FROM month_series ms
+        LEFT JOIN payments p ON DATE_TRUNC('month', p.paid_at) = ms.month_date
+          AND p.paid_at >= ${startDate}
+          AND p.paid_at <= ${endDate}
+          AND p.status = 'CONFIRMED'
+        LEFT JOIN donations d ON d.id = p.donation_id
+        GROUP BY ms.month_date, EXTRACT(MONTH FROM ms.month_date), EXTRACT(YEAR FROM ms.month_date)
+        ORDER BY EXTRACT(YEAR FROM ms.month_date), EXTRACT(MONTH FROM ms.month_date)
+      `
+    );
+
+    return result.map((item) => ({
+      label: `${item.year} - ${monthNames[item.month - 1]}`,
+      amount: Number(item.amount || "0")
+    }));
   }
 }
