@@ -9,6 +9,7 @@ import {
 } from "@domain/repositories/metrics";
 import { Gender } from "@domain/entities/gender-enum";
 import { PaymentMethod } from "@prisma/client";
+import { DonationsRaisedByPeriodResponse } from "@application/dtos/metrics/get-donations-raised-by-period";
 
 export class MetricsRepositoryStub implements MetricsRepository {
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -87,5 +88,53 @@ export class MetricsRepositoryStub implements MetricsRepository {
         }
       ]
     };
+  }
+
+  async findDonationsRaisedByPeriod(
+    startDate: Date,
+    endDate: Date
+  ): Promise<DonationsRaisedByPeriodResponse> {
+    const diffTime = endDate.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+    const rangeDate = { startDate, endDate };
+
+    if (diffDays <= 31) {
+      return {
+        rangeDate,
+        daily: {
+          data: [
+            { label: "2025-01-01", amount: 150 },
+            { label: "2025-01-02", amount: 220 },
+            { label: "2025-01-03", amount: 0 },
+            { label: "2025-01-04", amount: 90 }
+          ]
+        }
+      };
+    } else if (diffDays <= 93) {
+      return {
+        rangeDate,
+        weekly: {
+          data: [
+            { label: "Semana 1 (01/01 - 07/01)", amount: 1200 },
+            { label: "Semana 2 (08/01 - 14/01)", amount: 1800 },
+            { label: "Semana 3 (15/01 - 21/01)", amount: 0 },
+            { label: "Semana 4 (22/01 - 28/01)", amount: 1900 }
+          ]
+        }
+      };
+    } else {
+      return {
+        rangeDate,
+        monthly: {
+          data: [
+            { label: "2024 - Janeiro", amount: 0 },
+            { label: "2024 - Fevereiro", amount: 0 },
+            { label: "2025 - Janeiro", amount: 8500 },
+            { label: "2025 - Fevereiro", amount: 7200 }
+          ]
+        }
+      };
+    }
   }
 }
