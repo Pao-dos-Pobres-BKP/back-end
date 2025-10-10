@@ -37,6 +37,7 @@ import {
 } from "@nestjs/common";
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
 import { RequireToken } from "@infra/commons/decorators/require-token";
+import { CurrentUser, UserPayload } from "@infra/commons/decorators/current-user";
 import { UserRole } from "@domain/entities/user-role-enum";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateFileDTO } from "@application/dtos/file/create";
@@ -121,7 +122,13 @@ export class AdminController {
   @Delete(":id")
   @RequireToken([UserRole.ADMIN])
   @DeleteAdminResponses
-  async deleteAdmin(@Param("id") id: string): Promise<void> {
-    return await this.deleteAdminUseCase.execute(id);
+  async deleteAdmin(
+    @Param("id") id: string,
+    @CurrentUser() currentUser: UserPayload
+  ): Promise<void> {
+    return await this.deleteAdminUseCase.execute({
+      adminId: id,
+      currentUserId: currentUser.id
+    });
   }
 }
