@@ -16,6 +16,12 @@ import {
   GetDonationByPaymentMethodAndDateResponses
 } from "@application/dtos/metrics/get-donation-by-payment-method";
 import { GetDonationByPaymentMethodAndDateUseCase } from "@application/use-cases/metrics/get-donation-by-payment-method/get-donation-by-payment-method";
+import { GetDonationsRaisedByPeriodUseCase } from "@application/use-cases/metrics/get-donations-raised-by-period/get-donations-raised-by-period";
+import {
+  DonationsRaisedByPeriodResponse,
+  GetDonationsRaisedByPeriodDTO,
+  GetDonationsRaisedByPeriodResponses
+} from "@application/dtos/metrics/get-donations-raised-by-period";
 
 @ApiTags("Metrics")
 @Controller("metrics")
@@ -23,7 +29,8 @@ export class MetricsController {
   constructor(
     private readonly getMetricsUseCase: GetMetricsUseCase,
     private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase,
-    private readonly getDonationByPaymentMethodAndDateUseCase: GetDonationByPaymentMethodAndDateUseCase
+    private readonly getDonationByPaymentMethodAndDateUseCase: GetDonationByPaymentMethodAndDateUseCase,
+    private readonly getDonationsRaisedByPeriodUseCase: GetDonationsRaisedByPeriodUseCase
   ) {}
 
   @Get("global")
@@ -46,5 +53,13 @@ export class MetricsController {
     @Query() query: GetDonationByPaymentMethodAndDateDTO
   ): Promise<DonationByPaymentMethodAndDateResponse> {
     return await this.getDonationByPaymentMethodAndDateUseCase.execute(query);
+  }
+
+  @Get("donations/raised-by-period")
+  @GetDonationsRaisedByPeriodResponses
+  async getDonationsRaisedByPeriod(
+    @Query() query: GetDonationsRaisedByPeriodDTO
+  ): Promise<DonationsRaisedByPeriodResponse> {
+    return await this.getDonationsRaisedByPeriodUseCase.execute(query);
   }
 }
