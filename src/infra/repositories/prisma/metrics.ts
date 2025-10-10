@@ -244,7 +244,7 @@ export class MetricsRepository implements IMetricsRepository {
     );
 
     return result.map((item, index) => ({
-      label: `Semana ${index + 1} (${item.week_start} - ${item.week_end})`,
+      label: `Week ${index + 1} (${item.week_start} - ${item.week_end})`,
       amount: Number(item.amount || "0")
     }));
   }
