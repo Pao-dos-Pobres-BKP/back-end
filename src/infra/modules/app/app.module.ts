@@ -12,6 +12,7 @@ import { NewsModule } from "../news";
 import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
+import { PasswordResetModule } from "../password-reset";
 import { QueueModule } from "../queue";
 import { HealthModule } from "../health";
 
@@ -33,6 +34,7 @@ import { HealthModule } from "../health";
     MailModule,
     CampaignModule,
     NewsletterModule,
+    PasswordResetModule,
     QueueModule,
     HealthModule
   ]
