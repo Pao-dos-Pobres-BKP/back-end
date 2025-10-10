@@ -44,8 +44,9 @@ export class ComparePaymentMethodsUseCase {
         )
       }));
 
-      const donationsGroupedByPaymentMethod =
-        donationsWithConfirmedPayments.reduce(
+      const donationsGroupedByPaymentMethod = donationsWithConfirmedPayments
+        .filter((donation) => donation.payment.length > 0) // Filter donations with confirmed payments
+        .reduce(
           (acc, donation) => {
             const paymentMethod = donation.payment[0].paymentMethod;
             if (!acc[paymentMethod]) {
