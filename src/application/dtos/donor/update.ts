@@ -18,3 +18,13 @@ export const UpdateDonorResponses = applyDecorators(
   }),
   ApiOperation({ summary: "Update a donor by ID" })
 );
+
+export const UpdateDonorAvatarResponses = applyDecorators(
+  ApiNoContentResponse({
+    description: "Donor avatar updated successfully"
+  }),
+  ApiNotFoundResponse({
+    description: "Donor not found"
+  }),
+  ApiOperation({ summary: "Update a donor avatar by ID" })
+);

@@ -1,12 +1,14 @@
 import { Module, Global } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { SESv2Client } from "@aws-sdk/client-sesv2";
-import { SendEmailUseCase } from "@application/use-cases/mail/send/send-email";
+import { MailAdapter } from "@domain/adapters/mail";
+import { MailIntegration } from "@infra/integrations/mail";
 import { MailController } from "@infra/controllers/mail";
 
 @Global()
 @Module({
   imports: [ConfigModule.forRoot({ isGlobal: true })],
+  exports: [MailAdapter],
   controllers: [MailController],
   providers: [
     {
@@ -17,7 +19,10 @@ import { MailController } from "@infra/controllers/mail";
         }),
       inject: [ConfigService]
     },
-    SendEmailUseCase
+    {
+      provide: MailAdapter,
+      useClass: MailIntegration
+    }
   ]
 })
 export class MailModule {}

@@ -14,7 +14,6 @@ import { HashModule } from "../hash";
 import { TokenModule } from "../token";
 import { AuthTokenGuard } from "@infra/commons/guards/token";
 import { RoleGuard } from "@infra/commons/guards/role";
-import { ComparePaymentMethodsUseCase } from "@application/use-cases/campaign/campaign-metrics/campaign-metrics";
 
 @Module({
   imports: [DatabaseModule, ExceptionModule, HashModule, TokenModule],
@@ -26,7 +25,6 @@ import { ComparePaymentMethodsUseCase } from "@application/use-cases/campaign/ca
     DeleteCampaignUseCase,
     FindCampaignByIdUseCase,
     SearchCampaignsUseCase,
-    ComparePaymentMethodsUseCase,
     AuthTokenGuard,
     RoleGuard
   ]

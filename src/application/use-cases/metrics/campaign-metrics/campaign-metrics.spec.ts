@@ -6,14 +6,14 @@ import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import { CampaignRepositoryStub } from "@test/stubs/repositories/campaign";
 import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
 import {
-  ComparePaymentMethodsUseCase,
+  CampaignMetricsUseCase,
   CampaignWithMetrics
 } from "./campaign-metrics";
 import { PaymentMethod, PaymentStatus } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 describe("ComparePaymentMethodsUseCase", () => {
-  let sut: ComparePaymentMethodsUseCase;
+  let sut: CampaignMetricsUseCase;
   let campaignRepository: CampaignRepository;
   let donationRepository: DonationRepository;
   let exceptionService: ExceptionsAdapter;
@@ -22,7 +22,7 @@ describe("ComparePaymentMethodsUseCase", () => {
     campaignRepository = new CampaignRepositoryStub();
     donationRepository = new DonationRepositoryStub();
     exceptionService = new ExceptionsServiceStub();
-    sut = new ComparePaymentMethodsUseCase(
+    sut = new CampaignMetricsUseCase(
       campaignRepository,
       donationRepository,
       exceptionService

@@ -19,7 +19,7 @@ export interface CampaignWithMetrics extends Partial<Campaing> {
 }
 
 @Injectable()
-export class ComparePaymentMethodsUseCase {
+export class CampaignMetricsUseCase {
   constructor(
     private readonly campaignRepository: CampaignRepository,
     private readonly donationRepository: DonationRepository,
@@ -45,7 +45,7 @@ export class ComparePaymentMethodsUseCase {
       }));
 
       const donationsGroupedByPaymentMethod = donationsWithConfirmedPayments
-        .filter((donation) => donation.payment.length > 0) // Filter donations with confirmed payments
+        .filter((donation) => donation.payment.length > 0)
         .reduce(
           (acc, donation) => {
             const paymentMethod = donation.payment[0].paymentMethod;

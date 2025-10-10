@@ -18,10 +18,6 @@ import {
   UpdateCampaignStatusDto,
   UpdateCampaignStatusResponses
 } from "@application/dtos/campaign/update";
-import {
-  CampaignWithMetrics,
-  ComparePaymentMethodsUseCase
-} from "@application/use-cases/campaign/campaign-metrics/campaign-metrics";
 import { CreateCampaignUseCase } from "@application/use-cases/campaign/create/create-campaign";
 import { DeleteCampaignUseCase } from "@application/use-cases/campaign/delete/delete-campaign";
 import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
@@ -55,8 +51,7 @@ export class CampaignController {
     private readonly updateCampaignStatusUseCase: UpdateCampaignStatusUseCase,
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
     private readonly findCampaignByIdUseCase: FindCampaignByIdUseCase,
-    private readonly searchCampaignsUseCase: SearchCampaignsUseCase,
-    private readonly comparePaymentMethodsUseCase: ComparePaymentMethodsUseCase
+    private readonly searchCampaignsUseCase: SearchCampaignsUseCase
   ) {}
 
   @Post()
@@ -109,13 +104,5 @@ export class CampaignController {
   @DeleteCampaignResponses
   async deleteCampaign(@Param("id") id: string): Promise<void> {
     return await this.deleteCampaignUseCase.execute(id);
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Get("payments/:id")
-  async comparePaymentMethods(
-    @Param("id") id: string
-  ): Promise<CampaignWithMetrics | void> {
-    return this.comparePaymentMethodsUseCase.execute(id);
   }
 }

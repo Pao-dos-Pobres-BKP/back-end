@@ -12,6 +12,8 @@ import { NewsModule } from "../news";
 import { MetricsModule } from "../metrics";
 import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
+import { QueueModule } from "../queue";
+import { HealthModule } from "../health";
 
 @Module({
   imports: [
@@ -27,10 +29,12 @@ import { NewsletterModule } from "../newsletter";
     NewsModule,
     MetricsModule,
     FileModule,
-    MailModule,
     NewsModule,
+    MailModule,
     CampaignModule,
-    NewsletterModule
+    NewsletterModule,
+    QueueModule,
+    HealthModule
   ]
 })
 export class AppModule {}

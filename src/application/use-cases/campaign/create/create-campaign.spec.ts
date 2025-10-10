@@ -105,8 +105,8 @@ describe("CreateCampaignUseCase", () => {
       description: "Test Description",
       targetAmount: 0,
       currentAmount: 0,
-      startDate: new Date("2025-10-01"),
-      endDate: new Date("2025-12-31"),
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-12-31"),
       imageUrl: "http://example.com/image.jpg",
       createdBy: "user-id"
     });
@@ -124,8 +124,8 @@ describe("CreateCampaignUseCase", () => {
       description: "Test Description",
       targetAmount: -100,
       currentAmount: 0,
-      startDate: new Date("2025-10-01"),
-      endDate: new Date("2025-12-31"),
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-12-31"),
       imageUrl: "http://example.com/image.jpg",
       createdBy: "user-id"
     });
@@ -141,8 +141,8 @@ describe("CreateCampaignUseCase", () => {
       description: "Test Description",
       targetAmount: 1000,
       currentAmount: 0,
-      startDate: new Date("2025-10-01"),
-      endDate: new Date("2025-12-31"),
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-12-31"),
       imageUrl: "http://example.com/image.jpg",
       createdBy: "user-id"
     };
