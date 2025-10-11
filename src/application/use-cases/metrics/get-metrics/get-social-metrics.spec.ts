@@ -1,28 +1,28 @@
 import { GetSocialMetricsUseCase } from "../../metrics/get-metrics/get-social-metrics";
-import { MetricsRepository } from "@domain/repositories/metrics"; 
+import { MetricsRepository } from "@domain/repositories/metrics";
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 
 describe("GetSocialMetricsUseCase", () => {
   let getSocialMetricsUseCase: GetSocialMetricsUseCase;
-  let metricsRepository: MetricsRepository; 
+  let metricsRepository: MetricsRepository;
 
   const mockResponse: GetSocialMetricsResponseDTO = {
     genderDistribution: [
       { gender: "male", count: 120 },
       { gender: "female", count: 150 },
-      { gender: "other", count: 10 },
+      { gender: "other", count: 10 }
     ],
     ageDistribution: [
       { ageRange: "18-25", count: 50 },
       { ageRange: "26-35", count: 80 },
       { ageRange: "36-50", count: 90 },
-      { ageRange: "50+", count: 60 },
-    ],
+      { ageRange: "50+", count: 60 }
+    ]
   };
 
   function makeMetricsRepository(): MetricsRepository {
     return {
-      getSocialMetrics: jest.fn().mockResolvedValue(mockResponse),
+      getSocialMetrics: jest.fn().mockResolvedValue(mockResponse)
     } as unknown as MetricsRepository;
   }
 
@@ -39,6 +39,9 @@ describe("GetSocialMetricsUseCase", () => {
 
     expect(result).toEqual(mockResponse);
     expect(metricsRepository.getSocialMetrics).toHaveBeenCalledTimes(1);
-    expect(metricsRepository.getSocialMetrics).toHaveBeenCalledWith(startDate, endDate);
+    expect(metricsRepository.getSocialMetrics).toHaveBeenCalledWith(
+      startDate,
+      endDate
+    );
   });
 });

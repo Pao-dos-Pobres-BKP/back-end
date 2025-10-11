@@ -73,8 +73,14 @@ export class MetricsRepository implements IMetricsRepository {
     startDate: Date,
     endDate: Date
   ): Promise<GetSocialMetricsResponseDTO> {
-    type RawGenderResult = { gender: string | null; count: string | number | null };
-    type RawAgeResult = { age_range: string | null; count: string | number | null };
+    type RawGenderResult = {
+      gender: string | null;
+      count: string | number | null;
+    };
+    type RawAgeResult = {
+      age_range: string | null;
+      count: string | number | null;
+    };
 
     const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
       SELECT 

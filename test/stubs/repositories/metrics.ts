@@ -5,6 +5,7 @@ import {
 } from "@application/dtos/metrics/get-metrics";
 import { DonorStatisticsData } from "@domain/repositories/metrics";
 import { Gender } from "@domain/entities/gender-enum";
+import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 
 export class MetricsRepositoryStub implements MetricsRepository {
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -54,5 +55,21 @@ export class MetricsRepositoryStub implements MetricsRepository {
         birthDate: new Date("1995-12-10")
       }
     ];
+  }
+
+  async getSocialMetrics(
+    startDate: Date,
+    endDate: Date
+  ): Promise<GetSocialMetricsResponseDTO> {
+    return {
+      genderDistribution: [
+        { gender: "male", count: 2 },
+        { gender: "female", count: 1 }
+      ],
+      ageDistribution: [
+        { ageRange: "26-35", count: 1 },
+        { ageRange: "36-50", count: 2 }
+      ]
+    };
   }
 }

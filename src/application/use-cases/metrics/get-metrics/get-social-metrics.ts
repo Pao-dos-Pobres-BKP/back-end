@@ -4,9 +4,7 @@ import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-socia
 
 @Injectable()
 export class GetSocialMetricsUseCase {
-  constructor(
-    private readonly metricsRepository: MetricsRepository
-  ) {}
+  constructor(private readonly metricsRepository: MetricsRepository) {}
 
   async execute(
     startDate: Date,

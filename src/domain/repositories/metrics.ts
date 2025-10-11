@@ -5,7 +5,6 @@ import {
 import { Gender } from "@domain/entities/gender-enum";
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 
-
 export interface Metrics {
   last_30_days: PeriodMetricsDTO;
   last_365_days: PeriodMetricsDTO;

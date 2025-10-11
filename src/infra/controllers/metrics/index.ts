@@ -42,7 +42,8 @@ export class MetricsController {
   @Get("campaigns/:id/social-data")
   @ApiOkResponse({
     type: CampaignSocialDataResponse,
-    description: "Retorna dados sociais (gênero, idade) de uma campanha específica"
+    description:
+      "Retorna dados sociais (gênero, idade) de uma campanha específica"
   })
   @ApiBadRequestResponse({
     description: "O ID da campanha é inválido ou ausente"
@@ -56,33 +57,34 @@ export class MetricsController {
     return await this.getCampaignSocialDataUseCase.execute(id);
   }
 
- @Get("social-distribution")
-@ApiQuery({
-  name: "startDate",
-  required: true,
-  example: "2024-01-01",
-  description: "Data inicial do intervalo (formato ISO: YYYY-MM-DD)"
-})
-@ApiQuery({
-  name: "endDate",
-  required: true,
-  example: "2024-12-31",
-  description: "Data final do intervalo (formato ISO: YYYY-MM-DD)"
-})
-@ApiOkResponse({
-  type: GetSocialMetricsResponseDTO,
-  description: "Retorna distribuição de doadores por gênero e faixa etária no período informado"
-})
-@ApiInternalServerErrorResponse({
-  description: "Erro interno ao buscar distribuição social"
-})
-async getSocialMetrics(
-  @Query("startDate") startDate: string,
-  @Query("endDate") endDate: string
-): Promise<GetSocialMetricsResponseDTO> {
-  return await this.getSocialMetricsUseCase.execute(
-    new Date(startDate),
-    new Date(endDate)
-  );
-}
+  @Get("social-distribution")
+  @ApiQuery({
+    name: "startDate",
+    required: true,
+    example: "2024-01-01",
+    description: "Data inicial do intervalo (formato ISO: YYYY-MM-DD)"
+  })
+  @ApiQuery({
+    name: "endDate",
+    required: true,
+    example: "2024-12-31",
+    description: "Data final do intervalo (formato ISO: YYYY-MM-DD)"
+  })
+  @ApiOkResponse({
+    type: GetSocialMetricsResponseDTO,
+    description:
+      "Retorna distribuição de doadores por gênero e faixa etária no período informado"
+  })
+  @ApiInternalServerErrorResponse({
+    description: "Erro interno ao buscar distribuição social"
+  })
+  async getSocialMetrics(
+    @Query("startDate") startDate: string,
+    @Query("endDate") endDate: string
+  ): Promise<GetSocialMetricsResponseDTO> {
+    return await this.getSocialMetricsUseCase.execute(
+      new Date(startDate),
+      new Date(endDate)
+    );
+  }
 }

@@ -27,15 +27,15 @@ import { TokenModule } from "../token";
     GetCampaignSocialDataUseCase,
     {
       provide: IMetricsRepository,
-      useClass: MetricsRepository,
+      useClass: MetricsRepository
     },
     {
       provide: CampaignRepository,
-      useClass: PrismaCampaignRepository,
+      useClass: PrismaCampaignRepository
     },
     AuthTokenGuard,
     RoleGuard,
-    PrismaService,
-  ],
+    PrismaService
+  ]
 })
 export class MetricsModule {}
