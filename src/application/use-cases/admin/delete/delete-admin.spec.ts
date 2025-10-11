@@ -20,7 +20,8 @@ describe("DeleteAdminUseCase", () => {
     const currentAdminMock = createMockAdmin({ root: true });
 
     jest.spyOn(exceptionService, "notFound");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(null)
       .mockResolvedValueOnce(currentAdminMock);
     jest.spyOn(adminRepository, "delete");
@@ -41,9 +42,10 @@ describe("DeleteAdminUseCase", () => {
     const adminToDeleteMock = createMockAdmin({ root: false });
 
     jest.spyOn(exceptionService, "notFound");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(adminToDeleteMock)
-      .mockResolvedValueOnce(null); 
+      .mockResolvedValueOnce(null);
     jest.spyOn(adminRepository, "delete");
 
     await sut.execute({
@@ -63,7 +65,8 @@ describe("DeleteAdminUseCase", () => {
     const nonRootCurrentAdmin = createMockAdmin({ root: false });
 
     jest.spyOn(exceptionService, "forbidden");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(rootAdminToDelete)
       .mockResolvedValueOnce(nonRootCurrentAdmin);
     jest.spyOn(adminRepository, "delete");
@@ -85,7 +88,8 @@ describe("DeleteAdminUseCase", () => {
     const rootCurrentAdmin = createMockAdmin({ root: true });
 
     jest.spyOn(exceptionService, "forbidden");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(rootAdminToDelete)
       .mockResolvedValueOnce(rootCurrentAdmin);
     jest.spyOn(adminRepository, "delete");
@@ -104,7 +108,8 @@ describe("DeleteAdminUseCase", () => {
     const rootCurrentAdmin = createMockAdmin({ root: true });
 
     jest.spyOn(exceptionService, "forbidden");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(nonRootAdminToDelete)
       .mockResolvedValueOnce(rootCurrentAdmin);
     jest.spyOn(adminRepository, "delete");
@@ -114,7 +119,9 @@ describe("DeleteAdminUseCase", () => {
       currentUserId: rootCurrentAdmin.id
     });
 
-    expect(adminRepository.delete).toHaveBeenCalledWith(nonRootAdminToDelete.id);
+    expect(adminRepository.delete).toHaveBeenCalledWith(
+      nonRootAdminToDelete.id
+    );
     expect(exceptionService.forbidden).not.toHaveBeenCalled();
   });
 
@@ -123,7 +130,8 @@ describe("DeleteAdminUseCase", () => {
     const nonRootCurrentAdmin = createMockAdmin({ root: false });
 
     jest.spyOn(exceptionService, "forbidden");
-    jest.spyOn(adminRepository, "findById")
+    jest
+      .spyOn(adminRepository, "findById")
       .mockResolvedValueOnce(nonRootAdminToDelete)
       .mockResolvedValueOnce(nonRootCurrentAdmin);
     jest.spyOn(adminRepository, "delete");
