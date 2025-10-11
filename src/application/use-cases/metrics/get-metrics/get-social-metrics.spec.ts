@@ -1,39 +1,44 @@
 import { GetSocialMetricsUseCase } from "../../metrics/get-metrics/get-social-metrics";
-import { SocialMetricsRepository } from "@domain/repositories/social-metrics";
+import { MetricsRepository } from "@domain/repositories/metrics"; 
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 
 describe("GetSocialMetricsUseCase", () => {
   let getSocialMetricsUseCase: GetSocialMetricsUseCase;
-  let socialMetricsRepository: SocialMetricsRepository;
+  let metricsRepository: MetricsRepository; 
 
   const mockResponse: GetSocialMetricsResponseDTO = {
     genderDistribution: [
       { gender: "male", count: 120 },
       { gender: "female", count: 150 },
-      { gender: "other", count: 10 }
+      { gender: "other", count: 10 },
     ],
     ageDistribution: [
       { ageRange: "18-25", count: 50 },
       { ageRange: "26-35", count: 80 },
       { ageRange: "36-50", count: 90 },
-      { ageRange: "50+", count: 60 }
-    ]
+      { ageRange: "50+", count: 60 },
+    ],
   };
 
-  beforeEach(() => {
-    socialMetricsRepository = {
-      getSocialMetrics: jest.fn().mockResolvedValue(mockResponse)
-    } as unknown as SocialMetricsRepository;
+  function makeMetricsRepository(): MetricsRepository {
+    return {
+      getSocialMetrics: jest.fn().mockResolvedValue(mockResponse),
+    } as unknown as MetricsRepository;
+  }
 
-    getSocialMetricsUseCase = new GetSocialMetricsUseCase(
-      socialMetricsRepository
-    );
+  beforeEach(() => {
+    metricsRepository = makeMetricsRepository();
+    getSocialMetricsUseCase = new GetSocialMetricsUseCase(metricsRepository);
   });
 
   it("should return social metrics (gender and age distributions)", async () => {
-    const result = await getSocialMetricsUseCase.execute(30);
+    const startDate = new Date("2025-01-01");
+    const endDate = new Date("2025-12-31");
+
+    const result = await getSocialMetricsUseCase.execute(startDate, endDate);
 
     expect(result).toEqual(mockResponse);
-    expect(socialMetricsRepository.getSocialMetrics).toHaveBeenCalledTimes(1);
+    expect(metricsRepository.getSocialMetrics).toHaveBeenCalledTimes(1);
+    expect(metricsRepository.getSocialMetrics).toHaveBeenCalledWith(startDate, endDate);
   });
 });

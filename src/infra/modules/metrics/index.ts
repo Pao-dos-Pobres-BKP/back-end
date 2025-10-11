@@ -10,9 +10,6 @@ import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get
 import { MetricsRepository as IMetricsRepository } from "@domain/repositories/metrics";
 import { MetricsRepository } from "@infra/repositories/prisma/metrics";
 
-import { SocialMetricsRepository as ISocialMetricsRepository } from "@domain/repositories/social-metrics";
-import { SocialMetricsRepository } from "@infra/repositories/prisma/social-metrics";
-
 import { CampaignRepository } from "@domain/repositories/campaign";
 import { PrismaCampaignRepository } from "@infra/repositories/prisma/campaign";
 
@@ -31,10 +28,6 @@ import { TokenModule } from "../token";
     {
       provide: IMetricsRepository,
       useClass: MetricsRepository,
-    },
-    {
-      provide: ISocialMetricsRepository,
-      useClass: SocialMetricsRepository,
     },
     {
       provide: CampaignRepository,
