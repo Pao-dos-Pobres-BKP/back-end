@@ -30,45 +30,45 @@ export class PrismaEventRepository implements EventRepository {
     return EventMapper.toDomain(event);
   }
 
- async findAll({
-  page,
-  pageSize
-}: PaginationParams): Promise<PaginatedEntity<EventDetails>> {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const { events, total } = await this.prisma.$transaction(async (tx) => {
-    const events = await tx.events.findMany({
-      where: {
-        dateStart: {
-          gte: today
-        }
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      orderBy: {
-        dateStart: "asc"
-      }
-    });
-
-    const total = await tx.events.count({
-      where: {
-        dateStart: {
-          gte: today
-        }
-      }
-    });
-
-    return { events, total };
-  });
-
-  return {
-    data: events.map(EventMapper.toDomain),
+  async findAll({
     page,
-    lastPage: Math.ceil(total / pageSize),
-    total
-  };
-}
+    pageSize
+  }: PaginationParams): Promise<PaginatedEntity<EventDetails>> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const { events, total } = await this.prisma.$transaction(async (tx) => {
+      const events = await tx.events.findMany({
+        where: {
+          dateStart: {
+            gte: today
+          }
+        },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        orderBy: {
+          dateStart: "asc"
+        }
+      });
+
+      const total = await tx.events.count({
+        where: {
+          dateStart: {
+            gte: today
+          }
+        }
+      });
+
+      return { events, total };
+    });
+
+    return {
+      data: events.map(EventMapper.toDomain),
+      page,
+      lastPage: Math.ceil(total / pageSize),
+      total
+    };
+  }
   async findByTitle(title: string): Promise<Event | null> {
     const event = await this.prisma.events.findFirst({
       where: {
