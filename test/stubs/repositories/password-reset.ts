@@ -29,7 +29,7 @@ export class PasswordResetTokenRepositoryStub
     return token || null;
   }
 
-  async markAsUsed(tokenId: string): Promise<void> {
+  async deleteUsedCode(tokenId: string): Promise<void> {
     this.tokens = this.tokens.filter((t) => t.id !== tokenId);
   }
 

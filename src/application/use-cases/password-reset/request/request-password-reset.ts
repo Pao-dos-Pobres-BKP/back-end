@@ -3,16 +3,16 @@ import { PasswordResetTokenRepository } from "@domain/repositories/password-rese
 import { UserRepository } from "@domain/repositories/user";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
 import * as bcrypt from "bcryptjs";
-import { SendEmailUseCase } from "../../mail/send/send-email";
-import { passwordResetTemplate } from "@domain/email-templates/email-template";
+//import { SendEmailUseCase } from "../../mail/send/send-email";
+//import { passwordResetTemplate } from "@domain/email-templates/email-template";
 
 @Injectable()
 export class RequestPasswordResetUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
-    private readonly exceptions: ExceptionsAdapter,
-    private readonly sendEmailUseCase: SendEmailUseCase
+    private readonly exceptions: ExceptionsAdapter
+    //private readonly sendEmailUseCase: SendEmailUseCase
   ) {}
 
   async execute(email: string): Promise<void> {
@@ -44,16 +44,16 @@ export class RequestPasswordResetUseCase {
       expiresAt
     });
 
-    const subject = "Recuperação de Senha";
-    const html = passwordResetTemplate(subject, user.fullName, code);
-    const text = `Seu código de recuperação é: ${code}`;
+    //const subject = "Recuperação de Senha";
+    //const html = passwordResetTemplate(subject, user.fullName, code);
+    //const text = `Seu código de recuperação é: ${code}`;
 
-    await this.sendEmailUseCase.execute({
-      to: [email],
-      html,
-      subject,
-      text
-    });
+    //await this.sendEmailUseCase.execute({
+    //  to: [email],
+    //  html,
+    //  subject,
+    //  text
+    //});
   }
 
   private generateNumericCode(): string {

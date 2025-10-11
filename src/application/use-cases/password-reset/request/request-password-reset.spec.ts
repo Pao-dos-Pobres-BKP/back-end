@@ -1,14 +1,14 @@
 import { RequestPasswordResetUseCase } from "./request-password-reset";
 import { UserRepository } from "@domain/repositories/user";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset";
-import { SendEmailUseCase } from "../../mail/send/send-email";
+//import { SendEmailUseCase } from "../../mail/send/send-email";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
 import * as bcrypt from "bcryptjs";
 
 describe("RequestPasswordReset", () => {
   let userRepository: UserRepository;
   let tokenRepository: PasswordResetTokenRepository;
-  let sendEmailUseCase: SendEmailUseCase;
+  //let sendEmailUseCase: SendEmailUseCase;
   let exceptions: ExceptionsServiceStub;
   let useCase: RequestPasswordResetUseCase;
 
@@ -29,24 +29,24 @@ describe("RequestPasswordReset", () => {
       create: jest.fn()
     } as unknown as PasswordResetTokenRepository;
 
-    sendEmailUseCase = {
-      execute: jest.fn()
-    } as unknown as SendEmailUseCase;
+    //sendEmailUseCase = {
+    //  execute: jest.fn()
+    //} as unknown as SendEmailUseCase;
 
     exceptions = new ExceptionsServiceStub();
 
     useCase = new RequestPasswordResetUseCase(
       userRepository,
       tokenRepository,
-      exceptions,
-      sendEmailUseCase
+      exceptions
+      //sendEmailUseCase
     );
 
     jest
       .spyOn(bcrypt, "hash")
       .mockImplementation(async () => "hashed-password");
     jest.spyOn(tokenRepository, "create");
-    jest.spyOn(sendEmailUseCase, "execute");
+    //jest.spyOn(sendEmailUseCase, "execute");
   });
 
   it("should throw if user not found", async () => {
@@ -89,13 +89,13 @@ describe("RequestPasswordReset", () => {
         expiresAt: expect.any(Date)
       })
     );
-    expect(sendEmailUseCase.execute).toHaveBeenCalledWith(
-      expect.objectContaining({
-        to: [email],
-        subject: "Recuperação de Senha",
-        html: expect.stringContaining("Recuperação de Senha"),
-        text: expect.stringContaining("Seu código de recuperação é:")
-      })
-    );
+    //expect(sendEmailUseCase.execute).toHaveBeenCalledWith(
+    //  expect.objectContaining({
+    //    to: [email],
+    //    subject: "Recuperação de Senha",
+    //    html: expect.stringContaining("Recuperação de Senha"),
+    //    text: expect.stringContaining("Seu código de recuperação é:")
+    //  })
+    //);
   });
 });

@@ -34,7 +34,7 @@ describe("ResetPassword", () => {
 
     tokenRepository = {
       findLatestValidTokenByUserId: jest.fn(),
-      markAsUsed: jest.fn()
+      deleteUsedCode: jest.fn()
     } as unknown as PasswordResetTokenRepository;
 
     exceptions = new ExceptionsServiceStub();
@@ -96,7 +96,7 @@ describe("ResetPassword", () => {
     ).rejects.toThrow("O código de recuperação expirou.");
   });
 
-  it("should update donor password and mark token used", async () => {
+  it("should update donor password and delete used token", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(donorUser);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (
@@ -111,7 +111,7 @@ describe("ResetPassword", () => {
     expect(tokenRepository.deleteUsedCode).toHaveBeenCalledWith(validToken.id);
   });
 
-  it("should update admin password and mark token used", async () => {
+  it("should update admin password and delete used token", async () => {
     (donorRepository.findByEmail as jest.Mock).mockResolvedValue(null);
     (adminRepository.findByEmail as jest.Mock).mockResolvedValue(adminUser);
     (
