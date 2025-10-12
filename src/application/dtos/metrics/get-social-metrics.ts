@@ -8,6 +8,8 @@ import {
 } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
 import { Gender } from "@prisma/client";
+import { Type } from "class-transformer";
+import { IsDate } from "class-validator";
 
 export type RawGenderResult = {
   gender: Gender;
@@ -24,6 +26,24 @@ export class GenderDistributionDTO {
 
   @ApiProperty({ example: 120 })
   count: number;
+}
+
+export class GetSocialMetricsDTO {
+  @ApiProperty({
+    description: "Start date",
+    type: Date
+  })
+  @Type(() => Date)
+  @IsDate()
+  startDate: Date;
+
+  @ApiProperty({
+    description: "End date",
+    type: Date
+  })
+  @Type(() => Date)
+  @IsDate()
+  endDate: Date;
 }
 
 export class AgeDistributionDTO {

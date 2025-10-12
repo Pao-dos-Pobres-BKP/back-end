@@ -13,6 +13,7 @@ import {
   GetCampaignSocialDataResponses
 } from "@application/dtos/metrics/campaign-social-data";
 import {
+  GetSocialMetricsDTO,
   GetSocialMetricsResponseDTO,
   GetSocialMetricsResponses
 } from "@application/dtos/metrics/get-social-metrics";
@@ -72,12 +73,11 @@ export class MetricsController {
   @Get("social-distribution")
   @GetSocialMetricsResponses
   async getSocialMetrics(
-    @Query("startDate") startDate: string,
-    @Query("endDate") endDate: string
+    @Query() query: GetSocialMetricsDTO
   ): Promise<GetSocialMetricsResponseDTO> {
     return await this.getSocialMetricsUseCase.execute(
-      new Date(startDate),
-      new Date(endDate)
+      query.startDate,
+      query.endDate
     );
   }
 }
