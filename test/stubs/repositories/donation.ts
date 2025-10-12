@@ -2,6 +2,7 @@ import { PaginatedEntity } from "@domain/constants/pagination";
 import { Donation } from "@domain/entities/donation";
 import {
   DonationDetailsResponse,
+  DonationDetailsResponseWithPayment,
   DonationRepository
 } from "@domain/repositories/donation";
 
@@ -17,6 +18,11 @@ export class DonationRepositoryStub implements DonationRepository {
       total: 0
     };
   }
+
+  async findAllByCampaign(): Promise<DonationDetailsResponseWithPayment[]> {
+    return [];
+  }
+
   async create(): Promise<void> {
     return;
   }

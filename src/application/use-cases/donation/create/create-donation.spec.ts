@@ -20,7 +20,8 @@ describe("CreateDonationUseCase", () => {
       findById: jest.fn(),
       findAllByDonor: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
+      delete: jest.fn(),
+      findAllByCampaign: jest.fn()
     } as DonationRepositoryStub;
 
     donorRepository = {
