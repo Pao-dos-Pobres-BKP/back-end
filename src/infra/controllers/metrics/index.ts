@@ -12,7 +12,10 @@ import { GetSocialMetricsUseCase } from "@application/use-cases/metrics/get-metr
 
 import { GetMetricsResponseDTO } from "@application/dtos/metrics/get-metrics";
 import { CampaignSocialDataResponse } from "@application/dtos/metrics/campaign-social-data";
-import { GetSocialMetricsResponseDTO, GetSocialMetricsResponses } from "@application/dtos/metrics/get-social-metrics";
+import {
+  GetSocialMetricsResponseDTO,
+  GetSocialMetricsResponses
+} from "@application/dtos/metrics/get-social-metrics";
 import {
   DonationByPaymentMethodAndDateResponse,
   GetDonationByPaymentMethodAndDateDTO,
@@ -86,15 +89,14 @@ export class MetricsController {
     return await this.getDonationsRaisedByPeriodUseCase.execute(query);
   }
   @Get("social-distribution")
-@GetSocialMetricsResponses
-async getSocialMetrics(
-  @Query("startDate") startDate: string,
-  @Query("endDate") endDate: string
-): Promise<GetSocialMetricsResponseDTO> {
-  return await this.getSocialMetricsUseCase.execute(
-    new Date(startDate),
-    new Date(endDate)
-  );
-}
-
+  @GetSocialMetricsResponses
+  async getSocialMetrics(
+    @Query("startDate") startDate: string,
+    @Query("endDate") endDate: string
+  ): Promise<GetSocialMetricsResponseDTO> {
+    return await this.getSocialMetricsUseCase.execute(
+      new Date(startDate),
+      new Date(endDate)
+    );
+  }
 }

@@ -72,19 +72,19 @@ export class MetricsRepository implements IMetricsRepository {
     };
   }
   async getSocialMetrics(
-  startDate: Date,
-  endDate: Date
-): Promise<GetSocialMetricsResponseDTO> {
-  type RawGenderResult = {
-    gender: string | null;
-    count: string | number | null;
-  };
-  type RawAgeResult = {
-    age_range: string | null;
-    count: string | number | null;
-  };
+    startDate: Date,
+    endDate: Date
+  ): Promise<GetSocialMetricsResponseDTO> {
+    type RawGenderResult = {
+      gender: string | null;
+      count: string | number | null;
+    };
+    type RawAgeResult = {
+      age_range: string | null;
+      count: string | number | null;
+    };
 
-  const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
+    const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
     SELECT 
       d.gender::text AS gender,
       COUNT(*)::int AS count
@@ -100,7 +100,7 @@ export class MetricsRepository implements IMetricsRepository {
     GROUP BY d.gender
   `);
 
-  const ageRows = await this.prisma.$queryRawUnsafe<RawAgeResult[]>(`
+    const ageRows = await this.prisma.$queryRawUnsafe<RawAgeResult[]>(`
     SELECT
       CASE 
         WHEN EXTRACT(YEAR FROM AGE(d.birth_date)) BETWEEN 18 AND 25 THEN '18-25'
@@ -122,18 +122,18 @@ export class MetricsRepository implements IMetricsRepository {
     ORDER BY age_range
   `);
 
-  const genderDistribution = genderRows.map((g) => ({
-    gender: g.gender ?? "other",
-    count: Number(g.count) || 0
-  }));
+    const genderDistribution = genderRows.map((g) => ({
+      gender: g.gender ?? "other",
+      count: Number(g.count) || 0
+    }));
 
-  const ageDistribution = ageRows.map((a) => ({
-    ageRange: a.age_range ?? "unknown",
-    count: Number(a.count) || 0
-  }));
+    const ageDistribution = ageRows.map((a) => ({
+      ageRange: a.age_range ?? "unknown",
+      count: Number(a.count) || 0
+    }));
 
-  return { genderDistribution, ageDistribution };
-}
+    return { genderDistribution, ageDistribution };
+  }
 
   async getCampaignDonorsStatistics(
     campaignId: string
