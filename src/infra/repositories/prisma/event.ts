@@ -34,8 +34,16 @@ export class PrismaEventRepository implements EventRepository {
     page,
     pageSize
   }: PaginationParams): Promise<PaginatedEntity<EventDetails>> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const { events, total } = await this.prisma.$transaction(async (tx) => {
       const events = await tx.events.findMany({
+        where: {
+          dateStart: {
+            gte: today
+          }
+        },
         skip: (page - 1) * pageSize,
         take: pageSize,
         orderBy: {
@@ -43,7 +51,13 @@ export class PrismaEventRepository implements EventRepository {
         }
       });
 
-      const total = await tx.events.count({});
+      const total = await tx.events.count({
+        where: {
+          dateStart: {
+            gte: today
+          }
+        }
+      });
 
       return { events, total };
     });
@@ -55,7 +69,6 @@ export class PrismaEventRepository implements EventRepository {
       total
     };
   }
-
   async findByTitle(title: string): Promise<Event | null> {
     const event = await this.prisma.events.findFirst({
       where: {
