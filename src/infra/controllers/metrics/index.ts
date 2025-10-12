@@ -1,15 +1,22 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
+import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
+import { GetSocialMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-social-metrics";
+
 import {
   FindGlobalMetricsResponse,
   GetMetricsResponseDTO
 } from "@application/dtos/metrics/get-metrics";
-import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
 import {
   CampaignSocialDataResponse,
   GetCampaignSocialDataResponses
 } from "@application/dtos/metrics/campaign-social-data";
+import {
+  GetSocialMetricsDTO,
+  GetSocialMetricsResponseDTO,
+  GetSocialMetricsResponses
+} from "@application/dtos/metrics/get-social-metrics";
 import {
   DonationByPaymentMethodAndDateResponse,
   GetDonationByPaymentMethodAndDateDTO,
@@ -29,6 +36,7 @@ export class MetricsController {
   constructor(
     private readonly getMetricsUseCase: GetMetricsUseCase,
     private readonly getCampaignSocialDataUseCase: GetCampaignSocialDataUseCase,
+    private readonly getSocialMetricsUseCase: GetSocialMetricsUseCase,
     private readonly getDonationByPaymentMethodAndDateUseCase: GetDonationByPaymentMethodAndDateUseCase,
     private readonly getDonationsRaisedByPeriodUseCase: GetDonationsRaisedByPeriodUseCase
   ) {}
@@ -61,5 +69,15 @@ export class MetricsController {
     @Query() query: GetDonationsRaisedByPeriodDTO
   ): Promise<DonationsRaisedByPeriodResponse> {
     return await this.getDonationsRaisedByPeriodUseCase.execute(query);
+  }
+  @Get("social-distribution")
+  @GetSocialMetricsResponses
+  async getSocialMetrics(
+    @Query() query: GetSocialMetricsDTO
+  ): Promise<GetSocialMetricsResponseDTO> {
+    return await this.getSocialMetricsUseCase.execute(
+      query.startDate,
+      query.endDate
+    );
   }
 }

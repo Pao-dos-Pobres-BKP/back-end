@@ -33,6 +33,7 @@ import { HealthModule } from "../health";
     MailModule,
     CampaignModule,
     NewsletterModule,
+    MetricsModule,
     QueueModule,
     HealthModule
   ]

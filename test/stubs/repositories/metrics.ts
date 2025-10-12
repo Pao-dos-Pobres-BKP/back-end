@@ -8,8 +8,9 @@ import {
   TotalDonationAmountByPaymentMethodResponse
 } from "@domain/repositories/metrics";
 import { Gender } from "@domain/entities/gender-enum";
-import { PaymentMethod } from "@prisma/client";
+import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 import { DonationsRaisedByPeriodResponse } from "@application/dtos/metrics/get-donations-raised-by-period";
+import { PaymentMethod } from "@prisma/client";
 
 export class MetricsRepositoryStub implements MetricsRepository {
   async getMetrics(): Promise<GetMetricsResponseDTO> {
@@ -61,6 +62,31 @@ export class MetricsRepositoryStub implements MetricsRepository {
     ];
   }
 
+  async getSocialMetrics(
+    startDate: Date,
+    endDate: Date
+  ): Promise<GetSocialMetricsResponseDTO> {
+    if (
+      startDate.toISOString().startsWith("2020-01-01") &&
+      endDate.toISOString().startsWith("2020-01-31")
+    ) {
+      return {
+        genderDistribution: [],
+        ageDistribution: []
+      };
+    }
+
+    return {
+      genderDistribution: [
+        { gender: Gender.MALE, count: 2 },
+        { gender: Gender.FEMALE, count: 1 }
+      ],
+      ageDistribution: [
+        { ageRange: "26-35", count: 1 },
+        { ageRange: "36-50", count: 2 }
+      ]
+    };
+  }
   async findByDateDonationByPaymentMethod(
     startDate: Date,
     endDate: Date

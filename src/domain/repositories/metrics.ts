@@ -3,6 +3,7 @@ import {
   PeriodMetricsDTO
 } from "@application/dtos/metrics/get-metrics";
 import { Gender } from "@domain/entities/gender-enum";
+import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
 import {
   RangeDatePaymentMethodAmount,
   DonationByPaymentMethodAmount
@@ -37,9 +38,15 @@ export interface DonationsRaisedByPeriod {
 
 export abstract class MetricsRepository {
   abstract getMetrics(): Promise<GetMetricsResponseDTO>;
+
   abstract getCampaignDonorsStatistics(
     campaignId: string
   ): Promise<DonorStatisticsData[]>;
+
+  abstract getSocialMetrics(
+    startDate: Date,
+    endDate: Date
+  ): Promise<GetSocialMetricsResponseDTO>;
   abstract findByDateDonationByPaymentMethod(
     startDate: Date,
     endDate: Date
