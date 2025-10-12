@@ -12,6 +12,7 @@ import {
   FindDonorByIdResponses
 } from "@application/dtos/donor/find-by-id";
 import {
+  UpdateDonorAvatarResponses,
   UpdateDonorDTO,
   UpdateDonorResponses
 } from "@application/dtos/donor/update";
@@ -84,7 +85,7 @@ export class DonorController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(":id/avatar")
-  @UpdateDonorResponses
+  @UpdateDonorAvatarResponses
   @UseInterceptors(FileInterceptor("file"))
   @ApiConsumes("multipart/form-data")
   @ApiBody({

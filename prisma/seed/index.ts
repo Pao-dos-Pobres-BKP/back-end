@@ -1,9 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { clearDb } from "./clear-db";
-import { userDonorsMock } from "../mocks/user";
+import { userDonorsMock, userAdminsMock } from "../mocks/user";
 import { eventsMock } from "../mocks/events";
 import { newsMock } from "../mocks/news";
-import { newsletterMock } from "prisma/mocks/newsletter";
+import { newsletterMock } from "../mocks/newsletter";
+import { addressesMock } from "../mocks/addresses";
+import { campaignsMock } from "../mocks/campaigns";
+import { donationsMock } from "../mocks/donations";
+import { paymentsMock } from "../mocks/payments";
 
 const prisma = new PrismaClient();
 
@@ -12,10 +16,101 @@ async function main(): Promise<void> {
 
   await clearDb();
 
+  const createdDonorUsers = [];
+  const createdAdmins = [];
+
   for (const userData of userDonorsMock) {
-    await prisma.user.create({
-      data: userData
+    const user = await prisma.user.create({
+      data: userData,
+      include: { donor: true }
     });
+    if (user.donor) {
+      createdDonorUsers.push(user.id);
+    }
+  }
+
+  for (const adminData of userAdminsMock) {
+    const user = await prisma.user.create({
+      data: adminData,
+      include: { admin: true }
+    });
+    createdAdmins.push(user.id);
+  }
+
+  for (
+    let i = 0;
+    i < Math.min(addressesMock.length, createdDonorUsers.length);
+    i++
+  ) {
+    const user = await prisma.user.findUnique({
+      where: { id: createdDonorUsers[i] },
+      include: { donor: true }
+    });
+
+    const addressData = {
+      ...addressesMock[i],
+      donor: {
+        connect: { id: user.donor.id }
+      }
+    };
+
+    await prisma.address.create({
+      data: addressData
+    });
+  }
+
+  console.log("Creating campaigns...");
+  const createdCampaigns = [];
+  const campaigns = campaignsMock(createdAdmins, createdDonorUsers);
+
+  for (const campaignData of campaigns) {
+    const campaign = await prisma.campaign.create({
+      data: campaignData
+    });
+    createdCampaigns.push(campaign.id);
+  }
+
+  console.log("Creating donations...");
+  const createdDonations = [];
+
+  const donorIds = [];
+  for (const userId of createdDonorUsers) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { donor: true }
+    });
+    if (user?.donor) {
+      donorIds.push(user.donor.id);
+    }
+  }
+
+  const donations = donationsMock(createdCampaigns, donorIds);
+
+  for (const donationData of donations) {
+    const donation = await prisma.donation.create({
+      data: donationData
+    });
+    createdDonations.push(donation.id);
+  }
+
+  console.log("Creating payments...");
+  const payments = paymentsMock(createdDonations);
+
+  for (let i = 0; i < payments.length; i++) {
+    const paymentData = payments[i];
+
+    const donation = await prisma.donation.findUnique({
+      where: { id: createdDonations[i] }
+    });
+
+    if (donation) {
+      await prisma.payment.create({
+        data: {
+          ...paymentData,
+          amount: donation.amount
+        }
+      });
+    }
   }
 
   for (const eventsData of eventsMock) {
