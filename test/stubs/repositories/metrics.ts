@@ -66,10 +66,20 @@ export class MetricsRepositoryStub implements MetricsRepository {
     startDate: Date,
     endDate: Date
   ): Promise<GetSocialMetricsResponseDTO> {
+    if (
+      startDate.toISOString().startsWith("2020-01-01") &&
+      endDate.toISOString().startsWith("2020-01-31")
+    ) {
+      return {
+        genderDistribution: [],
+        ageDistribution: []
+      };
+    }
+
     return {
       genderDistribution: [
-        { gender: "male", count: 2 },
-        { gender: "female", count: 1 }
+        { gender: Gender.MALE, count: 2 },
+        { gender: Gender.FEMALE, count: 1 }
       ],
       ageDistribution: [
         { ageRange: "26-35", count: 1 },

@@ -1,6 +1,7 @@
 import { GetSocialMetricsUseCase } from "../../metrics/get-metrics/get-social-metrics";
 import { MetricsRepository } from "@domain/repositories/metrics";
 import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
+import { Gender } from "@prisma/client";
 
 describe("GetSocialMetricsUseCase", () => {
   let getSocialMetricsUseCase: GetSocialMetricsUseCase;
@@ -8,9 +9,18 @@ describe("GetSocialMetricsUseCase", () => {
 
   const mockResponse: GetSocialMetricsResponseDTO = {
     genderDistribution: [
-      { gender: "male", count: 120 },
-      { gender: "female", count: 150 },
-      { gender: "other", count: 10 }
+      {
+        gender: Gender.MALE,
+        count: 50
+      },
+      {
+        gender: Gender.FEMALE,
+        count: 100
+      },
+      {
+        gender: Gender.OTHER,
+        count: 10
+      }
     ],
     ageDistribution: [
       { ageRange: "18-25", count: 50 },

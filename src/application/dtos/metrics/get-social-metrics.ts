@@ -2,13 +2,25 @@ import { applyDecorators } from "@nestjs/common";
 import {
   ApiQuery,
   ApiOkResponse,
-  ApiInternalServerErrorResponse
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+  ApiBadRequestResponse
 } from "@nestjs/swagger";
 import { ApiProperty } from "@nestjs/swagger";
+import { Gender } from "@prisma/client";
+
+export type RawGenderResult = {
+  gender: Gender;
+  count: number;
+};
+export type RawAgeResult = {
+  age_range: string;
+  count: number;
+};
 
 export class GenderDistributionDTO {
-  @ApiProperty({ example: "male" })
-  gender: string;
+  @ApiProperty({ example: "MALE" })
+  gender: Gender;
 
   @ApiProperty({ example: 120 })
   count: number;
@@ -34,20 +46,28 @@ export const GetSocialMetricsResponses = applyDecorators(
     name: "startDate",
     required: true,
     example: "2024-01-01",
-    description: "Data inicial do intervalo (formato ISO: YYYY-MM-DD)"
+    description: "Initial date of the interval"
   }),
   ApiQuery({
     name: "endDate",
     required: true,
     example: "2024-12-31",
-    description: "Data final do intervalo (formato ISO: YYYY-MM-DD)"
+    description: "Final date of the interval"
   }),
+
   ApiOkResponse({
     type: GetSocialMetricsResponseDTO,
     description:
-      "Retorna distribuição de doadores por gênero e faixa etária no período informado"
+      "Gender and age distribution of donors within the specified period"
   }),
   ApiInternalServerErrorResponse({
-    description: "Erro interno ao buscar distribuição social"
+    description: "Internal error while fetching social distribution"
+  }),
+  ApiBadRequestResponse({
+    description:
+      "Bad request. Possible causes: invalid date format, startDate after endDate"
+  }),
+  ApiOperation({
+    summary: "Gender and age distribution of donors within the specified period"
   })
 );

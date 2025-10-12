@@ -8,7 +8,11 @@ import {
   MetricsRepository as IMetricsRepository,
   DonorStatisticsData
 } from "@domain/repositories/metrics";
-import { GetSocialMetricsResponseDTO } from "@application/dtos/metrics/get-social-metrics";
+import {
+  GetSocialMetricsResponseDTO,
+  RawAgeResult,
+  RawGenderResult
+} from "@application/dtos/metrics/get-social-metrics";
 import { Prisma, PaymentMethod } from "@prisma/client";
 import { TotalDonationAmountByPaymentMethodResponse } from "@domain/repositories/metrics";
 import { DonationsRaisedByPeriodResponse } from "@application/dtos/metrics/get-donations-raised-by-period";
@@ -75,32 +79,19 @@ export class MetricsRepository implements IMetricsRepository {
     startDate: Date,
     endDate: Date
   ): Promise<GetSocialMetricsResponseDTO> {
-    type RawGenderResult = {
-      gender: string | null;
-      count: string | number | null;
-    };
-    type RawAgeResult = {
-      age_range: string | null;
-      count: string | number | null;
-    };
-
-    const genderRows = await this.prisma.$queryRawUnsafe<RawGenderResult[]>(`
+    const genderRows = await this.prisma.$queryRaw<RawGenderResult[]>`
     SELECT 
       d.gender::text AS gender,
-      COUNT(*)::int AS count
+      COUNT(DISTINCT d.id)::int AS count
     FROM donors d
     JOIN users u ON u.id = d.id
+    JOIN donations dn ON dn.donor_id = d.id
     WHERE u.deleted_at IS NULL
-      AND EXISTS (
-        SELECT 1
-        FROM donations dn
-        WHERE dn.donor_id = d.id
-          AND dn.created_at BETWEEN '${startDate.toISOString()}' AND '${endDate.toISOString()}'
-      )
+      AND dn.created_at BETWEEN ${startDate} AND ${endDate}
     GROUP BY d.gender
-  `);
+  `;
 
-    const ageRows = await this.prisma.$queryRawUnsafe<RawAgeResult[]>(`
+    const ageRows = await this.prisma.$queryRaw<RawAgeResult[]>`
     SELECT
       CASE 
         WHEN EXTRACT(YEAR FROM AGE(d.birth_date)) BETWEEN 18 AND 25 THEN '18-25'
@@ -108,28 +99,24 @@ export class MetricsRepository implements IMetricsRepository {
         WHEN EXTRACT(YEAR FROM AGE(d.birth_date)) BETWEEN 36 AND 50 THEN '36-50'
         WHEN EXTRACT(YEAR FROM AGE(d.birth_date)) > 50 THEN '50+'
       END AS age_range,
-      COUNT(*)::int AS count
+      COUNT(DISTINCT d.id)::int AS count
     FROM donors d
     JOIN users u ON u.id = d.id
+    JOIN donations dn ON dn.donor_id = d.id
     WHERE u.deleted_at IS NULL
-      AND EXISTS (
-        SELECT 1
-        FROM donations dn
-        WHERE dn.donor_id = d.id
-          AND dn.created_at BETWEEN '${startDate.toISOString()}' AND '${endDate.toISOString()}'
-      )
+      AND dn.created_at BETWEEN ${startDate} AND ${endDate}
     GROUP BY age_range
     ORDER BY age_range
-  `);
+  `;
 
     const genderDistribution = genderRows.map((g) => ({
-      gender: g.gender ?? "other",
-      count: Number(g.count) || 0
+      gender: g.gender,
+      count: Number(g.count)
     }));
 
     const ageDistribution = ageRows.map((a) => ({
-      ageRange: a.age_range ?? "unknown",
-      count: Number(a.count) || 0
+      ageRange: a.age_range,
+      count: Number(a.count)
     }));
 
     return { genderDistribution, ageDistribution };

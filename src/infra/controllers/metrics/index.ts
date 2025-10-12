@@ -1,17 +1,17 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
-import {
-  ApiTags,
-  ApiOkResponse,
-  ApiBadRequestResponse,
-  ApiInternalServerErrorResponse,
-  ApiQuery
-} from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 import { GetMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-metrics";
 import { GetCampaignSocialDataUseCase } from "@application/use-cases/metrics/get-campaign-social-data/get-campaign-social-data";
 import { GetSocialMetricsUseCase } from "@application/use-cases/metrics/get-metrics/get-social-metrics";
 
-import { GetMetricsResponseDTO } from "@application/dtos/metrics/get-metrics";
-import { CampaignSocialDataResponse } from "@application/dtos/metrics/campaign-social-data";
+import {
+  FindGlobalMetricsResponse,
+  GetMetricsResponseDTO
+} from "@application/dtos/metrics/get-metrics";
+import {
+  CampaignSocialDataResponse,
+  GetCampaignSocialDataResponses
+} from "@application/dtos/metrics/campaign-social-data";
 import {
   GetSocialMetricsResponseDTO,
   GetSocialMetricsResponses
@@ -41,32 +41,13 @@ export class MetricsController {
   ) {}
 
   @Get("global")
-  @ApiOkResponse({
-    type: GetMetricsResponseDTO,
-    description: "Retorna métricas globais para o dashboard"
-  })
-  @ApiBadRequestResponse({
-    description: "Parâmetros inválidos ou requisição mal formatada"
-  })
-  @ApiInternalServerErrorResponse({
-    description: "Erro interno ao buscar métricas globais"
-  })
+  @FindGlobalMetricsResponse
   async getMetrics(): Promise<GetMetricsResponseDTO> {
     return await this.getMetricsUseCase.execute();
   }
 
   @Get("campaigns/:id/social-data")
-  @ApiOkResponse({
-    type: CampaignSocialDataResponse,
-    description:
-      "Retorna dados sociais (gênero, idade) de uma campanha específica"
-  })
-  @ApiBadRequestResponse({
-    description: "O ID da campanha é inválido ou ausente"
-  })
-  @ApiInternalServerErrorResponse({
-    description: "Erro interno ao buscar dados sociais da campanha"
-  })
+  @GetCampaignSocialDataResponses
   async getCampaignSocialData(
     @Param("id") id: string
   ): Promise<CampaignSocialDataResponse> {
