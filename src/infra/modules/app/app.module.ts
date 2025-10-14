@@ -14,9 +14,12 @@ import { CampaignModule } from "../campaign";
 import { NewsletterModule } from "../newsletter";
 import { QueueModule } from "../queue";
 import { HealthModule } from "../health";
+import { AutomaticMailsModule } from "../automatic-mails";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
@@ -35,7 +38,8 @@ import { HealthModule } from "../health";
     NewsletterModule,
     MetricsModule,
     QueueModule,
-    HealthModule
+    HealthModule,
+    AutomaticMailsModule
   ]
 })
 export class AppModule {}

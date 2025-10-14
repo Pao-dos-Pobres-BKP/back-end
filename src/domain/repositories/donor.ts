@@ -41,6 +41,16 @@ export interface DonorDetailsResponse {
 
 export interface DonorWithUser extends User, Omit<Donor, "id"> {}
 
+export interface DonorMailsResponse {
+  email: string;
+  fullName: string;
+}
+
+export interface DonorWithBirthdayParams {
+  day: number;
+  month: number;
+}
+
 export abstract class DonorRepository {
   abstract findByCPF(cpf: string): Promise<Donor | null>;
   abstract findByEmail(email: string): Promise<Donor | null>;
@@ -52,4 +62,8 @@ export abstract class DonorRepository {
     params: PaginationParams
   ): Promise<PaginatedEntity<DonorDetailsResponse>>;
   abstract update(id: string, params: UpdateDonorParams): Promise<void>;
+  abstract findAllDonorsMails(): Promise<DonorMailsResponse[]>;
+  abstract findAllDonorsWithBirthday(
+    params: DonorWithBirthdayParams
+  ): Promise<DonorMailsResponse[]>;
 }
