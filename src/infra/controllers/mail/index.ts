@@ -14,6 +14,10 @@ export class MailController {
   @Post("send")
   @SendEmailResponseDecorator
   async sendEmail(@Body() mail: SendEmailDTO): Promise<void> {
-    await this.queueIntegration.addJob("send-email", mail);
+    await this.queueIntegration.addJob({
+      to: mail.to,
+      subject: mail.subject,
+      body: mail.html
+    });
   }
 }

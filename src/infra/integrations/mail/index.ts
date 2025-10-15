@@ -4,7 +4,7 @@ import {
   SendEmailRequest,
   SESv2Client
 } from "@aws-sdk/client-sesv2";
-import { MailAdapter } from "@domain/adapters/mail";
+import { MailAdapter, SendEmailParams } from "@domain/adapters/mail";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class MailIntegration implements MailAdapter {
   private readonly defaultReplyTo?: string = process.env.MAIL_REPLY_TO;
 
   constructor(private readonly ses: SESv2Client) {}
-  async sendMail(to: string, subject: string, body: string): Promise<void> {
+  async sendMail({ body, subject, to }: SendEmailParams): Promise<void> {
     const content: EmailContent = {
       Simple: {
         Subject: { Data: subject, Charset: "UTF-8" },
