@@ -12,52 +12,65 @@ export class PasswordResetUseCase {
     private readonly userRepository: UserRepository
   ) {}
 
-  async execute({ email }: PasswordResetDTO): Promise<void> {
-    const code =
-      await this.userRepository.findIfUserRequestedPasswordReset(email);
+  async requestToken({ email }: PasswordResetDTO): Promise<void> {
 
-    if (code && new Date(code.expiresAt) > new Date()) {
-      return this.exceptionService.badRequest({
-        message:
-          "User already requested a password reset. Please check your email."
+    const user = await this.userRepository.findByEmail(email);
+    if (!user) {
+      this.exceptionService.notFound({ message: "User not found" });
+    }
+
+    const hasValidToken = await this.userRepository.findPasswordResetTokenByUserId(user.id);
+
+    console.log ("passei por aqui", user, hasValidToken, new Date())
+    if (hasValidToken && hasValidToken.expiresAt > new Date(Date.now() + 1 * 60 * 1000)) {
+      console.log("passei no if")
+      this.exceptionService.badRequest({
+        message: "A valid token has already been sent to this email"
       });
     }
 
-    const user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      return this.exceptionService.notFound({ message: "User not found" });
-    }
-
-    const plainToken = Math.floor(1000 + Math.random() * 9000).toString();
-    console.log(`Password reset token for ${email}: ${plainToken}`);
-
-    const token = await this.hashService.generateHash(plainToken);
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
-
-    if (!code || new Date(code.expiresAt) < new Date()) {
-      await this.userRepository.upsertPasswordReset(user.id, token, expiresAt);
-    }
-  }
-
-  async validatePasswordResetToken(email: string, token: string) {
-    const user = await this.userRepository.findByEmail(email);
-    if (!user) {
-      return this.exceptionService.notFound({ message: "User not found" });
-    }
-
+    const token = Math.floor(1000 + Math.random() * 9000).toString();
     const hashedToken = await this.hashService.generateHash(token);
-    const compareHash = await this.hashService.compare(token, hashedToken);
 
-    if (!compareHash) return false;
 
-    return this.userRepository.validatePasswordResetToken(
-      user.email,
-      hashedToken
+    //trocar pelo serviço de email!!!!!
+    console.log(`Password reset token for ${email}: ${token}`);
+
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+
+    await this.userRepository.requestToken(
+      user.id,
+      hashedToken,
+      expiresAt
     );
   }
 
-  async changePassword(email: string, newPassword: string): Promise<void> {
-    const hashedPassword = await this.hashService.generateHash(newPassword);
-    await this.userRepository.changePassword(email, hashedPassword);
+  async findPasswordResetTokenByUserId(userId: string) {
+    return this.userRepository.findPasswordResetTokenByUserId(userId);
+  }
+
+  async validateUserToken(email: string, plainToken: string) {
+
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      this.exceptionService.notFound({ message: "User not found" });
+    }
+
+    const hasValidToken = await this.userRepository.findPasswordResetTokenByUserId(user.id);
+
+    if (!hasValidToken && hasValidToken.expiresAt < new Date(Date.now() + 1 * 60 * 1000)) {
+      this.exceptionService.badRequest({message: ""})
+    }
+
+    const hashToken = await this.hashService.generateHash(plainToken)
+
+    const compare = await this.hashService.compare(hashToken, hasValidToken.token)
+
+    if (!compare) {
+      this.exceptionService.badRequest({message: "Invalid Token"})
+    }
+
+    return true;
   }
 }

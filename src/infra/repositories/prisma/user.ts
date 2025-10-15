@@ -17,42 +17,25 @@ export class PrismaUserRepository implements UserRepository {
     return UserMapper.toDomain(user);
   }
 
-  async upsertPasswordReset(userId: string, token: string, expiresAt: Date) {
+  async requestToken(userId: string, hashedToken: string) {
     await this.prisma.passwordResetToken.upsert({
       where: { userId },
-      update: { token, expiresAt },
-      create: { userId, token, expiresAt }
-    });
-  }
-
-  async validatePasswordResetToken(
-    email: string,
-    token: string
-  ): Promise<boolean> {
-    const passwordReset = await this.prisma.passwordResetToken.findFirst({
-      where: {
-        token,
-        user: { email }
+      update: {
+        token: hashedToken,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000)
+      },
+      create: {
+        userId,
+        token: hashedToken,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000)
       }
     });
-
-    if (!passwordReset) return false;
-    if (new Date(passwordReset.expiresAt) < new Date()) return false;
-
-    return true;
+   
   }
 
-  async changePassword(email: string, newPassword: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { email },
-      data: { password: newPassword }
-    });
-  }
-
-  async findIfUserRequestedPasswordReset(email: string) {
-    return this.prisma.passwordResetToken.findFirst({
-      where: { user: { email } },
-      orderBy: { expiresAt: "desc" }
+  async findPasswordResetTokenByUserId(userId: string) {
+    return this.prisma.passwordResetToken.findUnique({
+      where: { userId }
     });
   }
 }
