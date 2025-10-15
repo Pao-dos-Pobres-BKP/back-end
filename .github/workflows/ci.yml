@@ -12,16 +12,16 @@ env:
   ECR_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com
   IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com/${{ vars.ECR_REPO }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  PORT: ${{ vars.PORT }}
-  S3_BUCKET: ${{ vars.S3_BUCKET }}
-  S3_URL: ${{ vars.S3_URL }}
-  MAIL_FROM: ${{ vars.MAIL_FROM }}
-  MAIL_REPLY_TO: ${{ vars.MAIL_REPLY_TO }}
-  REDIS_HOST: ${{ vars.REDIS_HOST }}
-  REDIS_PORT: ${{ vars.REDIS_PORT }}
+  PORT: ${{ secrets.PORT }}
+  S3_BUCKET: ${{ secrets.S3_BUCKET }}
+  S3_URL: ${{ secrets.S3_URL }}
+  MAIL_FROM: ${{ secrets.MAIL_FROM }}
+  MAIL_REPLY_TO: ${{ secrets.MAIL_REPLY_TO }}
+  REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  REDIS_PORT: ${{ secrets.REDIS_PORT }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
-  QUEUE_ATTEMPTS: ${{ vars.QUEUE_ATTEMPTS }}
-  QUEUE_DELAY_BETWEEN_ATTEMPTS: ${{ vars.QUEUE_DELAY_BETWEEN_ATTEMPTS }}
+  QUEUE_ATTEMPTS: ${{ secrets.QUEUE_ATTEMPTS }}
+  QUEUE_DELAY_BETWEEN_ATTEMPTS: ${{ secrets.QUEUE_DELAY_BETWEEN_ATTEMPTS }}
 
 jobs:
   local_test_build:
@@ -113,10 +113,12 @@ jobs:
             QUEUE_ATTEMPTS="${{ env.QUEUE_ATTEMPTS }}"
             QUEUE_DELAY="${{ env.QUEUE_DELAY_BETWEEN_ATTEMPTS }}"
 
-            if [ -z "${SERVICE:-}" ]; then
-              echo "SERVICE_NAME vazio ou não definido."
-              exit 1
-            fi
+            if [ -z "${SERVICE:-}" ]; then echo "SERVICE_NAME vazio ou não definido."; exit 1; fi
+
+            for k in PORT MAIL_FROM MAIL_REPLY_TO S3_BUCKET S3_URL REDIS_HOST REDIS_PORT QUEUE_ATTEMPTS QUEUE_DELAY; do
+              v="$(eval echo \${$k:-})"
+              if [ -z "$v" ]; then echo "Variável obrigatória ausente: $k"; exit 1; fi
+            done
 
             aws ecr get-login-password --region "$REGION" | sudo docker login --username AWS --password-stdin "$ECR_URL"
             sudo docker pull "$IMAGE_REF"
@@ -125,6 +127,21 @@ jobs:
               echo "Serviço '$SERVICE' não existe no Swarm."
               exit 1
             fi
+
+            sudo docker service update \
+              --env-rm DATABASE_URL \
+              --env-rm PORT \
+              --env-rm AWS_REGION \
+              --env-rm S3_BUCKET \
+              --env-rm S3_URL \
+              --env-rm MAIL_FROM \
+              --env-rm MAIL_REPLY_TO \
+              --env-rm REDIS_HOST \
+              --env-rm REDIS_PORT \
+              --env-rm JWT_SECRET \
+              --env-rm QUEUE_ATTEMPTS \
+              --env-rm QUEUE_DELAY_BETWEEN_ATTEMPTS \
+              "$SERVICE"
 
             sudo docker service update \
               --with-registry-auth \
