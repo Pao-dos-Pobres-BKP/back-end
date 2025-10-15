@@ -20,6 +20,8 @@ import { DonationRepository } from "@domain/repositories/donation";
 import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
 import { PaymentRepository } from "@domain/repositories/payment";
 import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
+import { PrismaMetricsRepository } from "@infra/repositories/prisma/metrics";
+import { MetricsRepository } from "@domain/repositories/metrics";
 
 @Module({
   providers: [
@@ -59,6 +61,10 @@ import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
     {
       useClass: PrismaPaymentRepository,
       provide: PaymentRepository
+    },
+    {
+      provide: MetricsRepository,
+      useClass: PrismaMetricsRepository
     }
   ],
   exports: [
@@ -70,7 +76,8 @@ import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
     NewsRepository,
     DonationRepository,
     NewsletterRepository,
-    PaymentRepository
+    PaymentRepository,
+    MetricsRepository
   ]
 })
 export class DatabaseModule {}
