@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
   Param,
   Patch,
   Post,
@@ -38,45 +37,43 @@ import { PaginationDTO } from "@application/dtos/utils/pagination";
 @Controller("news")
 export class NewsController {
   constructor(
-    private readonly createUC: CreateNewsUseCase,
-    private readonly findAllUC: FindAllNewsUseCase,
-    private readonly findByIdUC: FindNewsByIdUseCase,
-    private readonly updateUC: UpdateNewsUseCase,
-    private readonly deleteUC: DeleteNewsUseCase
+    private readonly createNewsUseCase: CreateNewsUseCase,
+    private readonly findAllNewsUseCase: FindAllNewsUseCase,
+    private readonly findNewsByIdUseCase: FindNewsByIdUseCase,
+    private readonly updateNewsUseCase: UpdateNewsUseCase,
+    private readonly deleteNewsUseCase: DeleteNewsUseCase
   ) {}
 
   @Post()
   @CreateNewsResponses
   async create(@Body() dto: CreateNewsDto): Promise<void> {
-    return await this.createUC.execute(dto);
+    return await this.createNewsUseCase.execute(dto);
   }
 
   @Get()
   @FindAllNewsResponses
   async list(@Query() query: PaginationDTO): Promise<FindAllNewsDto> {
-    return await this.findAllUC.execute(query);
+    return await this.findAllNewsUseCase.execute(query);
   }
 
   @Get(":id")
   @FindNewsByIdResponses
   async get(@Param("id") id: string): Promise<News> {
-    return await this.findByIdUC.execute(id);
+    return await this.findNewsByIdUseCase.execute(id);
   }
 
   @Patch(":id")
-  @HttpCode(204)
   @UpdateNewsResponses
   async update(
     @Param("id") id: string,
     @Body() dto: UpdateNewsDto
   ): Promise<void> {
-    return await this.updateUC.execute(id, dto);
+    return await this.updateNewsUseCase.execute(id, dto);
   }
 
   @Delete(":id")
-  @HttpCode(204)
   @DeleteNewsResponses
   async remove(@Param("id") id: string): Promise<void> {
-    return await this.deleteUC.execute(id);
+    return await this.deleteNewsUseCase.execute(id);
   }
 }

@@ -15,7 +15,8 @@ describe("UpdateDonationUseCase", () => {
       findAllByDonor: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
-      delete: jest.fn()
+      delete: jest.fn(),
+      findAllByCampaign: jest.fn()
     } as DonationRepositoryStub;
 
     exceptionService = {

@@ -15,9 +15,12 @@ import { NewsletterModule } from "../newsletter";
 import { PasswordResetModule } from "../password-reset";
 import { QueueModule } from "../queue";
 import { HealthModule } from "../health";
+import { AutomaticMailsModule } from "../automatic-mails";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
@@ -34,9 +37,11 @@ import { HealthModule } from "../health";
     MailModule,
     CampaignModule,
     NewsletterModule,
+    MetricsModule,
     PasswordResetModule,
     QueueModule,
-    HealthModule
+    HealthModule,
+    AutomaticMailsModule
   ]
 })
 export class AppModule {}
