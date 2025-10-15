@@ -7,9 +7,11 @@ import { DeleteDonationUseCase } from "@application/use-cases/donation/delete/de
 import { FindAllDonationsUseCase } from "@application/use-cases/donation/find-all/find-all-donations";
 import { FindDonationByIdUseCase } from "@application/use-cases/donation/find-by-id/find-donation-by-id";
 import { UpdateDonationUseCase } from "@application/use-cases/donation/update/update-donation";
+import { TransactionModule } from "../transaction";
+import { TokenModule } from "../token";
 
 @Module({
-  imports: [DatabaseModule, ExceptionModule],
+  imports: [DatabaseModule, ExceptionModule, TransactionModule, TokenModule],
   controllers: [DonationController],
   providers: [
     CreateDonationUseCase,

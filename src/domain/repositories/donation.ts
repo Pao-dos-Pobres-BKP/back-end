@@ -1,3 +1,4 @@
+import { Transaction } from "@domain/adapters/transaction";
 import {
   PaginatedEntity,
   PaginationParams
@@ -53,13 +54,16 @@ export interface DonationDetailsResponseWithPayment {
 export abstract class DonationRepository {
   abstract findById(id: string): Promise<Donation | null>;
   abstract findAllByDonor(
-    donorId: string,
-    params: PaginationParams
+    params: PaginationParams,
+    donorId: string
   ): Promise<PaginatedEntity<DonationDetailsResponse>>;
   abstract findAllByCampaign(
     campaignId: string
   ): Promise<DonationDetailsResponseWithPayment[]>;
-  abstract create(params: CreateDonationParams): Promise<void>;
+  abstract create(
+    params: CreateDonationParams,
+    tx?: Transaction
+  ): Promise<Donation>;
   abstract update(id: string, params: UpdateDonationParams): Promise<void>;
   abstract delete(id: string): Promise<void>;
 }

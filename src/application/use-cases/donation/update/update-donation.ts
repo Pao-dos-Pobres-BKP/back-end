@@ -13,7 +13,7 @@ export class UpdateDonationUseCase {
   async execute(
     id: string,
     params: UpdateDonationDTO,
-    donorId?: string
+    donorId: string
   ): Promise<void> {
     const donation = await this.donationRepository.findById(id);
 
@@ -26,12 +26,6 @@ export class UpdateDonationUseCase {
     if (donation.donorId !== donorId) {
       return this.exceptionService.forbidden({
         message: "You can only update your own donations"
-      });
-    }
-
-    if (params.amount !== undefined && params.amount <= 0) {
-      return this.exceptionService.badRequest({
-        message: "Donation amount must be greater than zero"
       });
     }
 

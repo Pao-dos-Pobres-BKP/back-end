@@ -1,23 +1,36 @@
 import { FindAllDonationsResponse } from "@application/dtos/donation/find-all";
 import { PaginationDTO } from "@application/dtos/utils/pagination";
+import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonationRepository } from "@domain/repositories/donation";
+import { DonorRepository } from "@domain/repositories/donor";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class FindAllDonationsUseCase {
-  constructor(private readonly donationRepository: DonationRepository) {}
+  constructor(
+    private readonly donationRepository: DonationRepository,
+    private readonly donorRepository: DonorRepository,
+    private readonly exceptionService: ExceptionsAdapter
+  ) {}
 
-  async execute({
-    donorId,
-    page,
-    pageSize
-  }: PaginationDTO & { donorId?: string }): Promise<FindAllDonationsResponse> {
-    if (!donorId) {
-      throw new Error("Only authenticated donors can view donations.");
+  async execute(
+    { page, pageSize }: PaginationDTO,
+    donorId: string
+  ): Promise<FindAllDonationsResponse | void> {
+    const donor = await this.donorRepository.findById(donorId);
+
+    if (!donor) {
+      return this.exceptionService.notFound({
+        message: "Donor not found"
+      });
     }
-    return await this.donationRepository.findAllByDonor(donorId, {
-      page,
-      pageSize
-    });
+
+    return await this.donationRepository.findAllByDonor(
+      {
+        page,
+        pageSize
+      },
+      donorId
+    );
   }
 }

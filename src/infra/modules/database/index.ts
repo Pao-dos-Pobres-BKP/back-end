@@ -18,6 +18,8 @@ import { PrismaNewsletterRepository } from "@infra/repositories/prisma/newslette
 import { Module } from "@nestjs/common";
 import { DonationRepository } from "@domain/repositories/donation";
 import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
+import { PaymentRepository } from "@domain/repositories/payment";
+import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
 
 @Module({
   providers: [
@@ -53,6 +55,10 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     {
       useClass: PrismaNewsletterRepository,
       provide: NewsletterRepository
+    },
+    {
+      useClass: PrismaPaymentRepository,
+      provide: PaymentRepository
     }
   ],
   exports: [
@@ -63,7 +69,8 @@ import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
     EventRepository,
     NewsRepository,
     DonationRepository,
-    NewsletterRepository
+    NewsletterRepository,
+    PaymentRepository
   ]
 })
 export class DatabaseModule {}
