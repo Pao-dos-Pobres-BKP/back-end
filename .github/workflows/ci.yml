@@ -1,5 +1,4 @@
-name: CI/CD (backend)
-
+name: CI/CD
 on:
   push:
     branches: ["main", "master"]
@@ -12,7 +11,6 @@ env:
   ECR_REPO: ${{ vars.ECR_REPO }}
   ECR_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com
   IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com/${{ vars.ECR_REPO }}
-
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   PORT: ${{ vars.PORT }}
   S3_BUCKET: ${{ vars.S3_BUCKET }}
@@ -75,8 +73,10 @@ jobs:
             -t "${IMAGE}:${{ steps.meta.outputs.sha7 }}" \
             -t "${IMAGE}:latest" \
             -f Dockerfile .
-      - name: Push image
+      - name: Push image (sha)
         run: docker push "${IMAGE}:${{ steps.meta.outputs.sha7 }}"
+      - name: Push image (latest)
+        run: docker push "${IMAGE}:latest"
 
   deploy_to_ec2:
     runs-on: ubuntu-latest
@@ -93,6 +93,8 @@ jobs:
           key: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            set -euo pipefail
+
             REGION="${{ env.AWS_DEFAULT_REGION }}"
             ECR_URL="${{ env.ECR_URL }}"
             IMAGE_REF="${{ steps.meta.outputs.image_ref }}"
@@ -111,8 +113,18 @@ jobs:
             QUEUE_ATTEMPTS="${{ env.QUEUE_ATTEMPTS }}"
             QUEUE_DELAY="${{ env.QUEUE_DELAY_BETWEEN_ATTEMPTS }}"
 
+            if [ -z "${SERVICE:-}" ]; then
+              echo "SERVICE_NAME vazio ou não definido."
+              exit 1
+            fi
+
             aws ecr get-login-password --region "$REGION" | sudo docker login --username AWS --password-stdin "$ECR_URL"
             sudo docker pull "$IMAGE_REF"
+
+            if ! sudo docker service inspect "$SERVICE" >/dev/null 2>&1; then
+              echo "Serviço '$SERVICE' não existe no Swarm."
+              exit 1
+            fi
 
             sudo docker service update \
               --with-registry-auth \
