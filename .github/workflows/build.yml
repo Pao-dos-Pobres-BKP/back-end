@@ -23,9 +23,10 @@ jobs:
 
       - name: Build do projeto
         run: yarn build
-         
+
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Rodar testes
         run: yarn test
