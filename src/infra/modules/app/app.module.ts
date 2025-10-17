@@ -16,6 +16,7 @@ import { QueueModule } from "../queue";
 import { HealthModule } from "../health";
 import { AutomaticMailsModule } from "../automatic-mails";
 import { ScheduleModule } from "@nestjs/schedule";
+import { HowToHelpModule } from "../how-to-help";
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { ScheduleModule } from "@nestjs/schedule";
     MetricsModule,
     QueueModule,
     HealthModule,
-    AutomaticMailsModule
+    AutomaticMailsModule,
+    HowToHelpModule
   ]
 })
 export class AppModule {}
