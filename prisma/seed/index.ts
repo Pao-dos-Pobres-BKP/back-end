@@ -8,7 +8,7 @@ import { addressesMock } from "../mocks/addresses";
 import { campaignsMock } from "../mocks/campaigns";
 import { donationsMock } from "../mocks/donations";
 import { paymentsMock } from "../mocks/payments";
-import { howToHelpMock } from "prisma/mocks/how-to-help";
+import { howToHelpMock } from "../mocks/how-to-help";
 
 const prisma = new PrismaClient();
 
