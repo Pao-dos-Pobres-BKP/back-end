@@ -1,3 +1,5 @@
+import { SendEmailParams } from "./mail";
+
 export abstract class QueueAdapter {
-  abstract addJob(jobName: string, object: object): Promise<void>;
+  abstract addJob(data: SendEmailParams): Promise<void>;
 }

@@ -6,7 +6,9 @@ import { Donor } from "@domain/entities/donor";
 import {
   CreateDonorParams,
   DonorDetailsResponse,
+  DonorMailsResponse,
   DonorRepository,
+  DonorWithBirthdayParams,
   DonorWithUser,
   UpdateDonorParams
 } from "@domain/repositories/donor";
@@ -17,6 +19,44 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class PrismaDonorRepository implements DonorRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findAllDonorsMails(): Promise<DonorMailsResponse[]> {
+    const donors = await this.prisma.donor.findMany({
+      select: {
+        user: {
+          select: {
+            email: true,
+            fullName: true
+          }
+        }
+      },
+      where: {
+        user: {
+          deletedAt: null
+        }
+      }
+    });
+
+    return donors.map((donor) => ({
+      email: donor.user.email,
+      fullName: donor.user.fullName
+    }));
+  }
+
+  async findAllDonorsWithBirthday({
+    day,
+    month
+  }: DonorWithBirthdayParams): Promise<DonorMailsResponse[]> {
+    return await this.prisma.$queryRaw<DonorMailsResponse[]>`
+      SELECT u.email, u.full_name as "fullName"
+      FROM donors d
+      INNER JOIN users u ON d.id = u.id
+      WHERE EXTRACT(DAY FROM d.birth_date) = ${day}
+        AND EXTRACT(MONTH FROM d.birth_date) = ${month}
+        AND u.deleted_at IS NULL
+    `;
+  }
+
   async findByIdWithUser(id: string): Promise<DonorWithUser | null> {
     const donor = await this.prisma.donor.findUnique({
       where: {

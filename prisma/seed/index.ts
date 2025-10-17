@@ -8,6 +8,7 @@ import { addressesMock } from "../mocks/addresses";
 import { campaignsMock } from "../mocks/campaigns";
 import { donationsMock } from "../mocks/donations";
 import { paymentsMock } from "../mocks/payments";
+import { howToHelpMock } from "prisma/mocks/how-to-help";
 
 const prisma = new PrismaClient();
 
@@ -18,6 +19,12 @@ async function main(): Promise<void> {
 
   const createdDonorUsers = [];
   const createdAdmins = [];
+
+for (const howtoHelpData of howToHelpMock) {
+    await prisma.howToHelp.create({
+      data: howtoHelpData
+    });
+}
 
   for (const userData of userDonorsMock) {
     const user = await prisma.user.create({
