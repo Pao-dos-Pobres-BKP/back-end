@@ -21,7 +21,7 @@ export class HowToHelpController {
     @Param("id") id: string,
     @Body() body: UpdateHowToHelpDTO
   ): Promise<void> {
-    await this.updateHowToHelpUseCase.update(id, body);
+    return this.updateHowToHelpUseCase.update(id, body);
   }
 
   @Get()
