@@ -27,6 +27,8 @@ export class PrismaHowToHelpRepository implements HowToHelpRepository {
   }
 
   async fetchAll(): Promise<HowToHelp[]> {
-    return this.prisma.howToHelp.findMany();
+    return this.prisma.howToHelp.findMany({
+      orderBy: { title: "asc" }
+    });
   }
 }
