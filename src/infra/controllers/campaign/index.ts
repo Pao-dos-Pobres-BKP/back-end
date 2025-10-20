@@ -8,6 +8,7 @@ import {
   FindAllCampaignsResponse,
   FindAllCampaignsResponses
 } from "@application/dtos/campaign/find-all";
+import { FindCampaignByDonorIdResponses } from "@application/dtos/campaign/find-by-donorId";
 import {
   CampaignDetails,
   FindCampaignByIdResponses
@@ -18,15 +19,22 @@ import {
   UpdateCampaignStatusDto,
   UpdateCampaignStatusResponses
 } from "@application/dtos/campaign/update";
+import { PaginationDTO } from "@application/dtos/utils/pagination";
 import { CreateCampaignUseCase } from "@application/use-cases/campaign/create/create-campaign";
 import { DeleteCampaignUseCase } from "@application/use-cases/campaign/delete/delete-campaign";
+import { FindCampaignByDonorIdUseCase } from "@application/use-cases/campaign/find-by-donorId";
 import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
 import { SearchCampaignsUseCase } from "@application/use-cases/campaign/search/search-campaigns";
 import {
   UpdateCampaignStatusUseCase,
   UpdateCampaignUseCase
 } from "@application/use-cases/campaign/update/update-campaign";
+import { PaginatedEntity } from "@domain/constants/pagination";
 import { UserRole } from "@domain/entities/user-role-enum";
+import {
+  CurrentUser,
+  UserPayload
+} from "@infra/commons/decorators/current-user";
 import { RequireToken } from "@infra/commons/decorators/require-token";
 import {
   Body,
@@ -41,6 +49,7 @@ import {
   Query
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { Campaign } from "@prisma/client";
 
 @ApiTags("Campaigns")
 @Controller("campaigns")
@@ -51,7 +60,8 @@ export class CampaignController {
     private readonly updateCampaignStatusUseCase: UpdateCampaignStatusUseCase,
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
     private readonly findCampaignByIdUseCase: FindCampaignByIdUseCase,
-    private readonly searchCampaignsUseCase: SearchCampaignsUseCase
+    private readonly searchCampaignsUseCase: SearchCampaignsUseCase,
+    private readonly findCampaignByDonorIdUseCase: FindCampaignByDonorIdUseCase
   ) {}
 
   @Post()
@@ -104,5 +114,15 @@ export class CampaignController {
   @DeleteCampaignResponses
   async deleteCampaign(@Param("id") id: string): Promise<void> {
     return await this.deleteCampaignUseCase.execute(id);
+  }
+
+  @Get("donor/all-donations")
+  @FindCampaignByDonorIdResponses
+  @RequireToken([UserRole.DONOR])
+  async findCampaignByDonorId(
+    @CurrentUser() user: UserPayload,
+    @Query() query: PaginationDTO
+  ): Promise<PaginatedEntity<Campaign>> {
+    return await this.findCampaignByDonorIdUseCase.execute(user.id, query);
   }
 }
