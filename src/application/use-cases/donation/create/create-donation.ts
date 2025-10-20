@@ -3,33 +3,30 @@ import { ExceptionsAdapter } from "@domain/adapters/exception";
 import { DonationRepository } from "@domain/repositories/donation";
 import { Injectable } from "@nestjs/common";
 import { DonorRepository } from "@domain/repositories/donor";
-import {
-  PaymentStatus,
-  Periodicity,
-  PaymentMethod,
-  Payment,
-  Prisma
-} from "@prisma/client";
+import { CampaignRepository } from "@domain/repositories/campaign";
+import { PaymentRepository } from "@domain/repositories/payment";
+import { TransactionAdapter } from "@domain/adapters/transaction";
+import { PaymentStatus } from "@domain/entities/payment-status-enum";
 
 @Injectable()
 export class CreateDonationUseCase {
   constructor(
     private readonly donationRepository: DonationRepository,
     private readonly donorRepository: DonorRepository,
-    private readonly exceptionService: ExceptionsAdapter
+    private readonly campaignRepository: CampaignRepository,
+    private readonly exceptionService: ExceptionsAdapter,
+    private readonly paymentRepository: PaymentRepository,
+    private readonly transactionService: TransactionAdapter
   ) {}
 
-  async execute(dto: CreateDonationDTO, donorId?: string): Promise<void> {
-    const { amount, periodicity, campaignId, paymentMethod } = dto;
-    if (amount <= 0) {
-      return this.exceptionService.badRequest({
-        message: "Donation amount must be greater than zero"
-      });
-    }
+  async execute(dto: CreateDonationDTO): Promise<void> {
+    const { amount, periodicity, campaignId, paymentMethod, donorId } = dto;
 
     let donor = null;
+
     if (donorId) {
       donor = await this.donorRepository.findById(donorId);
+
       if (!donor) {
         return this.exceptionService.notFound({
           message: "Donor not found"
@@ -37,54 +34,39 @@ export class CreateDonationUseCase {
       }
     }
 
-    const now = new Date();
+    let campaign = null;
 
-    const paymentsToCreate: Pick<
-      Payment,
-      "paymentMethod" | "amount" | "status" | "paidAt"
-    >[] = [
-      {
-        paymentMethod: paymentMethod ?? PaymentMethod.PIX,
-        amount: new Prisma.Decimal(amount),
-        status: PaymentStatus.CONFIRMED,
-        paidAt: now
+    if (campaignId) {
+      campaign = await this.campaignRepository.findById(campaignId);
+
+      if (!campaign) {
+        return this.exceptionService.notFound({
+          message: "Campaign not found"
+        });
       }
-    ];
-
-    if (periodicity) {
-      paymentsToCreate.push({
-        paymentMethod: paymentMethod ?? PaymentMethod.PIX,
-        amount: new Prisma.Decimal(amount),
-        status: PaymentStatus.PENDING,
-        paidAt: this.calculateNextPaymentDate(now, periodicity)
-      });
     }
 
-    await this.donationRepository.create({
-      amount,
-      periodicity,
-      campaignId,
-      donorId,
-      payments: paymentsToCreate
+    await this.transactionService.transaction(async (tx) => {
+      const donation = await this.donationRepository.create(
+        {
+          amount,
+          periodicity,
+          campaignId,
+          donorId
+        },
+        tx
+      );
+
+      await this.paymentRepository.create(
+        {
+          paymentMethod,
+          status: PaymentStatus.CONFIRMED,
+          amount,
+          donationId: donation.id,
+          paidAt: new Date()
+        },
+        tx
+      );
     });
-  }
-
-  private calculateNextPaymentDate(date: Date, periodicity: Periodicity): Date {
-    const next = new Date(date);
-    switch (periodicity) {
-      case Periodicity.MONTHLY:
-        next.setMonth(next.getMonth() + 1);
-        break;
-      case Periodicity.QUARTERLY:
-        next.setMonth(next.getMonth() + 3);
-        break;
-      case Periodicity.SEMI_ANNUAL:
-        next.setMonth(next.getMonth() + 6);
-        break;
-      case Periodicity.YEARLY:
-        next.setFullYear(next.getFullYear() + 1);
-        break;
-    }
-    return next;
   }
 }

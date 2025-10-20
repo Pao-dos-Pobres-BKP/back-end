@@ -32,7 +32,7 @@ export class CreateDonationDTO {
 
   @ApiProperty({
     description: "Campaign ID (optional)",
-    example: "campaign123",
+    example: "campaign-id-example",
     required: false
   })
   @IsString()
@@ -42,11 +42,9 @@ export class CreateDonationDTO {
   @ApiProperty({
     description: "Payment method",
     enum: PaymentMethod,
-    example: PaymentMethod.PIX,
-    required: false
+    example: PaymentMethod.PIX
   })
   @IsEnum(PaymentMethod)
-  @IsOptional()
   paymentMethod: PaymentMethod;
 
   @ApiProperty({

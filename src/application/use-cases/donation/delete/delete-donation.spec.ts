@@ -1,100 +1,73 @@
-import { DeleteDonationUseCase } from "./delete-donation";
-import { DonationRepository } from "@domain/repositories/donation";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { DonationRepository } from "@domain/repositories/donation";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
-import { Periodicity } from "@domain/entities/periodicity-enum";
+import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { DeleteDonationUseCase } from "./delete-donation";
+import { createMockDonation } from "@test/builders/donation";
 
 describe("DeleteDonationUseCase", () => {
-  let useCase: DeleteDonationUseCase;
+  let sut: DeleteDonationUseCase;
   let donationRepository: DonationRepository;
   let exceptionService: ExceptionsAdapter;
 
   beforeEach(() => {
-    donationRepository = {
-      findById: jest.fn(),
-      update: jest.fn(),
-      findAllByDonor: jest.fn(),
-      create: jest.fn(),
-      delete: jest.fn(),
-      findAllByCampaign: jest.fn()
-    } as DonationRepositoryStub;
-
-    exceptionService = {
-      notFound: jest.fn(),
-      forbidden: jest.fn(),
-      badRequest: jest.fn(),
-      conflict: jest.fn(),
-      internalServerError: jest.fn(),
-      unauthorized: jest.fn()
-    } as ExceptionsServiceStub;
-
-    useCase = new DeleteDonationUseCase(donationRepository, exceptionService);
+    donationRepository = new DonationRepositoryStub();
+    exceptionService = new ExceptionsServiceStub();
+    sut = new DeleteDonationUseCase(donationRepository, exceptionService);
   });
 
-  it("should delete donation if it is recurring and belongs to donor", async () => {
-    (donationRepository.findById as jest.Mock).mockResolvedValue({
-      id: "donation-id",
-      donorId: "donor-id",
-      periodicity: Periodicity.MONTHLY
-    });
+  it("should throw an error when donation is not found", async () => {
+    jest.spyOn(exceptionService, "notFound");
+    jest.spyOn(donationRepository, "findById").mockResolvedValue(null);
+    jest.spyOn(donationRepository, "delete");
 
-    (donationRepository.findAllByDonor as jest.Mock).mockResolvedValue({
-      data: [
-        {
-          id: "donation-id",
-          donorId: "donor-id",
-          periodicity: Periodicity.MONTHLY
-        }
-      ],
-      total: 1,
-      page: 1,
-      pageSize: 1000
-    });
+    await sut.execute("example-donation-id", "example-donor-id");
 
-    await useCase.execute("donation-id", "donor-id");
-
-    expect(donationRepository.delete).toHaveBeenCalledWith("donation-id");
-  });
-
-  it("should return not found if donation does not exist", async () => {
-    (donationRepository.findById as jest.Mock).mockResolvedValue(null);
-
-    await useCase.execute("donation-id", "donor-id");
+    expect(donationRepository.findById).toHaveBeenCalledWith(
+      "example-donation-id"
+    );
 
     expect(exceptionService.notFound).toHaveBeenCalledWith({
       message: "Donation not found"
     });
-    expect(donationRepository.update).not.toHaveBeenCalled();
+
+    expect(donationRepository.delete).not.toHaveBeenCalled();
   });
 
-  it("should return forbidden if donation does not belong to donor", async () => {
-    (donationRepository.findById as jest.Mock).mockResolvedValue({
-      id: "donation-id",
-      donorId: "other-donor-id",
-      periodicity: Periodicity.MONTHLY
-    });
+  it("should throw an error when donation is not owned by the donor", async () => {
+    const donationMock = createMockDonation({ donorId: "other-donor-id" });
 
-    await useCase.execute("donation-id", "donor-id");
+    jest.spyOn(exceptionService, "forbidden");
+    jest.spyOn(donationRepository, "findById").mockResolvedValue(donationMock);
+    jest.spyOn(donationRepository, "delete");
+
+    await sut.execute(donationMock.id, "example-donor-id");
+
+    expect(donationRepository.findById).toHaveBeenCalledWith(donationMock.id);
 
     expect(exceptionService.forbidden).toHaveBeenCalledWith({
       message: "You can only delete your own donations"
     });
-    expect(donationRepository.update).not.toHaveBeenCalled();
+
+    expect(donationRepository.delete).not.toHaveBeenCalled();
   });
 
-  it("should return bad request if donation is not recurring", async () => {
-    (donationRepository.findById as jest.Mock).mockResolvedValue({
-      id: "donation-id",
-      donorId: "donor-id",
-      periodicity: null
-    });
+  it("should delete a donation", async () => {
+    const donationMock = createMockDonation({ donorId: "example-donor-id" });
 
-    await useCase.execute("donation-id", "donor-id");
+    jest.spyOn(exceptionService, "notFound");
+    jest.spyOn(exceptionService, "forbidden");
+    jest.spyOn(donationRepository, "findById").mockResolvedValue(donationMock);
+    jest.spyOn(donationRepository, "delete");
 
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Donation is not recurring"
-    });
-    expect(donationRepository.update).not.toHaveBeenCalled();
+    await sut.execute(donationMock.id, "example-donor-id");
+
+    expect(donationRepository.findById).toHaveBeenCalledWith(donationMock.id);
+
+    expect(donationRepository.delete).toHaveBeenCalledWith(donationMock.id);
+
+    expect(exceptionService.notFound).not.toHaveBeenCalled();
+
+    expect(exceptionService.forbidden).not.toHaveBeenCalled();
   });
 });

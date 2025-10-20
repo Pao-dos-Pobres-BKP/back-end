@@ -1,3 +1,4 @@
+import { Transaction } from "@domain/adapters/transaction";
 import {
   PaginatedEntity,
   PaginationParams
@@ -17,6 +18,24 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class PrismaDonationRepository implements DonationRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async create(
+    params: CreateDonationParams,
+    tx?: Transaction
+  ): Promise<Donation> {
+    const dbInstance = tx ?? this.prisma;
+
+    const donation = await dbInstance.donation.create({
+      data: {
+        amount: params.amount,
+        periodicity: params.periodicity,
+        campaignId: params.campaignId,
+        donorId: params.donorId
+      }
+    });
+
+    return DonationMapper.toDomain(donation);
+  }
 
   async findById(id: string): Promise<Donation | null> {
     const donation = await this.prisma.donation.findUnique({
@@ -42,37 +61,24 @@ export class PrismaDonationRepository implements DonationRepository {
   }
 
   async findAllByDonor(
-    donorId: string,
-    { page, pageSize }: PaginationParams
+    { page, pageSize }: PaginationParams,
+    donorId: string
   ): Promise<PaginatedEntity<DonationDetailsResponse>> {
-    const safePage = page ? Number(page) : 1;
-    const safePageSize = pageSize ? Number(pageSize) : 10;
     const [donations, total] = await Promise.all([
       this.prisma.donation.findMany({
         where: { donorId },
-        skip: (safePage - 1) * safePageSize,
-        take: safePageSize
+        skip: (page - 1) * pageSize,
+        take: pageSize
       }),
       this.prisma.donation.count({ where: { donorId } })
     ]);
 
     return {
       data: donations.map(DonationMapper.toDomain),
-      page: safePage,
-      lastPage: Math.ceil(total / safePageSize),
+      page,
+      lastPage: Math.ceil(total / pageSize),
       total
     };
-  }
-
-  async create(params: CreateDonationParams): Promise<void> {
-    await this.prisma.donation.create({
-      data: {
-        amount: params.amount,
-        periodicity: params.periodicity,
-        campaignId: params.campaignId,
-        ...(params.donorId && { donorId: params.donorId })
-      }
-    });
   }
 
   async update(id: string, params: UpdateDonationParams): Promise<void> {

@@ -23,7 +23,7 @@ export class DonationRepositoryStub implements DonationRepository {
     return [];
   }
 
-  async create(): Promise<void> {
+  async create(): Promise<Donation> {
     return;
   }
   async update(): Promise<void> {

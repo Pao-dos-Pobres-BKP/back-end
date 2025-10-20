@@ -1,5 +1,5 @@
 import { DonationRepository } from "@domain/repositories/donation";
-import { FindAllDonationsUseCase } from "./find-all-donations";
+import { FindAllDonationsUseCase } from "./find-all-donations-by-donor-id";
 import { DonationRepositoryStub } from "../../../../../test/stubs/repositories/donation";
 import { DonorRepository } from "@domain/repositories/donor";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
