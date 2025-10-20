@@ -17,6 +17,46 @@ import {
 export class PrismaCampaignRepository implements CampaignRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByDonorId(
+    donorId: string,
+    params: PaginationParams
+  ): Promise<PaginatedEntity<Campaign>> {
+    const skip = (params.page - 1) * params.pageSize;
+
+    const [campaigns, total] = await Promise.all([
+      await this.prisma.campaign.findMany({
+        where: {
+          donation: {
+            some: {
+              donorId
+            }
+          }
+        },
+        orderBy: {
+          startDate: "desc"
+        },
+        skip,
+        take: params.pageSize
+      }),
+      await this.prisma.campaign.count({
+        where: {
+          donation: {
+            some: {
+              donorId
+            }
+          }
+        }
+      })
+    ]);
+
+    return {
+      data: campaigns.map(CampaignMapper.toDomain),
+      page: params.page,
+      lastPage: Math.ceil(total / params.pageSize),
+      total
+    };
+  }
+
   async create(params: CreateCampaignParams): Promise<void> {
     await this.prisma.campaign.create({
       data: {

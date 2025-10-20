@@ -18,6 +18,8 @@ import { PrismaNewsletterRepository } from "@infra/repositories/prisma/newslette
 import { Module } from "@nestjs/common";
 import { DonationRepository } from "@domain/repositories/donation";
 import { PrismaDonationRepository } from "@infra/repositories/prisma/donation";
+import { PrismaHowToHelpRepository } from "@infra/repositories/prisma/howtohelp";
+import { HowToHelpRepository } from "@domain/repositories/howtohelp";
 import { PaymentRepository } from "@domain/repositories/payment";
 import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
 import { PrismaMetricsRepository } from "@infra/repositories/prisma/metrics";
@@ -59,6 +61,10 @@ import { MetricsRepository } from "@domain/repositories/metrics";
       provide: NewsletterRepository
     },
     {
+      useClass: PrismaHowToHelpRepository,
+      provide: HowToHelpRepository
+    },
+    {
       useClass: PrismaPaymentRepository,
       provide: PaymentRepository
     },
@@ -76,6 +82,7 @@ import { MetricsRepository } from "@domain/repositories/metrics";
     NewsRepository,
     DonationRepository,
     NewsletterRepository,
+    HowToHelpRepository,
     PaymentRepository,
     MetricsRepository
   ]
