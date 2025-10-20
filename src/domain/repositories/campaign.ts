@@ -51,4 +51,8 @@ export abstract class CampaignRepository {
   ): Promise<PaginatedEntity<CampaignDetailsResponse>>;
   abstract update(id: string, params: UpdateCampaignParams): Promise<void>;
   abstract delete(id: string): Promise<void>;
+  abstract findByDonorId(
+    donorId: string,
+    params: PaginationParams
+  ): Promise<PaginatedEntity<Campaign>>;
 }
