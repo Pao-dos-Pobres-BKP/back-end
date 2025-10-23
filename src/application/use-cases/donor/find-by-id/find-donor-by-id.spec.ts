@@ -45,7 +45,7 @@ describe("FindDonorByIdUseCase", () => {
       fullName: mockDonorWithUser.fullName,
       gender: mockDonorWithUser.gender,
       phone: mockDonorWithUser.phone,
-      totalDonated: 0,
+      totalDonated: 0
     });
 
     expect(exceptionService.notFound).not.toHaveBeenCalled();
