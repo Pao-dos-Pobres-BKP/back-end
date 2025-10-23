@@ -1,7 +1,11 @@
-import { CampaignRepository } from "@domain/repositories/campaign";
+import {
+  CampaignDonorDetailsResponse,
+  CampaignRepository
+} from "@domain/repositories/campaign";
 import { CampaignRepositoryStub } from "@test/stubs/repositories/campaign";
 import { FindCampaignByDonorIdUseCase } from ".";
-import { createMockCampaign } from "@test/builders/campaign";
+import { Decimal } from "@prisma/client/runtime/library";
+import { CampaignStatus } from "@prisma/client";
 
 describe("FindCampaignByDonorIdUseCase", () => {
   let sut: FindCampaignByDonorIdUseCase;
@@ -17,7 +21,21 @@ describe("FindCampaignByDonorIdUseCase", () => {
     const page = 1;
     const pageSize = 10;
 
-    const mockCampaign = [createMockCampaign(), createMockCampaign()];
+    const mockCampaign: CampaignDonorDetailsResponse[] = [
+      {
+        id: "campaign-id",
+        title: "campaign-title",
+        description: "campaign-description",
+        targetAmount: new Decimal("1000"),
+        currentAmount: new Decimal("500"),
+        startDate: new Date("2025-01-01"),
+        endDate: new Date("2025-01-01"),
+        status: CampaignStatus.ACTIVE,
+        createdBy: "creator-id",
+        creatorName: "creator-name",
+        imageUrl: "image-url"
+      }
+    ];
 
     jest.spyOn(campaignRepository, "findByDonorId").mockResolvedValue({
       data: mockCampaign,

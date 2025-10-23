@@ -52,6 +52,12 @@ export class DonorDetails {
   cpf: string;
 
   @ApiProperty({
+    description: "Donor created at",
+    example: "2025-01-01"
+  })
+  createdAt: Date;
+
+  @ApiProperty({
     description: "Total amount donated by the donor",
     example: 1500.75
   })

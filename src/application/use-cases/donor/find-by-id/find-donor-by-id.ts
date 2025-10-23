@@ -30,6 +30,7 @@ export class FindDonorByIdUseCase {
       fullName: donor.fullName,
       gender: donor.gender,
       phone: donor.phone,
+      createdAt: donor.createdAt,
       totalDonated: totalAmountDonated
     };
   }
