@@ -6,6 +6,9 @@ import {
 } from "@domain/repositories/campaign";
 
 export class CampaignRepositoryStub implements CampaignRepository {
+  findByDonorId(): Promise<PaginatedEntity<Campaign>> {
+    return;
+  }
   async create(): Promise<void> {
     return;
   }

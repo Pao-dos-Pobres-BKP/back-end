@@ -17,6 +17,7 @@ import { HealthModule } from "../health";
 import { AutomaticMailsModule } from "../automatic-mails";
 import { ScheduleModule } from "@nestjs/schedule";
 import { HowToHelpModule } from "../how-to-help";
+import { DatabaseModule } from "../database";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { HowToHelpModule } from "../how-to-help";
       isGlobal: true,
       load: [() => EnvConfig.validate(process.env)]
     }),
+    DatabaseModule,
     DonorModule,
     DonationModule,
     AuthModule,
@@ -33,11 +35,9 @@ import { HowToHelpModule } from "../how-to-help";
     NewsModule,
     MetricsModule,
     FileModule,
-    NewsModule,
     MailModule,
     CampaignModule,
     NewsletterModule,
-    MetricsModule,
     QueueModule,
     HealthModule,
     AutomaticMailsModule,

@@ -14,6 +14,7 @@ import { HashModule } from "../hash";
 import { TokenModule } from "../token";
 import { AuthTokenGuard } from "@infra/commons/guards/token";
 import { RoleGuard } from "@infra/commons/guards/role";
+import { FindCampaignByDonorIdUseCase } from "@application/use-cases/campaign/find-by-donorId";
 
 @Module({
   imports: [DatabaseModule, ExceptionModule, HashModule, TokenModule],
@@ -25,6 +26,7 @@ import { RoleGuard } from "@infra/commons/guards/role";
     DeleteCampaignUseCase,
     FindCampaignByIdUseCase,
     SearchCampaignsUseCase,
+    FindCampaignByDonorIdUseCase,
     AuthTokenGuard,
     RoleGuard
   ]

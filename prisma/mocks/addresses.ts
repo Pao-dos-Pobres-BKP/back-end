@@ -9,7 +9,7 @@ export const addressesMock: Prisma.AddressCreateInput[] = Array.from({
   district: faker.location.county(),
   city: faker.location.city(),
   state: faker.location.state({ abbreviated: true }),
-  postalCode: faker.location.zipCode('#####-###'),
+  postalCode: faker.location.zipCode("#####-###"),
   complement: faker.datatype.boolean() ? faker.lorem.words(2) : null,
   donor: {
     connect: {
