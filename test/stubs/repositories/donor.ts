@@ -2,12 +2,16 @@ import { PaginatedEntity } from "@domain/constants/pagination";
 import { Donor } from "@domain/entities/donor";
 import {
   DonorDetailsResponse,
+  DonorInformationsResponse,
   DonorMailsResponse,
   DonorRepository,
   DonorWithUser
 } from "@domain/repositories/donor";
 
 export class DonorRepositoryStub implements DonorRepository {
+  findInformationsById(): Promise<DonorInformationsResponse> {
+    return;
+  }
   findAllDonorsMails(): Promise<DonorMailsResponse[]> {
     return;
   }

@@ -6,6 +6,7 @@ import { Donor } from "@domain/entities/donor";
 import {
   CreateDonorParams,
   DonorDetailsResponse,
+  DonorInformationsResponse,
   DonorMailsResponse,
   DonorRepository,
   DonorWithBirthdayParams,
@@ -19,6 +20,50 @@ import { Injectable } from "@nestjs/common";
 @Injectable()
 export class PrismaDonorRepository implements DonorRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findInformationsById(id: string): Promise<DonorInformationsResponse> {
+    const donor = await this.prisma.donor.findUnique({
+      where: {
+        id,
+        user: {
+          deletedAt: null
+        }
+      },
+      include: {
+        user: {
+          select: {
+            createdAt: true
+          }
+        },
+        donation: {
+          where: {
+            campaign: {
+              isNot: null
+            }
+          },
+          include: {
+            campaign: {
+              select: {
+                title: true
+              }
+            }
+          },
+          orderBy: {
+            createdAt: "desc"
+          },
+          take: 3
+        }
+      }
+    });
+
+    return {
+      id: donor.id,
+      campaignsTitles: donor.donation.map(
+        (donation) => donation.campaign.title
+      ),
+      createdAt: donor.user.createdAt
+    };
+  }
 
   async findAllDonorsMails(): Promise<DonorMailsResponse[]> {
     const donors = await this.prisma.donor.findMany({

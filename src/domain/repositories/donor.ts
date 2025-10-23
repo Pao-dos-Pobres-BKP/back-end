@@ -51,12 +51,19 @@ export interface DonorWithBirthdayParams {
   month: number;
 }
 
+export interface DonorInformationsResponse {
+  id: string;
+  campaignsTitles: string[];
+  createdAt: Date;
+}
+
 export abstract class DonorRepository {
   abstract findByCPF(cpf: string): Promise<Donor | null>;
   abstract findByEmail(email: string): Promise<Donor | null>;
   abstract create(params: CreateDonorParams): Promise<void>;
   abstract findById(id: string): Promise<Donor | null>;
   abstract findByIdWithUser(id: string): Promise<DonorWithUser | null>;
+  abstract findInformationsById(id: string): Promise<DonorInformationsResponse>;
   abstract delete(id: string): Promise<void>;
   abstract findAll(
     params: PaginationParams
