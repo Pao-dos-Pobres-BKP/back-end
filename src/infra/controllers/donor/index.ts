@@ -40,6 +40,11 @@ import {
 import { ApiTags, ApiConsumes, ApiBody } from "@nestjs/swagger";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateFileDTO } from "@application/dtos/file/create";
+import { FindDonorInformationsUseCase } from "@application/use-cases/donor/find-informations";
+import {
+  FindDonorInformationsResponse,
+  FindDonorInformationsResponses
+} from "@application/dtos/donor/find-donor-informations";
 
 @ApiTags("Donors")
 @Controller("donors")
@@ -50,7 +55,8 @@ export class DonorController {
     private readonly updateDonorAvatarUseCase: UpdateDonorAvatarUseCase,
     private readonly deleteDonorUseCase: DeleteDonorUseCase,
     private readonly findDonorByIdUseCase: FindDonorByIdUseCase,
-    private readonly findAllDonorsUseCase: FindAllDonorsUseCase
+    private readonly findAllDonorsUseCase: FindAllDonorsUseCase,
+    private readonly findDonorInformationsUseCase: FindDonorInformationsUseCase
   ) {}
 
   @Post()
@@ -116,5 +122,13 @@ export class DonorController {
   @DeleteDonorResponses
   async deleteDonor(@Param("id") id: string): Promise<void> {
     return await this.deleteDonorUseCase.execute(id);
+  }
+
+  @Get(":id/informations")
+  @FindDonorInformationsResponses
+  async findDonorInformations(
+    @Param("id") id: string
+  ): Promise<FindDonorInformationsResponse | void> {
+    return await this.findDonorInformationsUseCase.execute(id);
   }
 }
