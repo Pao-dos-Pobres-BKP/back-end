@@ -10,6 +10,7 @@ import { FindDonorByIdUseCase } from "@application/use-cases/donor/find-by-id/fi
 import { UpdateDonorUseCase } from "@application/use-cases/donor/update/update-donor";
 import { UpdateDonorAvatarUseCase } from "@application/use-cases/donor/update-avatar/update-avatar";
 import { FileModule } from "../file";
+import { FindDonorInformationsUseCase } from "@application/use-cases/donor/find-informations";
 
 @Module({
   imports: [DatabaseModule, ExceptionModule, HashModule, FileModule],
@@ -20,7 +21,8 @@ import { FileModule } from "../file";
     UpdateDonorAvatarUseCase,
     DeleteDonorUseCase,
     FindDonorByIdUseCase,
-    FindAllDonorsUseCase
+    FindAllDonorsUseCase,
+    FindDonorInformationsUseCase
   ]
 })
 export class DonorModule {}
