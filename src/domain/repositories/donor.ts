@@ -66,4 +66,6 @@ export abstract class DonorRepository {
   abstract findAllDonorsWithBirthday(
     params: DonorWithBirthdayParams
   ): Promise<DonorMailsResponse[]>;
+
+  abstract totalAmountDonatedByDonorId(donorId: string): Promise<number>;
 }

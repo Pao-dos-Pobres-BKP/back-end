@@ -19,6 +19,9 @@ export class FindDonorByIdUseCase {
       });
     }
 
+    const totalAmountDonated =
+      await this.donorRepository.totalAmountDonatedByDonorId(id);
+
     return {
       id: donor.id,
       email: donor.email,
@@ -26,7 +29,8 @@ export class FindDonorByIdUseCase {
       birthDate: donor.birthDate,
       fullName: donor.fullName,
       gender: donor.gender,
-      phone: donor.phone
+      phone: donor.phone,
+      totalDonated: totalAmountDonated
     };
   }
 }
