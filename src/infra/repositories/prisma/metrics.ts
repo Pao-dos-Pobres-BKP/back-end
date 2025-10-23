@@ -5,7 +5,7 @@ import {
   PeriodMetricsDTO
 } from "@application/dtos/metrics/get-metrics";
 import {
-  MetricsRepository as IMetricsRepository,
+  MetricsRepository,
   DonorStatisticsData
 } from "@domain/repositories/metrics";
 import {
@@ -19,7 +19,7 @@ import { DonationsRaisedByPeriodResponse } from "@application/dtos/metrics/get-d
 import { monthNames, RaisedByPeriodDataItem } from "@domain/entities/metrics";
 
 @Injectable()
-export class MetricsRepository implements IMetricsRepository {
+export class PrismaMetricsRepository implements MetricsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getMetrics(): Promise<GetMetricsResponseDTO> {

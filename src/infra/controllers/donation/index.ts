@@ -21,6 +21,12 @@ import { DeleteDonationUseCase } from "@application/use-cases/donation/delete/de
 import { FindAllDonationsUseCase } from "@application/use-cases/donation/find-all/find-all-donations";
 import { FindDonationByIdUseCase } from "@application/use-cases/donation/find-by-id/find-donation-by-id";
 import { UpdateDonationUseCase } from "@application/use-cases/donation/update/update-donation";
+import { UserRole } from "@domain/entities/user-role-enum";
+import {
+  CurrentUser,
+  UserPayload
+} from "@infra/commons/decorators/current-user";
+import { RequireToken } from "@infra/commons/decorators/require-token";
 import {
   Body,
   Controller,
@@ -33,7 +39,7 @@ import {
   Post,
   Query
 } from "@nestjs/common";
-import { ApiTags, ApiQuery } from "@nestjs/swagger";
+import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Donations")
 @Controller("donations")
@@ -49,45 +55,49 @@ export class DonationController {
   @Post()
   @CreateDonationResponses
   async createDonation(@Body() body: CreateDonationDTO): Promise<void> {
-    return await this.createDonationUseCase.execute(body, body.donorId);
+    return await this.createDonationUseCase.execute(body);
   }
 
   @Get()
-  @ApiQuery({ name: "donorId", required: true, type: String })
   @FindAllDonationsResponses
+  @RequireToken([UserRole.DONOR])
   async findAllDonations(
-    @Query() query: PaginationDTO & { donorId?: string }
-  ): Promise<FindAllDonationsResponse> {
-    return await this.findAllDonationsUseCase.execute(query);
+    @CurrentUser() user: UserPayload,
+    @Query() query: PaginationDTO
+  ): Promise<FindAllDonationsResponse | void> {
+    return await this.findAllDonationsUseCase.execute(query, user.id);
   }
 
   @Get(":id")
   @FindDonationByIdResponses
+  @RequireToken([UserRole.DONOR])
   async findDonationById(
     @Param("id") id: string,
-    @Query("donorId") donorId?: string
+    @CurrentUser() user: UserPayload
   ): Promise<DonationDetails | void> {
-    return await this.findDonationByIdUseCase.execute(id, donorId);
+    return await this.findDonationByIdUseCase.execute(id, user.id);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(":id")
   @UpdateDonationResponses
+  @RequireToken([UserRole.DONOR])
   async updateDonation(
     @Param("id") id: string,
     @Body() body: UpdateDonationDTO,
-    @Query("donorId") donorId?: string
+    @CurrentUser() user: UserPayload
   ): Promise<void> {
-    return await this.updateDonationUseCase.execute(id, body, donorId);
+    return await this.updateDonationUseCase.execute(id, body, user.id);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(":id")
   @DeleteDonationResponses
+  @RequireToken([UserRole.DONOR])
   async deleteDonation(
     @Param("id") id: string,
-    @Query("donorId") donorId?: string
+    @CurrentUser() user: UserPayload
   ): Promise<void> {
-    return await this.deleteDonationUseCase.execute(id, donorId);
+    return await this.deleteDonationUseCase.execute(id, user.id);
   }
 }

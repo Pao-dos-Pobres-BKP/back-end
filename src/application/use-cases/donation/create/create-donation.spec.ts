@@ -1,118 +1,141 @@
-import { CreateDonationUseCase } from "./create-donation";
+import { ExceptionsAdapter } from "@domain/adapters/exception";
+import { TransactionAdapter } from "@domain/adapters/transaction";
+import { CampaignRepository } from "@domain/repositories/campaign";
 import { DonationRepository } from "@domain/repositories/donation";
 import { DonorRepository } from "@domain/repositories/donor";
-import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { CreateDonationDTO } from "@application/dtos/donation/create";
+import { PaymentRepository } from "@domain/repositories/payment";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
+import { TransactionServiceStub } from "@test/stubs/adapters/transaction";
+import { CampaignRepositoryStub } from "@test/stubs/repositories/campaign";
 import { DonationRepositoryStub } from "@test/stubs/repositories/donation";
+import { DonorRepositoryStub } from "@test/stubs/repositories/donor";
+import { PaymentRepositoryStub } from "@test/stubs/repositories/payment";
+import { CreateDonationUseCase } from "./create-donation";
+import { CreateDonationDTO } from "@application/dtos/donation/create";
+import { PaymentMethod } from "@domain/entities/payment-method-enum";
 import { Periodicity } from "@domain/entities/periodicity-enum";
-import { PaymentMethod, PaymentStatus } from "@prisma/client";
+import { createMockDonor } from "@test/builders/donor";
+import { createMockCampaign } from "@test/builders/campaign";
+import { createMockDonation } from "@test/builders/donation";
+import { PaymentStatus } from "@domain/entities/payment-status-enum";
 
 describe("CreateDonationUseCase", () => {
-  let useCase: CreateDonationUseCase;
+  let sut: CreateDonationUseCase;
   let donationRepository: DonationRepository;
   let donorRepository: DonorRepository;
+  let campaignRepository: CampaignRepository;
   let exceptionService: ExceptionsAdapter;
+  let paymentRepository: PaymentRepository;
+  let transactionService: TransactionAdapter;
 
   beforeEach(() => {
-    donationRepository = {
-      create: jest.fn(),
-      findById: jest.fn(),
-      findAllByDonor: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-      findAllByCampaign: jest.fn()
-    } as DonationRepositoryStub;
-
-    donorRepository = {
-      findById: jest
-        .fn()
-        .mockResolvedValue({ id: "donor-id", name: "Test Donor" })
-    } as unknown as DonorRepository;
-
-    exceptionService = {
-      badRequest: jest.fn(),
-      notFound: jest.fn(),
-      forbidden: jest.fn(),
-      conflict: jest.fn(),
-      internalServerError: jest.fn(),
-      unauthorized: jest.fn()
-    } as ExceptionsServiceStub;
-
-    useCase = new CreateDonationUseCase(
+    donationRepository = new DonationRepositoryStub();
+    donorRepository = new DonorRepositoryStub();
+    campaignRepository = new CampaignRepositoryStub();
+    exceptionService = new ExceptionsServiceStub();
+    paymentRepository = new PaymentRepositoryStub();
+    transactionService = new TransactionServiceStub();
+    sut = new CreateDonationUseCase(
       donationRepository,
       donorRepository,
-      exceptionService
+      campaignRepository,
+      exceptionService,
+      paymentRepository,
+      transactionService
     );
   });
 
-  it("should create a valid donation", async () => {
-    const dto: CreateDonationDTO = {
+  it("should throw error when donor not found", async () => {
+    jest.spyOn(exceptionService, "notFound");
+    jest.spyOn(donorRepository, "findById").mockResolvedValue(null);
+
+    const input: CreateDonationDTO = {
       amount: 100,
+      donorId: "example-donor-id",
+      paymentMethod: PaymentMethod.CREDIT_CARD,
       periodicity: Periodicity.MONTHLY,
-      paymentMethod: PaymentMethod.PIX
+      campaignId: "example-campaign-id"
     };
 
-    await useCase.execute(dto, "donor-id");
+    await sut.execute(input);
 
-    expect(donationRepository.create).toHaveBeenCalledWith({
-      amount: 100,
-      periodicity: Periodicity.MONTHLY,
-      donorId: "donor-id",
-      payments: expect.arrayContaining([
-        expect.objectContaining({
-          paymentMethod: PaymentMethod.PIX,
-          status: PaymentStatus.CONFIRMED
-        }),
-        expect.objectContaining({
-          paymentMethod: PaymentMethod.PIX,
-          status: PaymentStatus.PENDING
-        })
-      ])
+    expect(donorRepository.findById).toHaveBeenCalledWith(input.donorId);
+
+    expect(exceptionService.notFound).toHaveBeenCalledWith({
+      message: "Donor not found"
     });
   });
 
-  it("should return error if amount is less than or equal to zero", async () => {
-    const dto: CreateDonationDTO = {
-      amount: 0,
-      periodicity: Periodicity.MONTHLY,
-      paymentMethod: PaymentMethod.PIX
+  it("should throw error when campaign not found", async () => {
+    const donorMock = createMockDonor();
+
+    jest.spyOn(exceptionService, "notFound");
+    jest.spyOn(donorRepository, "findById").mockResolvedValue(donorMock);
+    jest.spyOn(campaignRepository, "findById").mockResolvedValue(null);
+
+    const input: CreateDonationDTO = {
+      amount: 100,
+      campaignId: "example-campaign-id",
+      donorId: donorMock.id,
+      paymentMethod: PaymentMethod.CREDIT_CARD,
+      periodicity: Periodicity.MONTHLY
     };
 
-    await useCase.execute(dto, "donor-id");
+    await sut.execute(input);
 
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Donation amount must be greater than zero"
+    expect(donorRepository.findById).toHaveBeenCalledWith(input.donorId);
+
+    expect(campaignRepository.findById).toHaveBeenCalledWith(input.campaignId);
+
+    expect(exceptionService.notFound).toHaveBeenCalledWith({
+      message: "Campaign not found"
     });
-
-    expect(donationRepository.create).not.toHaveBeenCalled();
   });
 
-  it("should pass optional fields correctly", async () => {
-    const dto: CreateDonationDTO = {
-      amount: 50,
-      periodicity: Periodicity.MONTHLY,
-      campaignId: "campaign-123",
-      paymentMethod: PaymentMethod.PIX
+  it("should create a donation", async () => {
+    const TRANSACTION = {};
+    const donorMock = createMockDonor();
+    const campaignMock = createMockCampaign();
+    const donationMock = createMockDonation({
+      campaignId: campaignMock.id,
+      donorId: donorMock.id
+    });
+
+    jest.spyOn(donorRepository, "findById").mockResolvedValue(donorMock);
+    jest.spyOn(campaignRepository, "findById").mockResolvedValue(campaignMock);
+    jest.spyOn(donationRepository, "create").mockResolvedValue(donationMock);
+    jest.spyOn(paymentRepository, "create");
+
+    const input: CreateDonationDTO = {
+      amount: 100,
+      campaignId: campaignMock.id,
+      donorId: donorMock.id,
+      paymentMethod: PaymentMethod.CREDIT_CARD,
+      periodicity: Periodicity.MONTHLY
     };
 
-    await useCase.execute(dto, "donor-id");
+    await sut.execute(input);
 
-    expect(donationRepository.create).toHaveBeenCalledWith({
-      amount: 50,
-      periodicity: Periodicity.MONTHLY,
-      campaignId: "campaign-123",
-      donorId: "donor-id",
-      payments: expect.arrayContaining([
-        expect.objectContaining({
-          paymentMethod: PaymentMethod.PIX,
-          status: PaymentStatus.CONFIRMED
-        }),
-        expect.objectContaining({
-          paymentMethod: PaymentMethod.PIX,
-          status: PaymentStatus.PENDING
-        })
-      ])
-    });
+    expect(donorRepository.findById).toHaveBeenCalledWith(input.donorId);
+    expect(campaignRepository.findById).toHaveBeenCalledWith(input.campaignId);
+    expect(donationRepository.create).toHaveBeenCalledWith(
+      {
+        amount: input.amount,
+        periodicity: input.periodicity,
+        campaignId: input.campaignId,
+        donorId: input.donorId
+      },
+      TRANSACTION
+    );
+    expect(paymentRepository.create).toHaveBeenCalledWith(
+      {
+        paymentMethod: input.paymentMethod,
+        status: PaymentStatus.CONFIRMED,
+        amount: input.amount,
+        donationId: donationMock.id,
+        paidAt: expect.any(Date)
+      },
+      TRANSACTION
+    );
   });
 });
