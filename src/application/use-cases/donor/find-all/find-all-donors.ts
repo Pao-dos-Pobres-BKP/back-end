@@ -1,4 +1,5 @@
 import { FindAllDonorsResponse } from "@application/dtos/donor/find-all";
+import { DonorDetails } from "@application/dtos/donor/find-by-id";
 import { PaginationDTO } from "@application/dtos/utils/pagination";
 import { DonorRepository } from "@domain/repositories/donor";
 import { Injectable } from "@nestjs/common";
@@ -11,9 +12,27 @@ export class FindAllDonorsUseCase {
     page,
     pageSize
   }: PaginationDTO): Promise<FindAllDonorsResponse> {
-    return await this.donorRepository.findAll({
+    const result = await this.donorRepository.findAll({
       page,
       pageSize
     });
+
+    const mappedData = await Promise.all(
+      result.data.map(async (d: DonorDetails) => {
+        const totalDonated =
+          await this.donorRepository.totalAmountDonatedByDonorId(d.id);
+        return {
+          ...d,
+          totalDonated
+        };
+      })
+    );
+
+    const mapped: FindAllDonorsResponse = {
+      ...result,
+      data: mappedData
+    };
+
+    return mapped;
   }
 }

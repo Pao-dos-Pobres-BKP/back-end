@@ -50,6 +50,12 @@ export class DonorDetails {
     example: "123.456.789-00"
   })
   cpf: string;
+
+  @ApiProperty({
+    description: "Total amount donated by the donor",
+    example: 1500.75
+  })
+  totalDonated: number;
 }
 
 export const FindDonorByIdResponses = applyDecorators(

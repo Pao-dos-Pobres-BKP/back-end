@@ -261,4 +261,17 @@ export class PrismaDonorRepository implements DonorRepository {
       }
     });
   }
+
+  async totalAmountDonatedByDonorId(donorId: string): Promise<number> {
+    const result = await this.prisma.donation.aggregate({
+      _sum: {
+        amount: true
+      },
+      where: {
+        donorId
+      }
+    });
+
+    return result._sum.amount.toNumber();
+  }
 }

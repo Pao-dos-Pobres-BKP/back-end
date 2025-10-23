@@ -38,4 +38,7 @@ export class DonorRepositoryStub implements DonorRepository {
   create(): Promise<void> {
     return;
   }
+  totalAmountDonatedByDonorId(): Promise<number> {
+    return Promise.resolve(0);
+  }
 }
