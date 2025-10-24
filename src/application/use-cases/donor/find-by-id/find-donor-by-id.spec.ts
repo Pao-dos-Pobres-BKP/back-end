@@ -48,6 +48,7 @@ describe("FindDonorByIdUseCase", () => {
       fullName: mockDonorWithUser.fullName,
       gender: mockDonorWithUser.gender,
       phone: mockDonorWithUser.phone,
+      imageUrl: mockDonorWithUser.imageUrl ?? null,
       createdAt: mockDonorWithUser.createdAt,
       totalDonated: 0
     });

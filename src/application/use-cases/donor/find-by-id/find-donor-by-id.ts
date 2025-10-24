@@ -30,6 +30,7 @@ export class FindDonorByIdUseCase {
       fullName: donor.fullName,
       gender: donor.gender,
       phone: donor.phone,
+      imageUrl: donor.imageUrl ?? null,
       createdAt: donor.createdAt,
       totalDonated: totalAmountDonated
     };

@@ -45,6 +45,12 @@ export class DonorDetails {
   phone: string;
 
   @ApiProperty({
+    description: "Image URL of the donor",
+    example: "https://example.com/image.jpg"
+  })
+  imageUrl: string;
+
+  @ApiProperty({
     description:
       "CPF (Brazilian individual taxpayer registration) of the donor",
     example: "123.456.789-00"
