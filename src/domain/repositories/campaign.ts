@@ -40,6 +40,10 @@ export interface CampaignDetailsResponse {
   createdBy: string;
 }
 
+export interface CampaignDonorDetailsResponse extends Campaign {
+  creatorName: string;
+}
+
 export abstract class CampaignRepository {
   abstract create(params: CreateCampaignParams): Promise<void>;
   abstract findById(id: string): Promise<Campaign | null>;
@@ -54,5 +58,5 @@ export abstract class CampaignRepository {
   abstract findByDonorId(
     donorId: string,
     params: PaginationParams
-  ): Promise<PaginatedEntity<Campaign>>;
+  ): Promise<PaginatedEntity<CampaignDonorDetailsResponse>>;
 }

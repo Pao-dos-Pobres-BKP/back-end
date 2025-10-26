@@ -2,7 +2,8 @@ import {
   CampaignRepository,
   CreateCampaignParams,
   UpdateCampaignParams,
-  CampaignDetailsResponse
+  CampaignDetailsResponse,
+  CampaignDonorDetailsResponse
 } from "@domain/repositories/campaign";
 import { PrismaService } from "@infra/config/prisma";
 import { CampaignMapper } from "@infra/mappers/prisma/campaign-mapper";
@@ -20,7 +21,7 @@ export class PrismaCampaignRepository implements CampaignRepository {
   async findByDonorId(
     donorId: string,
     params: PaginationParams
-  ): Promise<PaginatedEntity<Campaign>> {
+  ): Promise<PaginatedEntity<CampaignDonorDetailsResponse>> {
     const skip = (params.page - 1) * params.pageSize;
 
     const [campaigns, total] = await Promise.all([
@@ -29,6 +30,13 @@ export class PrismaCampaignRepository implements CampaignRepository {
           donation: {
             some: {
               donorId
+            }
+          }
+        },
+        include: {
+          user: {
+            select: {
+              fullName: true
             }
           }
         },
@@ -50,7 +58,7 @@ export class PrismaCampaignRepository implements CampaignRepository {
     ]);
 
     return {
-      data: campaigns.map(CampaignMapper.toDomain),
+      data: campaigns.map(CampaignMapper.toDomainDonorDetails),
       page: params.page,
       lastPage: Math.ceil(total / params.pageSize),
       total

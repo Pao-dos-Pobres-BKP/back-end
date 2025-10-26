@@ -1,4 +1,11 @@
+import { CampaignDonorDetailsResponse } from "@domain/repositories/campaign";
 import { Campaign } from "@prisma/client";
+
+interface CampaignDetailsWithUser extends Campaign {
+  user: {
+    fullName: string;
+  };
+}
 
 export class CampaignMapper {
   static toDomain(campaign: Campaign): Campaign {
@@ -13,6 +20,24 @@ export class CampaignMapper {
       endDate: campaign.endDate,
       status: campaign.status,
       createdBy: campaign.createdBy
+    };
+  }
+
+  static toDomainDonorDetails(
+    campaignDetails: CampaignDetailsWithUser
+  ): CampaignDonorDetailsResponse {
+    return {
+      id: campaignDetails.id,
+      title: campaignDetails.title,
+      description: campaignDetails.description,
+      imageUrl: campaignDetails.imageUrl,
+      targetAmount: campaignDetails.targetAmount,
+      currentAmount: campaignDetails.currentAmount,
+      startDate: campaignDetails.startDate,
+      endDate: campaignDetails.endDate,
+      status: campaignDetails.status,
+      createdBy: campaignDetails.createdBy,
+      creatorName: campaignDetails.user.fullName
     };
   }
 }

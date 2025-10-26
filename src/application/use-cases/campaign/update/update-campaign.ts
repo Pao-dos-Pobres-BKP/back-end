@@ -12,15 +12,8 @@ export class UpdateCampaignUseCase {
   ) {}
 
   async execute(id: string, params: UpdateCampaignDto): Promise<void> {
-    const {
-      title,
-      description,
-      currentAmount,
-      targetAmount,
-      startDate,
-      endDate,
-      imageUrl
-    } = params;
+    const { title, description, targetAmount, startDate, endDate, imageUrl } =
+      params;
 
     const campaign = await this.campaignRepository.findById(id);
 
@@ -42,12 +35,6 @@ export class UpdateCampaignUseCase {
       });
     }
 
-    if (startDate && startDate < new Date()) {
-      return this.exceptionService.badRequest({
-        message: "Campaign starting date must be today or in the future"
-      });
-    }
-
     if (endDate && endDate <= (startDate ?? campaign.startDate)) {
       return this.exceptionService.badRequest({
         message: "Campaign ending date must be after the starting date"
@@ -60,18 +47,11 @@ export class UpdateCampaignUseCase {
       });
     }
 
-    if (currentAmount && currentAmount < 0) {
-      return this.exceptionService.badRequest({
-        message: "Current amount must be greater than or equal to 0"
-      });
-    }
-
     await this.campaignRepository.update(id, {
       title,
       description,
       imageUrl,
       targetAmount,
-      currentAmount,
       startDate,
       endDate
     });
