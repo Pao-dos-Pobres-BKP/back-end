@@ -69,7 +69,6 @@ describe("UpdateCampaignUseCase", () => {
     });
   });
 
-
   it("should throw error when end date is before or equal to start date", async () => {
     const mockCampaign = createMockCampaign({
       startDate: new Date("2025-01-01")
