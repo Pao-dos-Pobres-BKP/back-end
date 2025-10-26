@@ -31,6 +31,7 @@ import {
 } from "@application/use-cases/campaign/update/update-campaign";
 import { PaginatedEntity } from "@domain/constants/pagination";
 import { UserRole } from "@domain/entities/user-role-enum";
+import { CampaignDonorDetailsResponse } from "@domain/repositories/campaign";
 import {
   CurrentUser,
   UserPayload
@@ -49,7 +50,6 @@ import {
   Query
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { Campaign } from "@prisma/client";
 
 @ApiTags("Campaigns")
 @Controller("campaigns")
@@ -122,7 +122,7 @@ export class CampaignController {
   async findCampaignByDonorId(
     @CurrentUser() user: UserPayload,
     @Query() query: PaginationDTO
-  ): Promise<PaginatedEntity<Campaign>> {
+  ): Promise<PaginatedEntity<CampaignDonorDetailsResponse>> {
     return await this.findCampaignByDonorIdUseCase.execute(user.id, query);
   }
 }

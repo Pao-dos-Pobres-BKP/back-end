@@ -2,11 +2,12 @@ import { PaginatedEntity } from "@domain/constants/pagination";
 import { Campaign } from "@prisma/client";
 import {
   CampaignRepository,
-  CampaignDetailsResponse
+  CampaignDetailsResponse,
+  CampaignDonorDetailsResponse
 } from "@domain/repositories/campaign";
 
 export class CampaignRepositoryStub implements CampaignRepository {
-  findByDonorId(): Promise<PaginatedEntity<Campaign>> {
+  findByDonorId(): Promise<PaginatedEntity<CampaignDonorDetailsResponse>> {
     return;
   }
   async create(): Promise<void> {

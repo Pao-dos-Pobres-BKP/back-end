@@ -34,6 +34,9 @@ describe("FindDonorByIdUseCase", () => {
     jest
       .spyOn(donorRepository, "findByIdWithUser")
       .mockResolvedValue(mockDonorWithUser);
+    jest
+      .spyOn(donorRepository, "totalAmountDonatedByDonorId")
+      .mockResolvedValue(0);
 
     const result = await sut.execute("example-donor-id");
 
@@ -45,6 +48,8 @@ describe("FindDonorByIdUseCase", () => {
       fullName: mockDonorWithUser.fullName,
       gender: mockDonorWithUser.gender,
       phone: mockDonorWithUser.phone,
+      imageUrl: mockDonorWithUser.imageUrl ?? null,
+      createdAt: mockDonorWithUser.createdAt,
       totalDonated: 0
     });
 
