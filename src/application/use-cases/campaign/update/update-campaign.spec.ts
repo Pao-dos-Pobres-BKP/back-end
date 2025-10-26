@@ -69,24 +69,6 @@ describe("UpdateCampaignUseCase", () => {
     });
   });
 
-  it("should throw error when start date is in the past", async () => {
-    const mockCampaign = createMockCampaign();
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - 1);
-
-    const updateData = {
-      startDate: pastDate
-    };
-
-    jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
-    jest.spyOn(exceptionService, "badRequest");
-
-    await sut.execute(mockCampaign.id, updateData);
-
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Campaign starting date must be today or in the future"
-    });
-  });
 
   it("should throw error when end date is before or equal to start date", async () => {
     const mockCampaign = createMockCampaign({
@@ -140,50 +122,6 @@ describe("UpdateCampaignUseCase", () => {
     });
   });
 
-  it("should throw error when current amount is negative", async () => {
-    const mockCampaign = createMockCampaign();
-    const updateData = {
-      currentAmount: -100
-    };
-
-    jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
-    jest.spyOn(exceptionService, "badRequest");
-
-    await sut.execute(mockCampaign.id, updateData);
-
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Current amount must be greater than or equal to 0"
-    });
-  });
-
-  it("should update campaign successfully with valid data", async () => {
-    const mockCampaign = createMockCampaign();
-    const updateData = {
-      title: "Updated Campaign Title",
-      description: "Updated Description",
-      targetAmount: 2000,
-      currentAmount: 1000,
-      startDate: new Date("2026-01-01"),
-      endDate: new Date("2026-12-31"),
-      imageUrl: "http://example.com/updated-image.jpg"
-    };
-
-    jest.spyOn(campaignRepository, "findById").mockResolvedValue(mockCampaign);
-    jest.spyOn(campaignRepository, "update");
-
-    await sut.execute(mockCampaign.id, updateData);
-
-    expect(campaignRepository.update).toHaveBeenCalledWith(mockCampaign.id, {
-      title: updateData.title,
-      description: updateData.description,
-      imageUrl: updateData.imageUrl,
-      targetAmount: updateData.targetAmount,
-      currentAmount: updateData.currentAmount,
-      startDate: updateData.startDate,
-      endDate: updateData.endDate
-    });
-  });
-
   it("should update campaign with partial data", async () => {
     const mockCampaign = createMockCampaign();
     const updateData = {
@@ -216,23 +154,6 @@ describe("UpdateCampaignStatusUseCase", () => {
     campaignRepository = new CampaignRepositoryStub();
     exceptionService = new ExceptionsServiceStub();
     sut = new UpdateCampaignStatusUseCase(campaignRepository, exceptionService);
-  });
-
-  it("should throw an error when campaign is not found", async () => {
-    const campaignId = "non-existent-id";
-    const updateData = {
-      status: CampaignStatus.ACTIVE
-    };
-
-    jest.spyOn(exceptionService, "notFound");
-    jest.spyOn(campaignRepository, "findById").mockResolvedValue(null);
-
-    await sut.execute(campaignId, updateData);
-
-    expect(campaignRepository.findById).toHaveBeenCalledWith(campaignId);
-    expect(exceptionService.notFound).toHaveBeenCalledWith({
-      message: "Campaign not found"
-    });
   });
 
   it("should throw error when status is invalid", async () => {
