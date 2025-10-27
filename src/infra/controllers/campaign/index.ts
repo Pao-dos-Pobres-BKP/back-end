@@ -65,7 +65,7 @@ export class CampaignController {
   ) {}
 
   @Post()
-  //@RequireToken()
+  @RequireToken()
   @CreateCampaignResponses
   async createCampaign(@Body() body: CreateCampaignDto): Promise<void> {
     return await this.createCampaignUseCase.execute(body);
