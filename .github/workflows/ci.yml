@@ -161,6 +161,7 @@ jobs:
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
-          git remote add gitlab "https://tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
           git fetch gitlab || true
-          git push --mirror "https://tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git"
+          git push --mirror "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git"
+
