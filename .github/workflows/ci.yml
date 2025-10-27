@@ -144,3 +144,21 @@ jobs:
               --env-add QUEUE_ATTEMPTS="$QUEUE_ATTEMPTS" \
               --env-add QUEUE_DELAY_BETWEEN_ATTEMPTS="$QUEUE_DELAY" \
               "$SERVICE"
+
+  mirror_to_gitlab:
+    runs-on: ubuntu-latest
+    needs: deploy_to_ec2
+    steps:
+      - name: Checkout completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+      - name: Fazer mirror para GitLab público
+        run: |
+          git remote add gitlab "https://tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
+          git fetch gitlab || true
+          git push --mirror "https://tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git"
