@@ -18,6 +18,7 @@ export class CreateCampaignUseCase {
     startDate,
     endDate,
     imageUrl,
+    status,
     createdBy
   }: CreateCampaignDto): Promise<void> {
     if (startDate && !(startDate instanceof Date)) {
@@ -56,6 +57,7 @@ export class CreateCampaignUseCase {
       targetAmount,
       startDate,
       endDate,
+      status,
       imageUrl,
       createdBy
     });

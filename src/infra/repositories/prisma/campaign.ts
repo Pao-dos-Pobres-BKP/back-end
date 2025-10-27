@@ -74,7 +74,8 @@ export class PrismaCampaignRepository implements CampaignRepository {
         startDate: params.startDate,
         endDate: params.endDate,
         imageUrl: params.imageUrl,
-        createdBy: params.createdBy
+        createdBy: params.createdBy,
+        status: params.status
       }
     });
   }
