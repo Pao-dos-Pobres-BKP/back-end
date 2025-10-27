@@ -158,6 +158,8 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
       - name: Fazer mirror para GitLab público
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
           git remote add gitlab "https://tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
           git fetch gitlab || true
