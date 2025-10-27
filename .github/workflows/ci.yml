@@ -159,11 +159,11 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-      - name: Fazer mirror para GitLab público
+      - name: Fazer push de todas as branches e tags para GitLab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
           git fetch gitlab || true
-          git push --all "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git"
-          git push --tags "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git"
+          git push gitlab --all
+          git push gitlab --tags
