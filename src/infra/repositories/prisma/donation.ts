@@ -68,7 +68,8 @@ export class PrismaDonationRepository implements DonationRepository {
       this.prisma.donation.findMany({
         where: { donorId },
         skip: (page - 1) * pageSize,
-        take: pageSize
+        take: pageSize,
+        orderBy: { createdAt: "desc" }
       }),
       this.prisma.donation.count({ where: { donorId } })
     ]);
