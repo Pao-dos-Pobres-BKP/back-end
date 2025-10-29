@@ -25,12 +25,13 @@ export class FindAllDonationsUseCase {
       });
     }
 
-    return await this.donationRepository.findAllByDonor(
+    const donations = await this.donationRepository.findAllByDonor(
       {
         page,
         pageSize
       },
       donorId
     );
+    return donations;
   }
 }

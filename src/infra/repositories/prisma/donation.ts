@@ -60,27 +60,41 @@ export class PrismaDonationRepository implements DonationRepository {
     return donations.map(DonationMapper.toDomainWithPayment);
   }
 
-  async findAllByDonor(
-    { page, pageSize }: PaginationParams,
-    donorId: string
-  ): Promise<PaginatedEntity<DonationDetailsResponse>> {
-    const [donations, total] = await Promise.all([
-      this.prisma.donation.findMany({
-        where: { donorId },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        orderBy: { createdAt: "desc" }
-      }),
-      this.prisma.donation.count({ where: { donorId } })
-    ]);
+async findAllByDonor(
+  { page, pageSize }: PaginationParams,
+  donorId: string
+): Promise<PaginatedEntity<DonationDetailsResponse>> {
+  const [donations, total] = await Promise.all([
+    this.prisma.donation.findMany({
+      where: { donorId },
+      include: {
+        campaign: {
+          include: {
+            user: {
+              select: {
+                fullName: true
+              }
+            }
+          }
+        }
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      orderBy: { createdAt: 'desc' }
+    }),
+    this.prisma.donation.count({ where: { donorId } })
+  ]);
 
-    return {
-      data: donations.map(DonationMapper.toDomain),
-      page,
-      lastPage: Math.ceil(total / pageSize),
-      total
-    };
-  }
+  return {
+    data: donations.map((donation) => ({
+      ...DonationMapper.toDomain(donation),
+      campaignCreatedBy: donation.campaign?.user?.fullName ?? null
+    })),
+    page,
+    lastPage: Math.ceil(total / pageSize),
+    total
+  };
+}
 
   async update(id: string, params: UpdateDonationParams): Promise<void> {
     const { campaignId, donorId, ...rest } = params;
