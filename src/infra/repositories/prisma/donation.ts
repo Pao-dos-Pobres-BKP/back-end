@@ -67,6 +67,17 @@ export class PrismaDonationRepository implements DonationRepository {
     const [donations, total] = await Promise.all([
       this.prisma.donation.findMany({
         where: { donorId },
+        include: {
+          campaign: {
+            include: {
+              user: {
+                select: {
+                  fullName: true
+                }
+              }
+            }
+          }
+        },
         skip: (page - 1) * pageSize,
         take: pageSize,
         orderBy: { createdAt: "desc" }
@@ -75,7 +86,10 @@ export class PrismaDonationRepository implements DonationRepository {
     ]);
 
     return {
-      data: donations.map(DonationMapper.toDomain),
+      data: donations.map((donation) => ({
+        ...DonationMapper.toDomain(donation),
+        campaignCreatedBy: donation.campaign?.user?.fullName ?? null
+      })),
       page,
       lastPage: Math.ceil(total / pageSize),
       total

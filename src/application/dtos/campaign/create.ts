@@ -39,19 +39,6 @@ export class CreateCampaignDto {
   description: string;
 
   @ApiProperty({
-    description: "Campaign current amount",
-    example: 500,
-    minimum: 0.01,
-    maximum: 9999999999.99
-  })
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @IsPositive()
-  @Min(0.01)
-  @Max(9999999999.99)
-  @IsOptional()
-  currentAmount: number;
-
-  @ApiProperty({
     description: "Target amount to be raised (in BRL)",
     example: 5000,
     minimum: 0.01,

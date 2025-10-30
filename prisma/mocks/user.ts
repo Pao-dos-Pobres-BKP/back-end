@@ -98,7 +98,7 @@ export const userDonorsMock: Prisma.UserCreateInput[] = [
     email: `donor.deleted${index + 1}@example.com`,
     password: passwordHashed,
     role: UserRole.DONOR,
-    fullName: `${faker.person.fullName()} (Deletado)`,
+    fullName: `${faker.person.fullName()}`,
     deletedAt: faker.date.recent({ days: 30 }),
     donor: {
       create: {

@@ -11,6 +11,7 @@ export interface CreateCampaignParams {
   startDate: Date;
   endDate: Date;
   imageUrl: string;
+  status: CampaignStatus;
   createdBy: string;
 }
 
