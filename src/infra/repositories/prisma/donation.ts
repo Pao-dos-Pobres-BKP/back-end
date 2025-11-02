@@ -69,7 +69,8 @@ export class PrismaDonationRepository implements DonationRepository {
         where: { donorId },
         include: {
           campaign: {
-            include: {
+            select: {
+              title: true,
               user: {
                 select: {
                   fullName: true
@@ -88,6 +89,7 @@ export class PrismaDonationRepository implements DonationRepository {
     return {
       data: donations.map((donation) => ({
         ...DonationMapper.toDomain(donation),
+        campaignName: donation.campaign?.title ?? null,
         campaignCreatedBy: donation.campaign?.user?.fullName ?? null
       })),
       page,
