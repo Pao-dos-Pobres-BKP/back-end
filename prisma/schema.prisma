@@ -105,7 +105,7 @@ model Donation {
   campaignId  String?      @map("campaign_id")
   createdAt   DateTime     @default(now()) @map("created_at")
 
-  payment Payment []
+  payment Payment[]
 
   campaign Campaign? @relation(fields: [campaignId], references: [id])
   donor    Donor?    @relation(fields: [donorId], references: [id])
@@ -162,10 +162,10 @@ model Newsletter {
 }
 
 model HowToHelp {
-  id        String   @id @default(cuid())
-  title     String
-  description   String
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   @@map("how_to_help")
 }
@@ -209,4 +209,5 @@ enum Periodicity {
   QUARTERLY
   SEMI_ANNUAL
   YEARLY
+  CANCELED
 }
