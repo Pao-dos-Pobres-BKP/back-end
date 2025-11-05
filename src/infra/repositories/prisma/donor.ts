@@ -150,7 +150,8 @@ export class PrismaDonorRepository implements DonorRepository {
           user: {
             select: {
               email: true,
-              fullName: true
+              fullName: true,
+              createdAt: true
             }
           }
         },
@@ -180,7 +181,8 @@ export class PrismaDonorRepository implements DonorRepository {
         cpf: donor.cpf,
         fullName: donor.user.fullName,
         gender: donor.gender,
-        phone: donor.phone
+        phone: donor.phone,
+        createdAt: donor.user.createdAt
       })),
       page,
       lastPage: Math.ceil(total / pageSize),
