@@ -30,6 +30,7 @@ export class FindAllDonorsUseCase {
 
     const mapped: FindAllDonorsResponse = {
       ...result,
+
       data: mappedData
     };
 
