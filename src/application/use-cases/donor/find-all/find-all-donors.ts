@@ -23,14 +23,14 @@ export class FindAllDonorsUseCase {
           await this.donorRepository.totalAmountDonatedByDonorId(d.id);
         return {
           ...d,
-          totalDonated,
+          totalDonated
         };
       })
     );
 
     const mapped: FindAllDonorsResponse = {
       ...result,
-      
+
       data: mappedData
     };
 

@@ -320,5 +320,5 @@ export class PrismaDonorRepository implements DonorRepository {
     });
 
     return Number(result._sum.amount || 0);
- }
+  }
 }
