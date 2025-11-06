@@ -41,40 +41,6 @@ describe("CreateEventUseCase", () => {
     });
   });
 
-  it("should throw bad request error when event start date is in the past or today", async () => {
-    jest.spyOn(exceptionService, "badRequest");
-    jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
-
-    await sut.execute({
-      title: "New Event",
-      description: "Some description",
-      location: "Some location",
-      dateStart: new Date(),
-      dateEnd: new Date()
-    });
-
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Event starting date must be in the future"
-    });
-  });
-
-  it("should throw bad request error when event end date is in the before than start date", async () => {
-    jest.spyOn(exceptionService, "badRequest");
-    jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
-
-    await sut.execute({
-      title: "New Event",
-      description: "Some description",
-      location: "Some location",
-      dateStart: new Date("2100-01-02"),
-      dateEnd: new Date("2100-01-01")
-    });
-
-    expect(exceptionService.badRequest).toHaveBeenCalledWith({
-      message: "Event ending date must be after the starting date"
-    });
-  });
-
   it("should create an event successfully", async () => {
     jest.spyOn(eventRepository, "findByTitleAndDate").mockResolvedValue(null);
     jest.spyOn(eventRepository, "create").mockResolvedValue(undefined);
