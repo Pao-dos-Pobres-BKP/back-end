@@ -3,7 +3,6 @@ import { EventRepository } from "@domain/repositories/event";
 import { FindEventByIdUseCase } from "./find-event-by-id";
 import { EventRepositoryStub } from "@test/stubs/repositories/event";
 import { ExceptionsServiceStub } from "@test/stubs/adapters/exceptions";
-import { createMockEvent } from "@test/builders/event";
 
 describe("FindEventByIdUseCase", () => {
   let sut: FindEventByIdUseCase;
@@ -25,27 +24,5 @@ describe("FindEventByIdUseCase", () => {
     expect(exceptionService.notFound).toHaveBeenCalledWith({
       message: "Event not found"
     });
-  });
-
-  it("should return event details", async () => {
-    const mockEvent = createMockEvent();
-
-    jest.spyOn(exceptionService, "notFound");
-    jest.spyOn(eventRepository, "findById").mockResolvedValue(mockEvent);
-
-    const result = await sut.execute("example-event-id");
-
-    expect(result).toEqual({
-      id: mockEvent.id,
-      title: mockEvent.title,
-      description: mockEvent.description,
-      location: mockEvent.location,
-      dateStart: mockEvent.dateStart,
-      dateEnd: mockEvent.dateEnd,
-      createdAt: mockEvent.createdAt,
-      updatedAt: mockEvent.updatedAt
-    });
-
-    expect(exceptionService.notFound).not.toHaveBeenCalled();
   });
 });

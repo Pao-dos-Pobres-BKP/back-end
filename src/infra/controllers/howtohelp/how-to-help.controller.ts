@@ -3,7 +3,7 @@ import {
   UpdateHowToHelpDTO,
   UpdateHowToHelpResponses
 } from "@application/dtos/howtohelp/update";
-import { UpdateHowToHelpUseCase } from "@application/use-cases/howtoplay/update";
+import { UpdateHowToHelpUseCase } from "@application/use-cases/howtohelp/update";
 import { HowToHelp } from "@domain/entities/howtohelp";
 import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
