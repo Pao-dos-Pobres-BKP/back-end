@@ -22,7 +22,7 @@ model User {
   admin    Admin?
   campaign Campaign[]
 
-  passwordResetToken PasswordResetToken?
+  passwordResetToken PasswordResetToken[]
 
   @@map("users")
 }
@@ -30,7 +30,7 @@ model User {
 model PasswordResetToken {
   id        String   @id @default(cuid())
   token     String
-  userId    String   @unique @map("user_id")
+  userId    String   @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   expiresAt DateTime @map("expires_at")
 
