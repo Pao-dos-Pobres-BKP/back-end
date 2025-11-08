@@ -3,7 +3,7 @@ import {
   SendPasswordResetTokenResponse
 } from "@application/dtos/auth/send-password-reset-token";
 import { ExceptionsAdapter } from "@domain/adapters/exception";
-import { MailAdapter } from "@domain/adapters/mail";
+import { QueueAdapter } from "@domain/adapters/queue";
 import { passwordResetTemplate } from "@domain/email-templates/email-template";
 import { PasswordResetTokenRepository } from "@domain/repositories/password-reset-token";
 import { UserRepository } from "@domain/repositories/user";
@@ -15,7 +15,7 @@ export class SendPasswordResetTokenUseCase {
   constructor(
     private readonly passwordResetTokenRepository: PasswordResetTokenRepository,
     private readonly userRepository: UserRepository,
-    private readonly mailAdapter: MailAdapter,
+    private readonly queueIntegration: QueueAdapter,
     private readonly exceptionService: ExceptionsAdapter
   ) {}
 
@@ -38,7 +38,7 @@ export class SendPasswordResetTokenUseCase {
       expiresAt: new Date(Date.now() + 1000 * 60 * 10)
     });
 
-    await this.mailAdapter.sendMail({
+    await this.queueIntegration.addJob({
       to: user.email,
       subject: "Redefinição de Senha",
       body: passwordResetTemplate({

@@ -7,7 +7,7 @@ import { TokenModule } from "../token";
 import { DatabaseModule } from "../database";
 import { SendPasswordResetTokenUseCase } from "@application/use-cases/auth/send-password-reset-token";
 import { VerifyCodeUseCase } from "@application/use-cases/auth/verify-code";
-import { MailModule } from "../mail";
+import { QueueModule } from "../queue";
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { MailModule } from "../mail";
     ExceptionModule,
     HashModule,
     TokenModule,
-    MailModule
+    QueueModule
   ],
   controllers: [AuthController],
   providers: [LoginUseCase, SendPasswordResetTokenUseCase, VerifyCodeUseCase]
