@@ -5,12 +5,16 @@ import {
   ApiOperation,
   ApiProperty
 } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class SendPasswordResetTokenDTO {
   @ApiProperty({
     description: "User email",
     example: "john.doe@example.com"
   })
+  @IsString()
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
 
