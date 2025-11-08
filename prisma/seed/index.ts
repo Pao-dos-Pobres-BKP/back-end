@@ -21,9 +21,13 @@ async function main(): Promise<void> {
   const createdAdmins = [];
 
   for(const howToHelpData of howToHelpMock) {
-    await prisma.howToHelp.create({
-      data: howToHelpData
-    });
+    await prisma.howToHelp.upsert(
+      {
+        where: { id: howToHelpData.id },
+        update: {},
+        create: howToHelpData
+      }
+    );
   }
 
   for (const userData of userDonorsMock) {
