@@ -22,7 +22,7 @@ export class AutomaticMailsController {
     return await this.sendSantoAntonioMailUseCase.execute();
   }
 
-  @Cron(CronExpression.EVERY_MINUTE, {
+  @Cron("0 9 1 1 *", {
     timeZone: "America/Sao_Paulo"
   })
   @Post("send-new-year-mail")
