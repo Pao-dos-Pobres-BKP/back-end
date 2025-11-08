@@ -5,10 +5,19 @@ import { ExceptionModule } from "../exception";
 import { HashModule } from "../hash";
 import { TokenModule } from "../token";
 import { DatabaseModule } from "../database";
+import { SendPasswordResetTokenUseCase } from "@application/use-cases/auth/send-password-reset-token";
+import { VerifyCodeUseCase } from "@application/use-cases/auth/verify-code";
+import { MailModule } from "../mail";
 
 @Module({
-  imports: [DatabaseModule, ExceptionModule, HashModule, TokenModule],
+  imports: [
+    DatabaseModule,
+    ExceptionModule,
+    HashModule,
+    TokenModule,
+    MailModule
+  ],
   controllers: [AuthController],
-  providers: [LoginUseCase]
+  providers: [LoginUseCase, SendPasswordResetTokenUseCase, VerifyCodeUseCase]
 })
 export class AuthModule {}

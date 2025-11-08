@@ -24,6 +24,8 @@ import { PaymentRepository } from "@domain/repositories/payment";
 import { PrismaPaymentRepository } from "@infra/repositories/prisma/payment";
 import { PrismaMetricsRepository } from "@infra/repositories/prisma/metrics";
 import { MetricsRepository } from "@domain/repositories/metrics";
+import { PasswordResetTokenRepository } from "@domain/repositories/password-reset-token";
+import { PrismaPasswordResetTokenRepository } from "@infra/repositories/prisma/password-reset-token";
 
 @Module({
   providers: [
@@ -71,6 +73,10 @@ import { MetricsRepository } from "@domain/repositories/metrics";
     {
       provide: MetricsRepository,
       useClass: PrismaMetricsRepository
+    },
+    {
+      provide: PasswordResetTokenRepository,
+      useClass: PrismaPasswordResetTokenRepository
     }
   ],
   exports: [
@@ -84,7 +90,8 @@ import { MetricsRepository } from "@domain/repositories/metrics";
     NewsletterRepository,
     HowToHelpRepository,
     PaymentRepository,
-    MetricsRepository
+    MetricsRepository,
+    PasswordResetTokenRepository
   ]
 })
 export class DatabaseModule {}
