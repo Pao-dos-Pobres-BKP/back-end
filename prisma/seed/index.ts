@@ -21,6 +21,7 @@ async function main(): Promise<void> {
   const createdAdmins = [];
 
   for(const howToHelpData of howToHelpMock) {
+    if (howToHelpData.id) {
     await prisma.howToHelp.upsert(
       {
         where: { id: howToHelpData.id },
@@ -28,6 +29,7 @@ async function main(): Promise<void> {
         create: howToHelpData
       }
     );
+  }
   }
 
   for (const userData of userDonorsMock) {
