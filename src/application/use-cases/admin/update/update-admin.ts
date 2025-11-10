@@ -13,7 +13,7 @@ export class UpdateAdminUseCase {
   ) {}
 
   async execute(id: string, params: UpdateAdminDto): Promise<void> {
-    const { email, password, root } = params;
+    const { email, password, root, fullName } = params;
 
     const admin = await this.adminRepository.findByIdWithUser(id);
 
@@ -40,7 +40,8 @@ export class UpdateAdminUseCase {
     await this.adminRepository.update(id, {
       email,
       password: passwordHashed,
-      root
+      root,
+      fullName
     });
   }
 }
