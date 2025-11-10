@@ -45,6 +45,11 @@ import {
   FindDonorInformationsResponse,
   FindDonorInformationsResponses
 } from "@application/dtos/donor/find-donor-informations";
+import { FindDonationByDonorIdUseCase } from "@application/use-cases/donor/find-donation-by-donor-id";
+import {
+  DonationResultDto,
+  FindDonationsByDonorIdResponses
+} from "@application/dtos/donor/find-donations-by-donor-id";
 
 @ApiTags("Donors")
 @Controller("donors")
@@ -56,7 +61,8 @@ export class DonorController {
     private readonly deleteDonorUseCase: DeleteDonorUseCase,
     private readonly findDonorByIdUseCase: FindDonorByIdUseCase,
     private readonly findAllDonorsUseCase: FindAllDonorsUseCase,
-    private readonly findDonorInformationsUseCase: FindDonorInformationsUseCase
+    private readonly findDonorInformationsUseCase: FindDonorInformationsUseCase,
+    private readonly findDonationsByDonorIdUseCase: FindDonationByDonorIdUseCase
   ) {}
 
   @Post()
@@ -130,5 +136,13 @@ export class DonorController {
     @Param("id") id: string
   ): Promise<FindDonorInformationsResponse | void> {
     return await this.findDonorInformationsUseCase.execute(id);
+  }
+
+  @Get("donations/:id")
+  @FindDonationsByDonorIdResponses
+  async findDonationsByDonorId(
+    @Param("id") id: string
+  ): Promise<DonationResultDto> {
+    return await this.findDonationsByDonorIdUseCase.execute(id);
   }
 }
