@@ -1,3 +1,4 @@
+import { DonationResultDto } from "@application/dtos/donor/find-donations-by-donor-id";
 import {
   PaginatedEntity,
   PaginationParams
@@ -75,4 +76,6 @@ export abstract class DonorRepository {
   ): Promise<DonorMailsResponse[]>;
 
   abstract totalAmountDonatedByDonorId(donorId: string): Promise<number>;
+
+  abstract findAllDonationsByDonorId(donorId: string);
 }

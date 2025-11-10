@@ -1,3 +1,4 @@
+import { DonationResultDto } from "@application/dtos/donor/find-donations-by-donor-id";
 import {
   PaginationParams,
   PaginatedEntity
@@ -320,5 +321,22 @@ export class PrismaDonorRepository implements DonorRepository {
     });
 
     return Number(result._sum.amount || 0);
+  }
+
+  async findAllDonationsByDonorId(donorId: string) {
+    const result = await this.prisma.donation.findMany({
+      where: {
+        donorId
+      },
+      include: {
+        campaign: true,
+        payment: true
+      },
+      orderBy: {
+        createdAt: "desc"
+      }
+    });
+
+    return result;
   }
 }

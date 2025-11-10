@@ -45,4 +45,8 @@ export class DonorRepositoryStub implements DonorRepository {
   totalAmountDonatedByDonorId(): Promise<number> {
     return Promise.resolve(0);
   }
+
+  findAllDonationsByDonorId(donorId: string) {
+    return Promise.resolve([]);
+  }
 }
