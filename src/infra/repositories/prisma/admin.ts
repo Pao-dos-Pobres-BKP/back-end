@@ -158,7 +158,7 @@ export class PrismaAdminRepository implements AdminRepository {
   }
 
   async update(id: string, params: UpdateAdminParams): Promise<void> {
-    const { email, password, root, imageUrl, fullName,  } = params;
+    const { email, password, root, imageUrl, fullName } = params;
 
     await this.prisma.admin.update({
       where: { id },
