@@ -141,9 +141,7 @@ export class CampaignController {
   @Patch(":id/is-root")
   @RequireToken([UserRole.ADMIN])
   @HttpCode(HttpStatus.NO_CONTENT)
-  async updateCampaignIsRoot(
-    @Param("id") id: string,
-  ): Promise<void> {
+  async updateCampaignIsRoot(@Param("id") id: string): Promise<void> {
     return await this.updateCampaignIsRootUseCase.execute(id);
   }
 }
