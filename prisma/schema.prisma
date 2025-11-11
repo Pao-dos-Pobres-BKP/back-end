@@ -91,7 +91,7 @@ model Campaign {
   status        CampaignStatus @default(PENDING)
   createdBy     String         @map("created_by")
   donation      Donation[]
-
+  isRoot        Boolean        @default(false) @map("is_root")
   user User @relation(fields: [createdBy], references: [id])
 
   @@map("campaigns")

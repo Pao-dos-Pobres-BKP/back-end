@@ -70,6 +70,12 @@ class CampaignDonorDetails implements CampaignDonorDetailsResponse {
     example: "John Doe"
   })
   creatorName: string;
+
+  @ApiProperty({
+    description: "Indicates if the campaign is a root campaign",
+    example: false
+  })
+  isRoot: boolean;
 }
 
 class CampaignDonorDetailsResponseDTO extends PaginationEntityDTO {

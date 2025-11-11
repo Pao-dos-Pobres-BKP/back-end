@@ -29,7 +29,8 @@ export class FindCampaignByIdUseCase {
       achievementPercentage:
         (campaign.currentAmount.toNumber() / campaign.targetAmount.toNumber()) *
         100,
-      status: campaign.status
+      status: campaign.status,
+      isRoot: campaign.isRoot
     };
   }
 }

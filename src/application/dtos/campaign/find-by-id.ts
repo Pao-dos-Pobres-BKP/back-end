@@ -61,6 +61,12 @@ export class CampaignDetails {
     example: CampaignStatus.ACTIVE
   })
   status: CampaignStatus;
+
+  @ApiProperty({
+    description: "Indicates if the campaign is a root campaign",
+    example: false
+  })
+  isRoot: boolean;
 }
 
 export const FindCampaignByIdResponses = applyDecorators(

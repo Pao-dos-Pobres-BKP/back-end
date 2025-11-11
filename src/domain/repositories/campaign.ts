@@ -39,6 +39,7 @@ export interface CampaignDetailsResponse {
   imageUrl: string;
   status: CampaignStatus;
   createdBy: string;
+  isRoot: boolean;
 }
 
 export interface CampaignDonorDetailsResponse extends Campaign {
@@ -60,4 +61,8 @@ export abstract class CampaignRepository {
     donorId: string,
     params: PaginationParams
   ): Promise<PaginatedEntity<CampaignDonorDetailsResponse>>;
+
+  abstract updateIsRoot(id: string, isRoot: boolean): Promise<void>;
+
+  abstract findRootCampaign(): Promise<Campaign>;
 }

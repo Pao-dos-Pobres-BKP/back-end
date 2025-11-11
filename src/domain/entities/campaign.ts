@@ -12,4 +12,5 @@ export class Campaing {
   status: CampaignStatus;
   createdBy: string;
   adminId: string;
+  isRoot: boolean;
 }

@@ -19,5 +19,6 @@ export const createMockCampaign = (
   imageUrl: faker.image.url(),
   status: faker.helpers.arrayElement(Object.values(CampaignStatus)),
   createdBy: faker.string.uuid(),
+  isRoot: false,
   ...override
 });

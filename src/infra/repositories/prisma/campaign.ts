@@ -159,7 +159,8 @@ export class PrismaCampaignRepository implements CampaignRepository {
       endDate: campaign.endDate,
       imageUrl: campaign.imageUrl,
       status: campaign.status,
-      createdBy: campaign.user.fullName
+      createdBy: campaign.user.fullName,
+      isRoot: campaign.isRoot
     }));
 
     return {
@@ -181,5 +182,63 @@ export class PrismaCampaignRepository implements CampaignRepository {
     await this.prisma.campaign.delete({
       where: { id }
     });
+  }
+
+  async updateIsRoot(id: string, isRoot: boolean): Promise<void> {
+    await this.prisma.campaign.update({
+      where: { id },
+      data: { isRoot }
+    });
+  }
+
+  async findRootCampaign(): Promise<{
+    id: string;
+    title: string;
+    description: string;
+    targetAmount: Prisma.Decimal;
+    currentAmount: Prisma.Decimal;
+    porcentageAchieved: number;
+    startDate: Date;
+    endDate: Date;
+    imageUrl: string;
+    status: CampaignStatus;
+    createdBy: string;
+    isRoot: boolean;
+  } | null> {
+    const campaign = await this.prisma.campaign.findFirst({
+      where: { isRoot: true },
+      include: {
+        user: {
+          include: {
+            donor: true,
+            admin: true
+          }
+        }
+      }
+    });
+
+    if (!campaign) {
+      return null;
+    }
+
+    return {
+      id: campaign.id,
+      title: campaign.title,
+      description: campaign.description,
+      targetAmount: campaign.targetAmount,
+      currentAmount: campaign.currentAmount,
+      porcentageAchieved:
+        campaign.targetAmount.toNumber() > 0
+          ? (campaign.currentAmount.toNumber() /
+              campaign.targetAmount.toNumber()) *
+            100
+          : 0,
+      startDate: campaign.startDate,
+      endDate: campaign.endDate,
+      imageUrl: campaign.imageUrl,
+      status: campaign.status,
+      createdBy: campaign.user.fullName,
+      isRoot: campaign.isRoot
+    };
   }
 }

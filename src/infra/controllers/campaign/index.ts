@@ -24,7 +24,9 @@ import { CreateCampaignUseCase } from "@application/use-cases/campaign/create/cr
 import { DeleteCampaignUseCase } from "@application/use-cases/campaign/delete/delete-campaign";
 import { FindCampaignByDonorIdUseCase } from "@application/use-cases/campaign/find-by-donorId";
 import { FindCampaignByIdUseCase } from "@application/use-cases/campaign/find-by-id/find-campaing-by-id";
+import { FindIsRootCampaignUseCase } from "@application/use-cases/campaign/find-is-root";
 import { SearchCampaignsUseCase } from "@application/use-cases/campaign/search/search-campaigns";
+import { UpdateCampaignIsRootUseCase } from "@application/use-cases/campaign/update-is-root";
 import {
   UpdateCampaignStatusUseCase,
   UpdateCampaignUseCase
@@ -49,7 +51,7 @@ import {
   Post,
   Query
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Campaigns")
 @Controller("campaigns")
@@ -61,7 +63,9 @@ export class CampaignController {
     private readonly deleteCampaignUseCase: DeleteCampaignUseCase,
     private readonly findCampaignByIdUseCase: FindCampaignByIdUseCase,
     private readonly searchCampaignsUseCase: SearchCampaignsUseCase,
-    private readonly findCampaignByDonorIdUseCase: FindCampaignByDonorIdUseCase
+    private readonly findCampaignByDonorIdUseCase: FindCampaignByDonorIdUseCase,
+    private readonly findIsRootCampaignUseCase: FindIsRootCampaignUseCase,
+    private readonly updateCampaignIsRootUseCase: UpdateCampaignIsRootUseCase
   ) {}
 
   @Post()
@@ -124,5 +128,20 @@ export class CampaignController {
     @Query() query: PaginationDTO
   ): Promise<PaginatedEntity<CampaignDonorDetailsResponse>> {
     return await this.findCampaignByDonorIdUseCase.execute(user.id, query);
+  }
+
+  @ApiOperation({ summary: "Find the root campaign" })
+  @Get("is-root")
+  @RequireToken()
+  async findIsRootCampaign() {
+    return await this.findIsRootCampaignUseCase.execute();
+  }
+
+  @ApiOperation({ summary: "Update campaign to be the root campaign" })
+  @Patch(":id/is-root")
+  @RequireToken([UserRole.ADMIN])
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async updateCampaignIsRoot(@Param("id") id: string): Promise<void> {
+    return await this.updateCampaignIsRootUseCase.execute(id);
   }
 }
