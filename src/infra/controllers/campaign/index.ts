@@ -51,7 +51,7 @@ import {
   Post,
   Query
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("Campaigns")
 @Controller("campaigns")
@@ -130,19 +130,20 @@ export class CampaignController {
     return await this.findCampaignByDonorIdUseCase.execute(user.id, query);
   }
 
+  @ApiOperation({ summary: "Find the root campaign" })
   @Get("is-root")
   @RequireToken()
   async findIsRootCampaign() {
     return await this.findIsRootCampaignUseCase.execute();
   }
 
+  @ApiOperation({ summary: "Update campaign to be the root campaign" })
   @Patch(":id/is-root")
-  //@RequireToken([UserRole.ADMIN])
+  @RequireToken([UserRole.ADMIN])
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCampaignIsRoot(
     @Param("id") id: string,
-    @Body("isRoot") isRoot: boolean
   ): Promise<void> {
-    return await this.updateCampaignIsRootUseCase.execute(id, isRoot);
+    return await this.updateCampaignIsRootUseCase.execute(id);
   }
 }
