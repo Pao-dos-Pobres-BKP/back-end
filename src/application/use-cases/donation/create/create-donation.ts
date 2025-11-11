@@ -73,11 +73,8 @@ export class CreateDonationUseCase {
 
     const current = Number(campaign.currentAmount);
 
-    await this.campaignRepository.update(
-      campaignId,
-      {
-        currentAmount: current + numericAmount
-      }
-    );
+    await this.campaignRepository.update(campaignId, {
+      currentAmount: current + numericAmount
+    });
   }
 }
