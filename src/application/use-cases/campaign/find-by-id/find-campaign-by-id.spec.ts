@@ -63,7 +63,7 @@ describe("FindCampaignByIdUseCase", () => {
           mockCampaign.targetAmount.toNumber()) *
         100,
       status: mockCampaign.status,
-      isRoot: mockCampaign.isRoot,
+      isRoot: mockCampaign.isRoot
     });
     expect(exceptionService.notFound).not.toHaveBeenCalled();
   });
