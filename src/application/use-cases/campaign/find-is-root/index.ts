@@ -6,7 +6,6 @@ export class FindIsRootCampaignUseCase {
   constructor(private readonly campaignRepository: CampaignRepository) {}
 
   async execute() {
-
     const campaign = await this.campaignRepository.findRootCampaign();
     return campaign;
   }

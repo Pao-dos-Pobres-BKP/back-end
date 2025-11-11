@@ -78,9 +78,9 @@ export class CampaignController {
   @Get("is-root")
   @RequireToken()
   async findIsRootCampaign() {
-    console.log ("Controller: Finding root campaign...");
+    console.log("Controller: Finding root campaign...");
 
-    console.log (this.findIsRootCampaignUseCase);
+    console.log(this.findIsRootCampaignUseCase);
 
     return await this.findIsRootCampaignUseCase.execute();
   }
