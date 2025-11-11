@@ -75,6 +75,16 @@ export class CampaignController {
     return await this.createCampaignUseCase.execute(body);
   }
 
+  @Get("is-root")
+  @RequireToken()
+  async findIsRootCampaign() {
+    console.log ("Controller: Finding root campaign...");
+
+    console.log (this.findIsRootCampaignUseCase);
+
+    return await this.findIsRootCampaignUseCase.execute();
+  }
+
   @Get()
   @FindAllCampaignsResponses
   async searchCampaigns(
@@ -130,16 +140,9 @@ export class CampaignController {
     return await this.findCampaignByDonorIdUseCase.execute(user.id, query);
   }
 
-  @ApiOperation({ summary: "Find the root campaign" })
-  @Get("is-root")
-  @RequireToken()
-  async findIsRootCampaign() {
-    return await this.findIsRootCampaignUseCase.execute();
-  }
-
   @ApiOperation({ summary: "Update campaign to be the root campaign" })
   @Patch(":id/is-root")
-  @RequireToken([UserRole.ADMIN])
+  //@RequireToken([UserRole.ADMIN])
   @HttpCode(HttpStatus.NO_CONTENT)
   async updateCampaignIsRoot(@Param("id") id: string): Promise<void> {
     return await this.updateCampaignIsRootUseCase.execute(id);
