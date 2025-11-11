@@ -22,6 +22,8 @@ export class CreateDonationUseCase {
   async execute(dto: CreateDonationDTO): Promise<void> {
     const { amount, periodicity, campaignId, paymentMethod, donorId } = dto;
 
+    const numericAmount = Number(amount);
+
     let donor = null;
 
     if (donorId) {
@@ -49,7 +51,7 @@ export class CreateDonationUseCase {
     await this.transactionService.transaction(async (tx) => {
       const donation = await this.donationRepository.create(
         {
-          amount,
+          amount: numericAmount,
           periodicity,
           campaignId,
           donorId
@@ -61,12 +63,21 @@ export class CreateDonationUseCase {
         {
           paymentMethod,
           status: PaymentStatus.CONFIRMED,
-          amount,
+          amount: numericAmount,
           donationId: donation.id,
           paidAt: new Date()
         },
         tx
       );
     });
+
+    const current = Number(campaign.currentAmount);
+
+    await this.campaignRepository.update(
+      campaignId,
+      {
+        currentAmount: current + numericAmount
+      }
+    );
   }
 }
