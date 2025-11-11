@@ -31,4 +31,12 @@ export class CampaignRepositoryStub implements CampaignRepository {
   async delete(): Promise<void> {
     return;
   }
+
+  async findRootCampaign(): Promise<Campaign> {
+    return;
+  }
+
+  async updateIsRoot(id: string, isRoot: boolean): Promise<void> {
+    return;
+  }
 }

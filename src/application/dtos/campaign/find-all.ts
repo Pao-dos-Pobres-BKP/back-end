@@ -34,6 +34,14 @@ export class FindAllCampaignsDTO extends PaginationDTO {
   @IsOptional()
   @IsEnum(CampaignStatus)
   status?: CampaignStatus;
+
+  @ApiProperty({
+    description: "Filter by root campaigns",
+    example: true,
+    required: false
+  })
+  @IsOptional()
+  isRoot?: boolean;
 }
 
 export class FindAllCampaignsResponse extends PaginationEntityDTO {

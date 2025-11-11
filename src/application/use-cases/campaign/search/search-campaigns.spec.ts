@@ -36,7 +36,8 @@ describe("SearchCampaignsUseCase", () => {
           endDate: new Date("2025-12-31"),
           imageUrl: "http://example.com/image.jpg",
           status: CampaignStatus.ACTIVE,
-          createdBy: "user-1"
+          createdBy: "user-1",
+          isRoot: false
         }
       ],
       total: 1,

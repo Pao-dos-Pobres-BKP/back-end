@@ -19,7 +19,8 @@ export class CampaignMapper {
       startDate: campaign.startDate,
       endDate: campaign.endDate,
       status: campaign.status,
-      createdBy: campaign.createdBy
+      createdBy: campaign.createdBy,
+      isRoot: campaign.isRoot
     };
   }
 
@@ -37,7 +38,8 @@ export class CampaignMapper {
       endDate: campaignDetails.endDate,
       status: campaignDetails.status,
       createdBy: campaignDetails.createdBy,
-      creatorName: campaignDetails.user.fullName
+      creatorName: campaignDetails.user.fullName,
+      isRoot: campaignDetails.isRoot
     };
   }
 }

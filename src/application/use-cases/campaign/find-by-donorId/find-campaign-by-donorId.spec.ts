@@ -33,7 +33,8 @@ describe("FindCampaignByDonorIdUseCase", () => {
         status: CampaignStatus.ACTIVE,
         createdBy: "creator-id",
         creatorName: "creator-name",
-        imageUrl: "image-url"
+        imageUrl: "image-url",
+        isRoot: false
       }
     ];
 
