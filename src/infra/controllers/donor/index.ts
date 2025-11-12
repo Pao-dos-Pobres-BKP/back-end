@@ -120,6 +120,7 @@ export class DonorController {
       mimetype: file.mimetype,
       originalname: file.originalname
     };
+
     return await this.updateDonorAvatarUseCase.execute(id, body);
   }
 
