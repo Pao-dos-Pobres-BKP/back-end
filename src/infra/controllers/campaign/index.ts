@@ -76,7 +76,6 @@ export class CampaignController {
   }
 
   @Get("is-root")
-  @RequireToken()
   async findIsRootCampaign() {
     return await this.findIsRootCampaignUseCase.execute();
   }
