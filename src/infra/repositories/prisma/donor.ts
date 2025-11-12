@@ -127,6 +127,7 @@ export class PrismaDonorRepository implements DonorRepository {
       role: donor.user.role,
       cpf: donor.cpf,
       birthDate: donor.birthDate,
+      imageUrl: donor.user.imageUrl,
       fullName: donor.user.fullName,
       gender: donor.gender,
       phone: donor.phone,
