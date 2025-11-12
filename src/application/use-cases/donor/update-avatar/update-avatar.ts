@@ -20,7 +20,9 @@ export class UpdateDonorAvatarUseCase {
         message: "Donor not found"
       });
     }
+
     const avatar = await this.createFileUseCase.execute(file);
+
     await this.donorRepository.update(id, { imageUrl: avatar.url });
   }
 }
