@@ -60,7 +60,8 @@ export class PrismaAdminRepository implements AdminRepository {
           user: {
             select: {
               email: true,
-              fullName: true
+              fullName: true,
+              imageUrl: true
             }
           }
         },
@@ -84,7 +85,8 @@ export class PrismaAdminRepository implements AdminRepository {
         id: admin.id,
         fullName: admin.user.fullName,
         email: admin.user.email,
-        root: admin.root
+        root: admin.root,
+        imageUrl: admin.user.imageUrl
       })),
       page,
       lastPage: Math.ceil(total / pageSize),

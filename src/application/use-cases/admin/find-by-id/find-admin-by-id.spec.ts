@@ -41,7 +41,8 @@ describe("FindAdminByIdUseCase", () => {
       id: mockAdminWithUser.id,
       fullName: mockAdminWithUser.fullName,
       email: mockAdminWithUser.email,
-      root: mockAdminWithUser.root
+      root: mockAdminWithUser.root,
+      imageUrl: mockAdminWithUser.imageUrl
     });
 
     expect(exceptionService.notFound).not.toHaveBeenCalled();
