@@ -76,7 +76,7 @@ export const campaignsMock: (
 ) => {
   const allCreatorIds = [...adminIds, ...donorUserIds];
 
-  const mocks = [
+  return [
     ...Array.from({ length: 25 }).map((_, index) => {
       const roundTargets = [
         5000, 8000, 10000, 12000, 15000, 18000, 20000, 25000, 30000, 35000,
@@ -100,10 +100,10 @@ export const campaignsMock: (
       return {
         title: campaignTitles[index],
         description: campaignDescriptions[index],
-        targetAmount,
-        currentAmount,
-        startDate,
-        endDate,
+        targetAmount: targetAmount,
+        currentAmount: currentAmount,
+        startDate: startDate,
+        endDate: endDate,
         imageUrl: faker.image.url({ width: 800, height: 600 }),
         status: CampaignStatus.ACTIVE,
         user: {
@@ -134,10 +134,10 @@ export const campaignsMock: (
       return {
         title: campaignTitles[index + 25],
         description: campaignDescriptions[index + 25],
-        targetAmount,
-        currentAmount,
-        startDate,
-        endDate,
+        targetAmount: targetAmount,
+        currentAmount: currentAmount,
+        startDate: startDate,
+        endDate: endDate,
         imageUrl: faker.image.url({ width: 800, height: 600 }),
         status: CampaignStatus.FINISHED,
         user: {
@@ -146,22 +146,4 @@ export const campaignsMock: (
       };
     })
   ];
-
-  const specificCampaign: Prisma.CampaignCreateInput = {
-    title: "Campanha Pão dos Pobres",
-    description:
-      "A Campanha Pão dos Pobres busca arrecadar fundos e alimentos para fornecer refeições diárias a pessoas em situação de rua e famílias em extrema vulnerabilidade. Nosso objetivo é garantir dignidade e nutrição a quem mais precisa.",
-    targetAmount: 25000,
-    currentAmount: faker.number.float({ min: 100000, max: 200000, fractionDigits: 2 }),
-    startDate: new Date("2025-10-01"),
-    endDate: new Date("2026-03-30"),
-    imageUrl: faker.image.url({ width: 800, height: 600 }),
-    status: CampaignStatus.ACTIVE,
-    isRoot: true,
-    user: {
-      connect: { id: faker.helpers.arrayElement(allCreatorIds) }
-    }
-  };
-
-  return [...mocks, specificCampaign];
 };
