@@ -1,6 +1,11 @@
 import { applyDecorators } from "@nestjs/common";
 import { ApiOkResponse, ApiOperation, ApiProperty } from "@nestjs/swagger";
 
+class DonationCampaignUserDto {
+  @ApiProperty()
+  fullName: string;
+}
+
 class DonationCampaignDto {
   @ApiProperty()
   id: string;
@@ -31,6 +36,9 @@ class DonationCampaignDto {
 
   @ApiProperty()
   createdBy: string;
+
+  @ApiProperty({ type: () => DonationCampaignUserDto })
+  user: DonationCampaignUserDto;
 }
 
 class DonationPaymentDto {
