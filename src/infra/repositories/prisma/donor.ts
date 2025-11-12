@@ -330,7 +330,15 @@ export class PrismaDonorRepository implements DonorRepository {
         donorId
       },
       include: {
-        campaign: true,
+        campaign: {
+          include: {
+            user: {
+              select: {
+                fullName: true
+              }
+            }
+          }
+        },
         payment: true
       },
       orderBy: {

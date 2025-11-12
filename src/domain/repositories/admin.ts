@@ -25,6 +25,7 @@ export interface AdminDetailsResponse {
   id: string;
   fullName: string;
   email: string;
+  imageUrl: string;
   root: boolean;
 }
 
