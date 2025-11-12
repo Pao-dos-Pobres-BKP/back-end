@@ -35,7 +35,7 @@ export class SendPasswordResetTokenUseCase {
     await this.passwordResetTokenRepository.create({
       userId: user.id,
       token,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 10)
+      expiresAt: new Date(Date.now())
     });
 
     await this.queueIntegration.addJob({
