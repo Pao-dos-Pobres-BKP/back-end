@@ -39,7 +39,7 @@ jobs:
       - name: Install deps
         run: yarn install --frozen-lockfile
       - name: Prisma generate
-        run: yarn prisma migrate reset
+        run: npx prisma generate
       - name: Build
         run: yarn build
       - name: Test
