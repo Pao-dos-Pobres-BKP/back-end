@@ -24,8 +24,8 @@ export class FindEventByIdUseCase {
       title: event.title,
       description: event.description,
       location: event.location,
-      dateStart: new Date(event.dateStart.getTime() + 3 * 60 * 60 * 1000),
-      dateEnd: new Date(event.dateEnd.getTime() + 3 * 60 * 60 * 1000),
+      dateStart: new Date(event.dateStart.getTime()),
+      dateEnd: new Date(event.dateEnd.getTime()),
       createdAt: event.createdAt,
       updatedAt: event.updatedAt
     };
