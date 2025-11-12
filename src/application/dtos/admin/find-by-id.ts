@@ -28,6 +28,12 @@ export class AdminDetails {
   email: string;
 
   @ApiProperty({
+    description: "Image URL of the admin",
+    example: "https://example.com/image.jpg"
+  })
+  imageUrl: string;
+
+  @ApiProperty({
     description: "Is a root admin",
     example: true
   })

@@ -23,7 +23,8 @@ export class FindAdminByIdUseCase {
       id: admin.id,
       fullName: admin.fullName,
       email: admin.email,
-      root: admin.root
+      root: admin.root,
+      imageUrl: admin.imageUrl
     };
   }
 }
