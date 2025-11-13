@@ -14,16 +14,16 @@ export class SendChristmasMailUseCase {
     const donors = await this.donorRepository.findAllDonorsMails();
 
     const title = "Feliz Natal";
-    console.log('Preparing to send Christmas mails to donors:', donors.length);
+    console.log("Preparing to send Christmas mails to donors:", donors.length);
 
     for (const donor of donors) {
-      console.log('Sending Christmas mail to:', donor.email);
+      console.log("Sending Christmas mail to:", donor.email);
       await this.queueIntegration.addJob({
         to: donor.email,
         subject: title,
         body: christmasTemplate(title, donor.fullName)
       });
-      console.log('Christmas mail queued for:', donor.email);
+      console.log("Christmas mail queued for:", donor.email);
     }
     console.log("Sending of Christmas mails completed.");
   }
