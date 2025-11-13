@@ -38,7 +38,7 @@ export class AutomaticMailsController {
     return await this.sendBirthdayMailUseCase.execute();
   }
 
-  @Cron("0 9 25 12 *", {
+  @Cron(CronExpression.EVERY_5_MINUTES, {
     timeZone: "America/Sao_Paulo"
   })
   @Post("send-christmas-mail")
