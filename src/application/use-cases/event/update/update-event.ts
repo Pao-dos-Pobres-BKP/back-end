@@ -33,13 +33,13 @@ export class UpdateEventUseCase {
       }
     }
 
-    if (dateStart && dateStart <= new Date()) {
+    if (dateStart && dateStart < new Date()) {
       return this.exceptionService.badRequest({
         message: "Event starting date must be today or in the future"
       });
     }
 
-    if (dateEnd && dateEnd <= (dateStart ?? event.dateStart)) {
+    if (dateEnd && dateEnd < (dateStart ?? event.dateStart)) {
       return this.exceptionService.badRequest({
         message: "Event ending date must be after the starting date"
       });
