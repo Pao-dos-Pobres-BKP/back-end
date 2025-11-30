@@ -1,0 +1,169 @@
+name: CI/CD
+
+on:
+  push:
+    branches: ["main", "master"]
+  workflow_dispatch: {}
+
+env:
+  DOCKER_BUILDKIT: "1"
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION }}
+  ECR_REPO: ${{ vars.ECR_REPO }}
+  ECR_URL: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com
+  IMAGE: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_DEFAULT_REGION }}.amazonaws.com/${{ vars.ECR_REPO }}
+
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+  PORT: ${{ vars.PORT }}
+  S3_BUCKET: ${{ vars.S3_BUCKET }}
+  S3_URL: ${{ vars.S3_URL }}
+  MAIL_FROM: ${{ vars.MAIL_FROM }}
+  MAIL_REPLY_TO: ${{ vars.MAIL_REPLY_TO }}
+  REDIS_HOST: ${{ vars.REDIS_HOST }}
+  REDIS_PORT: ${{ vars.REDIS_PORT }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  QUEUE_ATTEMPTS: ${{ vars.QUEUE_ATTEMPTS }}
+  QUEUE_DELAY_BETWEEN_ATTEMPTS: ${{ vars.QUEUE_DELAY_BETWEEN_ATTEMPTS }}
+
+jobs:
+  local_test_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - name: Install deps
+        run: yarn install --frozen-lockfile
+      - name: Prisma generate
+        run: npx prisma generate
+      - name: Build
+        run: yarn build
+      - name: Test
+        run: yarn test --ci
+
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: local_test_build
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Housekeeping
+        run: |
+          docker system prune -af || true
+          docker builder prune -af || true
+          docker image prune -af || true
+      - name: Compute short SHA
+        id: meta
+        run: echo "sha7=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: Build image
+        run: |
+          docker build \
+            -t "${IMAGE}:${{ steps.meta.outputs.sha7 }}" \
+            -t "${IMAGE}:latest" \
+            -f Dockerfile .
+      - name: Push image (sha)
+        run: docker push "${IMAGE}:${{ steps.meta.outputs.sha7 }}"
+      - name: Push image (latest)
+        run: docker push "${IMAGE}:latest"
+
+  deploy_to_ec2:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - name: Compute image ref
+        id: meta
+        run: echo "image_ref=${IMAGE}:${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_EC2_PRIVATE_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+
+            REGION="${{ env.AWS_DEFAULT_REGION }}"
+            ECR_URL="${{ env.ECR_URL }}"
+            IMAGE_REF="${{ steps.meta.outputs.image_ref }}"
+            SERVICE="${{ vars.SERVICE_NAME }}"
+
+            DB_URL="${{ env.DATABASE_URL }}"
+            PORT="${{ env.PORT }}"
+            AWS_REGION="${{ env.AWS_DEFAULT_REGION }}"
+            S3_BUCKET="${{ env.S3_BUCKET }}"
+            S3_URL="${{ env.S3_URL }}"
+            MAIL_FROM="${{ env.MAIL_FROM }}"
+            MAIL_REPLY_TO="${{ env.MAIL_REPLY_TO }}"
+            REDIS_HOST="${{ env.REDIS_HOST }}"
+            REDIS_PORT="${{ env.REDIS_PORT }}"
+            JWT_SECRET="${{ env.JWT_SECRET }}"
+            QUEUE_ATTEMPTS="${{ env.QUEUE_ATTEMPTS }}"
+            QUEUE_DELAY="${{ env.QUEUE_DELAY_BETWEEN_ATTEMPTS }}"
+
+            if [ -z "${SERVICE:-}" ]; then
+              echo "SERVICE_NAME vazio ou não definido."
+              exit 1
+            fi
+
+            aws ecr get-login-password --region "$REGION" | sudo docker login --username AWS --password-stdin "$ECR_URL"
+            sudo docker pull "$IMAGE_REF"
+
+            if ! sudo docker service inspect "$SERVICE" >/dev/null 2>&1; then
+              echo "Serviço '$SERVICE' não existe no Swarm."
+              exit 1
+            fi
+
+            sudo docker service update \
+              --with-registry-auth \
+              --image "$IMAGE_REF" \
+              --env-add DATABASE_URL="$DB_URL" \
+              --env-add PORT="$PORT" \
+              --env-add AWS_REGION="$AWS_REGION" \
+              --env-add S3_BUCKET="$S3_BUCKET" \
+              --env-add S3_URL="$S3_URL" \
+              --env-add MAIL_FROM="$MAIL_FROM" \
+              --env-add MAIL_REPLY_TO="$MAIL_REPLY_TO" \
+              --env-add REDIS_HOST="$REDIS_HOST" \
+              --env-add REDIS_PORT="$REDIS_PORT" \
+              --env-add JWT_SECRET="$JWT_SECRET" \
+              --env-add QUEUE_ATTEMPTS="$QUEUE_ATTEMPTS" \
+              --env-add QUEUE_DELAY_BETWEEN_ATTEMPTS="$QUEUE_DELAY" \
+              "$SERVICE"
+
+  mirror_to_gitlab:
+    runs-on: ubuntu-latest
+    needs: deploy_to_ec2
+    steps:
+      - name: Checkout completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Fazer push de todas as branches e tags para GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@tools.ages.pucrs.br/plataforma-de-doa-es-para-o-p-o-dos-pobres/back-end.git" || true
+          git fetch gitlab || true
+          git push gitlab --all
+          git push gitlab --tags
